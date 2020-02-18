@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/12 16:16:20 by lucaslefran       #+#    #+#             */
-/*   Updated: 2020/02/18 18:27:25 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/02/18 19:01:01 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ int main(int ac, char **av)
 	if ((par.fd = open(av[1], O_RDONLY)) == -1)
 		error_msg("Error\nArguments : incorrect file\n", &par, NULL);
 	parsing(&par);
-	// print_struct(&par);
+	print_struct(&par);
 	struct_free(&par);
     close(par.fd);
 	// system("leaks a.out");
