@@ -1,0 +1,95 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parsing_keys.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2020/02/18 15:56:38 by lucaslefran       #+#    #+#             */
+/*   Updated: 2020/02/18 17:56:55 by lucaslefran      ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "../includes/cube3d.h"
+
+/*
+** Check the first characters of the line and look if it's a key or an empty
+** line. Otherwise print error msg and exit.
+*/
+int		key_type(char *line, t_cube *par)
+{
+	if (line[0] == 'R' && line[1] == ' ')
+		return (RESO);
+	else if (line[0] == 'N' && line[1] == 'O' && line[2] == ' ')
+		return (P_NORTH);
+	else if (line[0] == 'S' && line[1] == 'O' && line[2] == ' ')
+		return (P_SOUTH);
+	else if (line[0] == 'E' && line[1] == 'A' && line[2] == ' ')
+		return (P_EAST);
+	else if (line[0] == 'W' && line[1] == 'E' && line[2] == ' ')
+		return (P_WEST);
+	else if (line[0] == 'S' && line[1] == ' ')
+		return (P_SPRIT);
+	else if (line[0] == 'F' && line[1] == ' ')
+		return (FLO_RGB);
+	else if (line[0] == 'C' && line[1] == ' ')
+		return (SKY_RGB);
+	else if (line[0] == '1')
+		return (MAP_LINE);
+	else if (line[0] == '\0') //in the case of a \n
+		return (0);
+	else //if the beginning of a line ins't a key or isn't empty, error
+		error_msg("Error\nFile .cub, keys : wrong key, or some lines between keys aren't empty\n"
+		"Expected keys : 'R ', 'NO ', 'SO ', 'EA ', 'WE ', 'S ', 'F ', 'C ',\n"
+		"and lines of the map beginning by a '1'\n", par, line);
+	return (-1); 
+}
+
+/*
+** Return the number of missing keys.
+*/
+int		numbers_key_missing(t_cube *par)
+{
+	int i;
+
+	i = 0;
+	par->reso[0] == -1 ? i++ : 0;
+	!par->path_no ? i++ : 0;
+	!par->path_so ? i++ : 0;
+	!par->path_ea ? i++ : 0;
+	!par->path_we ? i++ : 0;
+	!par->path_sp ? i++ : 0;
+	par->flo_rgb[0] == -1 ? i++ : 0;
+	par->sky_rgb[0] == -1 ? i++ : 0;
+	!par->map ? i++ : 0;
+	return (i);
+}
+
+/*
+** Call the function error_msg if one or several keys are missing.
+*/
+void	key_check(t_cube *par)
+{
+	if (numbers_key_missing(par) > 1)
+		error_msg("Error\nFile .cub, keys : several keys are missing. Expected keys :\n"
+		"'R ', 'NO ', 'SO ', 'EA ', 'WE ', 'S ', 'F ', 'C ',\n"
+		"and first line of the map beginning by a '1'\n", par, NULL);
+	else if (par->reso[0] == -1)
+		error_msg("Error\nFile .cub, resolution : 'R ' key is missing\n", par, NULL);
+	else if (!par->path_no)
+		error_msg("Error\nFile .cub, path : 'NO ' key is missing\n", par, NULL);
+	else if (!par->path_so)
+		error_msg("Error\nFile .cub, path : 'SO ' key is missing\n", par, NULL);
+	else if (!par->path_ea)
+		error_msg("Error\nFile .cub, path : 'EA ' key is missing\n", par, NULL);
+	else if (!par->path_we)
+		error_msg("Error\nFile .cub, path : 'WE ' key is missing\n", par, NULL);
+	else if (!par->path_sp)
+		error_msg("Error\nFile .cub, path : 'S ' key is missing\n", par, NULL);
+	else if (par->flo_rgb[0] == -1)
+		error_msg("Error\nFile .cub, colors : 'F ' key is missing\n", par, NULL);
+	else if (par->sky_rgb[0] == -1)
+		error_msg("Error\nFile .cub, colors : 'C ' key is missing\n", par, NULL);
+	else if (!par->map)
+		error_msg("Error\nFile .cub, map : Map is missing\n", par, NULL);
+}
