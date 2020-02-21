@@ -3,59 +3,45 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
+/*   By: llefranc <llefranc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/12 20:57:54 by lucaslefran       #+#    #+#             */
-/*   Updated: 2020/02/18 18:21:42 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/02/21 11:12:26 by llefranc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/cube3d.h"
 
 /*
-** Init the structure by putting char * to NULL and for each tab of int by
-** putting each value of tabs to -1, so we can check during the parsing if we
-** already have treated the parameter or not.
+** Check if there is no spaces at the end of lines.
 */
-void	struct_init(t_cube *par)
-{
-	par->fd = -1;
-	par->reso[0] = -1;
-	par->reso[1] = -1;
-	par->path_no = NULL;
-	par->path_so = NULL;
-	par->path_ea = NULL;
-	par->path_we = NULL;
-	par->path_sp = NULL;
-	par->flo_rgb[0] = -1;
-	par->flo_rgb[1] = -1;
-	par->flo_rgb[2] = -1;
-	par->sky_rgb[0] = -1;
-	par->sky_rgb[1] = -1;
-	par->sky_rgb[2] = -1;
-	par->map = NULL;
-}
-
-/*
-** Allow to free each elements of the structure, including each line of **map
-** and close the file descriptor.
-*/
-void	struct_free(t_cube *par)
+void	check_spaces_end_of_line(t_cube *par, char *line, int key)
 {
 	int i;
 
-	i = -1;
-	par->fd != -1 ? close(par->fd) : 0; //if there is a flux, we close it
-	free(par->path_no);
-	free(par->path_so);
-	free(par->path_ea);
-	free(par->path_we);
-	free(par->path_sp);
-	if (par->map)
+	i = 0;
+	while (line[i])
+		i++;
+	if (i && line[i - 1] == ' ') //if i means if not empty line
 	{
-		while (par->map[++i]) // until we reach the NULL *ptr in map
-			free(par->map[i]);
-		free(par->map);
+		key == RESO ? error_msg("File .cub, resolution : Spaces"
+						" at the end of 'R' line are not allowed\n", par, line) : 0;
+		key == P_NORTH ? error_msg("File .cub, path : Spaces"
+						" at the end of 'NO' line are not allowed\n", par, line) : 0;
+		key == P_SOUTH ? error_msg("File .cub, path : Spaces"
+						" at the end of 'SO' line are not allowed\n", par, line) : 0;
+		key == P_EAST ? error_msg("File .cub, path : Spaces"
+						" at the end of 'EA' line are not allowed\n", par, line) : 0;
+		key == P_WEST ? error_msg("File .cub, path : Spaces"
+						" at the end of 'WE' line are not allowed\n", par, line) : 0;
+		key == P_SPRIT ? error_msg("File .cub, path : Spaces"
+						" at the end of 'S' line are not allowed\n", par, line) : 0;
+		key == FLO_RGB ? error_msg("File .cub, colors : Spaces"
+						" at the end of 'F' line are not allowed\n", par, line) : 0;
+		key == SKY_RGB ? error_msg("File .cub, colors : Spaces"
+						" at the end of 'C' line are not allowed\n", par, line) : 0;
+		key == MAP_LINE ? error_msg("File .cub, map : Spaces"
+						" at the end of map lines are not allowed\n", par, line) : 0;
 	}
 }
 
@@ -87,6 +73,7 @@ int		parse_func(t_cube *par, char *line, int key)
 	return (ret);
 }
 
+
 /*
 ** Parse the map file and fill the *par structure with : 
 ** resolution, NO/SO/EA/WE/S paths, floor and sky RGB colors, the map.
@@ -102,9 +89,10 @@ int		parsing(t_cube *par)
 	while (ret > 0 && key != MAP_LINE) //first parse the elements
 	{
 		ret = get_next_line(par->fd, &line);
-		key = key_type(line, par);
+		key = key_type(line, par); //check also if 'R' is the first line of the file
+		check_spaces_end_of_line(par, line, key); //print error_msg if spaces at the end of lines
 		if (parse_func(par, line, key) == -1) //call the right parse_function
-			error_msg("Error\nMalloc failed\n", par, line);
+			error_msg("Malloc failed\n", par, line);
 		if (key == MAP_LINE) //if we met the first line
 			parse_map(par, line); //we trim the spaces and add new trim_line to par->map
 		free(line);
@@ -112,19 +100,15 @@ int		parsing(t_cube *par)
 	while (ret > 0 && key == MAP_LINE) //then parse the map
 	{
 		ret = get_next_line(par->fd, &line);
+		check_spaces_end_of_line(par, line, key); //print error_msg if spaces at the end of lines
 		key = key_type(line, par);
-		if (key && key != MAP_LINE) //if line isn't empty and doesn't begin by a 1
-			error_msg("Error\nFile .cub, map : each line must begin by '1'\n", par, line);
 		key == MAP_LINE ? parse_map(par, line) : 0; //trim the spaces and add a new trim_line to par->map
 		free(line);
 	}
-	while (ret > 0) //then parse the rest of the file
-	{
-		ret = get_next_line(par->fd, &line);
-		if (line && line[0] != '\0')
-			error_msg("Error\nFile .cub, map : must be followed only by empty lines\n", par, line);
-		free(line);
-	}
+	if (!key) //no empty lines after map
+		error_msg("File .cub, map : must end the file and be followed by nothing\n", par, NULL);
+	else if (key && key != MAP_LINE) //if line isn't empty and doesn't begin by a 1
+		error_msg("File .cub, map : each line must begin by '1'\n", par, NULL);
 	key_check(par); //check if keys are missing in the file
 	map_check(par); //check if the map is correct
 	return (1);

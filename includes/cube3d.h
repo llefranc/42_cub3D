@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cube3d.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
+/*   By: llefranc <llefranc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/12 16:17:24 by lucaslefran       #+#    #+#             */
-/*   Updated: 2020/02/18 16:07:41 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/02/21 08:32:45 by llefranc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,6 @@
 
 # include "libftprintf.h"
 # include "mlx.h"
-
-# define BUFF_GNL 1024
 
 #define RESO_MAX_X 1920
 #define RESO_MIN_X 640
@@ -57,9 +55,6 @@ void print_struct(t_cube *par); //a supprimer
 /*
 ** ----- srcs_parsing -----
 */
-
-//get_next_line.c
-int		get_next_line(int fd, char **line); //penser a changer peut etre le get next line
 
 //check_arg.c
 int		error_msg(char *str, t_cube *par, char *line);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing_map.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
+/*   By: llefranc <llefranc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/17 12:41:56 by lucaslefran       #+#    #+#             */
-/*   Updated: 2020/02/18 18:54:44 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/02/21 09:06:41 by llefranc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,11 +89,11 @@ int		parse_map(t_cube *par, char *line)
 
 	i = 0;
 	if (!(trim_line = trim_char(line, ' '))) //create a new line without spaces
-		error_msg("Error\nMalloc failed\n", par, line);
+		error_msg("Malloc failed\n", par, line);
 	if (!(par->map = add_map_line(par, trim_line))) //realloc par-map with size + 1 and add trim_line at the end
 	{
 		free(line);
-		error_msg("Error\nMalloc failed\n", par, trim_line);
+		error_msg("Malloc failed\n", par, trim_line);
 	}
 	return (1);
 }
@@ -112,7 +112,7 @@ int		line_check(t_cube *par, char *line_map)
 	while (line_map[i])
 	{
 		if (!ft_strchr("012NSWE", line_map[i]))
-			error_msg("Error\nFile .cub, map : must only contains "
+			error_msg("File .cub, map : must only contains "
 			"'012NSWE' characters and/or spaces\n", par, NULL);
 		if (ft_strchr("NSWE", line_map[i++]))
 			pos++;
@@ -137,7 +137,7 @@ void	walls_check(t_cube *par, char *actual, char *previous)
 		j = ft_strlen(previous) - 1; //we start at the end of previous
 		while (i <= 0)
 			if (previous[j + i++] != '1') //and compare until we reach the size of actual
-				error_msg("Error\nFile .cub, map : must only be"
+				error_msg("File .cub, map : must only be"
 				" surrunded by walls ('1')\n", par, NULL);
 	}
 	else //actual is equal or taller than previous
@@ -145,7 +145,7 @@ void	walls_check(t_cube *par, char *actual, char *previous)
 		j = ft_strlen(previous) - 1;
 		while (i >= 0) //if actual is equal to previous, we check only the last charac of actual
 			if (actual[j + i--] != '1') //we compare from the end of actual until we reach size of previous
-				error_msg("Error\nFile .cub, map : must only be"
+				error_msg("File .cub, map : must only be"
 				" surrunded by walls ('1')\n", par, NULL);
 	}
 }
@@ -165,15 +165,15 @@ int		map_check(t_cube *par)
 	pos = 0;
 	while (par->map[i]) //if non-authorized characters in the map (012NSWE), error
 		pos += line_check(par, par->map[i++]); //return nb times player position is detected in a line
-	!pos ? error_msg("Error\nFile .cub, map : no player position\n", par, NULL) : 0;
-	pos > 1 ? error_msg("Error\nFile .cub, map : several player positions\n", par , NULL) : 0;
+	!pos ? error_msg("File .cub, map : no player position\n", par, NULL) : 0;
+	pos > 1 ? error_msg("File .cub, map : several player positions\n", par , NULL) : 0;
 	while (par->map[0][j]) //check first line of the map
 		if (par->map[0][j++] != '1')
-			error_msg("Error\nFile .cub, map : first line must be only '1' and/or spaces\n", par, NULL);
+			error_msg("File .cub, map : first line must be only '1' and/or spaces\n", par, NULL);
 	j = 0;
 	while (par->map[i - 1][j]) //check first line of the map
 		if (par->map[i - 1][j++] != '1')
-			error_msg("Error\nFile .cub, map : last line must be only '1' and/or spaces\n", par, NULL);
+			error_msg("File .cub, map : last line must be only '1' and/or spaces\n", par, NULL);
 	while (--i > 0) //checking all the map from the end to the beginning
 		walls_check(par, par->map[i], par->map[i - 1]); //check if map surrunded by walls
 	return (1);
