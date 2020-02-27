@@ -6,7 +6,7 @@
 /*   By: llefranc <llefranc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/13 18:04:46 by lucaslefran       #+#    #+#             */
-/*   Updated: 2020/02/21 10:51:45 by llefranc         ###   ########.fr       */
+/*   Updated: 2020/02/27 18:54:22 by llefranc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 /*
 ** Fill the 2 ints of the tab par->reso with one line of the map (Key : "R ")
 */
-int		parse_reso(t_cube *par, char *line)
+int		parse_reso(t_pars *par, char *line)
 {
 	int		i;
 	char	**tmp;
@@ -33,7 +33,7 @@ int		parse_reso(t_cube *par, char *line)
 		error_msg("File .cub, resolution : 3 arguments are waited\n"
 		"The key (R), reso X and Y (those last two only in numbers)\n", par, line);
 	}
-	if (ft_strlen(tmp[1]) > (size_t)5) //reso max possible will never be > at 99999
+	if (ft_strlen(tmp[1]) > (size_t)5) //reso max possible value will never be > at 99999
 		par->reso[0] = RESO_MAX_X;
 	else
 		par->reso[0] = (i = ft_atoi(tmp[1])) > RESO_MAX_X ? RESO_MAX_X : i;
@@ -42,8 +42,8 @@ int		parse_reso(t_cube *par, char *line)
 	else
 		par->reso[1] = (i = ft_atoi(tmp[2])) > RESO_MAX_Y ? RESO_MAX_Y : i;
 	free_split(tmp);
-	if (par->reso[0] < RESO_MIN_X || par->reso[1] < RESO_MIN_Y)
-		error_msg("File .cub, resolution : minimum is 640 x 480\n", par, line);
+	// if (par->reso[0] < RESO_MIN_X || par->reso[1] < RESO_MIN_Y)
+	// 	error_msg("File .cub, resolution : minimum is 640 x 480\n", par, line);
 	return (1);
 }
 
@@ -73,13 +73,13 @@ int		check_format_rgb(char *line)
 /*
 ** Fill the 3 ints of the tab par->flo_rgb with one line of the map (Key : "F ")
 */
-int		parse_flo_rgb(t_cube *par, char *line)
+int		parse_flo_rgb(t_pars *par, char *line)
 {
 	int i;
 	char **tmp;
 
 	i = 0;
-	if (par->flo_rgb[0] != -1 || par->flo_rgb[1] != -1 || par->flo_rgb[2] != -1) //if already something in the tab
+	if (par->flo_rgb != -1) //if already something in the tab
 		error_msg("File .cub, colors : multiple keys 'F'\n", par, line);
 	if (!check_format_rgb(line))
 		error_msg("File .cub, colors : (F) RGB couple should respect format 'nb,nb,nb'\n", par, line);
@@ -97,9 +97,9 @@ int		parse_flo_rgb(t_cube *par, char *line)
 		error_msg("File .cub, colors : 4 arguments are waited for the floor\n"
 		"The key (F), R, G and B values (those last three between 000 and 255)\n", par, line);
 	}
-	par->flo_rgb[0] = ft_atoi(tmp[1]);
-	par->flo_rgb[1] = ft_atoi(tmp[2]);
-	par->flo_rgb[2] = ft_atoi(tmp[3]);
+	*((unsigned char *)(&par->flo_rgb)) = (unsigned char)ft_atoi(tmp[1]);
+	*((unsigned char *)(&par->flo_rgb) + 1) = (unsigned char)ft_atoi(tmp[2]);
+	*((unsigned char *)(&par->flo_rgb) + 2) = (unsigned char)ft_atoi(tmp[3]);
 	free_split(tmp);
 	return (1);
 }
@@ -107,13 +107,13 @@ int		parse_flo_rgb(t_cube *par, char *line)
 /*
 ** Fill the 3 ints of the tab par->sky_rgb with one line of the map (Key : "C ")
 */
-int		parse_sky_rgb(t_cube *par, char *line)
+int		parse_sky_rgb(t_pars *par, char *line)
 {
 	int i;
 	char **tmp;
 
 	i = 0;
-	if (par->sky_rgb[0] != -1 || par->sky_rgb[1] != -1 || par->sky_rgb[2] != -1) //if already something in the tab
+	if (par->sky_rgb != -1) //if already something in the tab
 		error_msg("File .cub, colors : multiple keys 'C'.\n", par, line);
 	if (!check_format_rgb(line))
 		error_msg("File .cub, colors : (C) RGB couple should respect format 'nb,nb,nb'\n", par, line);
@@ -131,9 +131,9 @@ int		parse_sky_rgb(t_cube *par, char *line)
 		error_msg("File .cub, colors : 4 arguments are waited for the sky\n"
 		"The key (C), R, G and B values (those last three between 000 and 255)\n", par, line);
 	}
-	par->sky_rgb[0] = ft_atoi(tmp[1]);
-	par->sky_rgb[1] = ft_atoi(tmp[2]);
-	par->sky_rgb[2] = ft_atoi(tmp[3]);
+	*((unsigned char *)(&par->sky_rgb)) = (unsigned char)ft_atoi(tmp[1]);
+	*((unsigned char *)(&par->sky_rgb) + 1) = (unsigned char)ft_atoi(tmp[2]);
+	*((unsigned char *)(&par->sky_rgb) + 2) = (unsigned char)ft_atoi(tmp[3]);
 	free_split(tmp);
 	return (1);
 }
@@ -142,7 +142,7 @@ int		parse_sky_rgb(t_cube *par, char *line)
 ** Parse one line of the map and malloc the path of some sprites on *par.
 ** (Key : "NO ", "SO ", "WE ", "EA ", "S ")
 */
-int		parse_path(t_cube *par, char **path, char *line)
+int		parse_path(t_pars *par, char **path, char *line)
 {
 	int i;
 	char **tmp;
@@ -160,7 +160,7 @@ int		parse_path(t_cube *par, char **path, char *line)
 		error_msg("File .cub, path : two arguments are waited\n"
 		"The key, and then the path\n", par, line);
 	}
-	*path = tmp[1]; //path is one of the ptr contained inside the struct t_cube *par
+	*path = tmp[1]; //path is one of the ptr contained inside the struct t_pars *par
 	free(tmp[0]);
 	free(tmp);
 	return (1);

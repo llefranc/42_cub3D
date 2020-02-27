@@ -6,7 +6,7 @@
 /*   By: llefranc <llefranc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/12 18:49:53 by lucaslefran       #+#    #+#             */
-/*   Updated: 2020/02/21 09:03:35 by llefranc         ###   ########.fr       */
+/*   Updated: 2020/02/27 18:27:45 by llefranc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 ** putting each value of tabs to -1, so we can check during the parsing if we
 ** already have treated the parameter or not.
 */
-void	struct_init(t_cube *par)
+void	struct_init_par(t_pars *par)
 {
 	par->fd = -1;
 	par->reso[0] = -1;
@@ -27,12 +27,8 @@ void	struct_init(t_cube *par)
 	par->path_ea = NULL;
 	par->path_we = NULL;
 	par->path_sp = NULL;
-	par->flo_rgb[0] = -1;
-	par->flo_rgb[1] = -1;
-	par->flo_rgb[2] = -1;
-	par->sky_rgb[0] = -1;
-	par->sky_rgb[1] = -1;
-	par->sky_rgb[2] = -1;
+	par->flo_rgb = -1;
+	par->sky_rgb = -1;
 	par->map = NULL;
 }
 
@@ -40,7 +36,7 @@ void	struct_init(t_cube *par)
 ** Allow to free each elements of the structure, including each line of **map
 ** and close the file descriptor.
 */
-void	struct_free(t_cube *par)
+void	struct_free(t_pars *par)
 {
 	int i;
 
@@ -64,15 +60,12 @@ void	struct_free(t_cube *par)
 ** structure filled with map parameters. Free also one char * (line), send NULL
 ** into it if there is nothing to free. Then close the file descriptor and exit.
 */
-int		error_msg(char *str, t_cube *par, char *line)
+int		error_msg(char *str, t_pars *par, char *line)
 {
     printf("Error\n%s", str);
 	if (par)
 		struct_free(par); //also close file descriptor
 	free(line);
-	// line = NULL; //a enlever
-	// struct_init(par);//a enlever
-	// system("leaks a.out");//a enlever
 	exit(EXIT_FAILURE);
 }
 

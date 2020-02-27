@@ -6,7 +6,7 @@
 /*   By: llefranc <llefranc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/17 12:41:56 by lucaslefran       #+#    #+#             */
-/*   Updated: 2020/02/21 09:06:41 by llefranc         ###   ########.fr       */
+/*   Updated: 2020/02/27 18:47:36 by llefranc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ char	*trim_char(char *str, char c)
 ** at the end. Terminate **char par->map by NULL. Return the new **char and
 ** NULL if something failed.
 */
-char	**add_map_line(t_cube *par, char *line)
+char	**add_map_line(t_pars *par, char *line)
 {
 	int i;
 	char **tmp;
@@ -82,7 +82,7 @@ char	**add_map_line(t_cube *par, char *line)
 ** of size + 1 on the **char par->map, add the new trim_line at the end and
 ** finished the **char par->map by a NULL *ptr.
 */
-int		parse_map(t_cube *par, char *line)
+int		parse_map(t_pars *par, char *line)
 {
 	int i;
 	char *trim_line;
@@ -102,7 +102,7 @@ int		parse_map(t_cube *par, char *line)
 ** Check if all the characters of one line of the map are corrects, and return
 ** the number of times player position was detected ("NSWE" characters).
 */
-int		line_check(t_cube *par, char *line_map)
+int		line_check(t_pars *par, char *line_map)
 {
 	int i;
 	int pos;
@@ -124,7 +124,7 @@ int		line_check(t_cube *par, char *line_map)
 ** Compare the actual line of the map and the previous one to see if they're
 ** surrunded by walls.
 */
-void	walls_check(t_cube *par, char *actual, char *previous)
+void	walls_check(t_pars *par, char *actual, char *previous)
 {
 	long i;
 	long j;
@@ -154,7 +154,7 @@ void	walls_check(t_cube *par, char *actual, char *previous)
 ** Check if the map is filled with authorized characters "012NSWE", if the
 ** player position is correct and if the map is surrunded by walls.
 */
-int		map_check(t_cube *par)
+int		map_check(t_pars *par)
 {
 	long i;
 	long j;

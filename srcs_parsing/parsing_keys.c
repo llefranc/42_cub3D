@@ -6,7 +6,7 @@
 /*   By: llefranc <llefranc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/18 15:56:38 by lucaslefran       #+#    #+#             */
-/*   Updated: 2020/02/21 09:23:19 by llefranc         ###   ########.fr       */
+/*   Updated: 2020/02/27 18:10:37 by llefranc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 ** Check the first characters of the line and look if it's a key or an empty
 ** line. Otherwise print error msg and exit.
 */
-int		key_type(char *line, t_cube *par)
+int		key_type(char *line, t_pars *par)
 {
 	if (line[0] == 'R' && line[1] == ' ')
 		return (RESO);
@@ -39,22 +39,22 @@ int		key_type(char *line, t_cube *par)
 	else if (line[0] == '\0') //in the case of a \n
 	{
 		if (par->reso[0] == -1 && !par->path_no && !par->path_so && !par->path_ea
-			&& !par->path_we && !par->path_sp && par->flo_rgb[0] == -1
-			&& par->sky_rgb[0] == -1 && !par->map)
+			&& !par->path_we && !par->path_sp && par->flo_rgb == -1
+			&& par->sky_rgb == -1 && !par->map)
 			error_msg("File .cub : must begin by one element\n", par, line);
 		return (0);
 	}
 	else //if the beginning of a line ins't a key or isn't empty, error
 		error_msg("File .cub, keys : wrong key, or some lines between keys aren't empty\n"
-		"Expected keys : 'R ', 'NO ', 'SO ', 'EA ', 'WE ', 'S ', 'F ', 'C ',\n"
-		"and lines of the map beginning by a '1'\n", par, line);
+		"Expected keys : 'R', 'NO', 'SO', 'EA', 'WE', 'S', 'F', 'C' followed \n"
+		"by at least one space and lines of the map beginning by a '1'\n", par, line);
 	return (-1); 
 }
 
 /*
 ** Return the number of missing keys.
 */
-int		numbers_key_missing(t_cube *par)
+int		numbers_key_missing(t_pars *par)
 {
 	int i;
 
@@ -65,8 +65,8 @@ int		numbers_key_missing(t_cube *par)
 	!par->path_ea ? i++ : 0;
 	!par->path_we ? i++ : 0;
 	!par->path_sp ? i++ : 0;
-	par->flo_rgb[0] == -1 ? i++ : 0;
-	par->sky_rgb[0] == -1 ? i++ : 0;
+	par->flo_rgb == -1 ? i++ : 0;
+	par->sky_rgb == -1 ? i++ : 0;
 	!par->map ? i++ : 0;
 	return (i);
 }
@@ -74,7 +74,7 @@ int		numbers_key_missing(t_cube *par)
 /*
 ** Call the function error_msg if one or several keys are missing.
 */
-void	key_check(t_cube *par)
+void	key_check(t_pars *par)
 {
 	if (numbers_key_missing(par) > 1)
 		error_msg("File .cub, keys : several keys are missing. Expected keys :\n"
@@ -92,9 +92,9 @@ void	key_check(t_cube *par)
 		error_msg("File .cub, path : 'WE ' key is missing\n", par, NULL);
 	else if (!par->path_sp)
 		error_msg("File .cub, path : 'S ' key is missing\n", par, NULL);
-	else if (par->flo_rgb[0] == -1)
+	else if (par->flo_rgb == -1)
 		error_msg("File .cub, colors : 'F ' key is missing\n", par, NULL);
-	else if (par->sky_rgb[0] == -1)
+	else if (par->sky_rgb == -1)
 		error_msg("File .cub, colors : 'C ' key is missing\n", par, NULL);
 	else if (!par->map)
 		error_msg("File .cub, map : Map is missing\n", par, NULL);

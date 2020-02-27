@@ -6,7 +6,7 @@
 /*   By: llefranc <llefranc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/12 20:57:54 by lucaslefran       #+#    #+#             */
-/*   Updated: 2020/02/21 11:12:26 by llefranc         ###   ########.fr       */
+/*   Updated: 2020/02/27 18:48:38 by llefranc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 /*
 ** Check if there is no spaces at the end of lines.
 */
-void	check_spaces_end_of_line(t_cube *par, char *line, int key)
+void	check_spaces_end_of_line(t_pars *par, char *line, int key)
 {
 	int i;
 
@@ -49,7 +49,7 @@ void	check_spaces_end_of_line(t_cube *par, char *line, int key)
 ** Call the right fonction to do the parsing of the elements depending on the
 ** value of the key.
 */
-int		parse_func(t_cube *par, char *line, int key)
+int		parse_func(t_pars *par, char *line, int key)
 {
 	int		ret;
 
@@ -78,7 +78,7 @@ int		parse_func(t_cube *par, char *line, int key)
 ** Parse the map file and fill the *par structure with : 
 ** resolution, NO/SO/EA/WE/S paths, floor and sky RGB colors, the map.
 */
-int		parsing(t_cube *par)
+int		parsing(t_pars *par)
 {
 	char	*line;
 	int		ret;
