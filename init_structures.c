@@ -6,7 +6,7 @@
 /*   By: llefranc <llefranc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/25 14:34:54 by llefranc          #+#    #+#             */
-/*   Updated: 2020/03/03 18:59:00 by llefranc         ###   ########.fr       */
+/*   Updated: 2020/03/04 17:22:09 by llefranc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,18 @@ void	transf_map_atoi(t_pars *par, t_rcast *cam)
 	}
 }
 
+void	struct_init_cam_bool(t_rcast *cam)
+{
+	cam->m_up = 0;		//booleans for movements
+	cam->m_down = 0;
+	cam->m_left = 0;
+	cam->m_right = 0;
+	cam->r_left = 0;	//booleans for rotations
+	cam->r_right = 0;
+	cam->mouse_bool = 0; //first use of the mouse
+	cam->mouse_x = 0;	 //x position of the mouse
+}
+
 /*
 ** Fill structure cam with the following parameters :
 ** Number of lines / rows in the map, player position (x, y), angle of view for
@@ -90,6 +102,7 @@ void	struct_init_camera(t_pars *par, t_rcast *cam)
 
 	row = 0;
 	line = 0;
+	struct_init_cam_bool(cam);
 	while (par->map[line]) //counting number of lines
 		line++;
 	cam->nb_lines = line;

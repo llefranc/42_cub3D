@@ -6,7 +6,7 @@
 /*   By: llefranc <llefranc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/21 13:40:24 by llefranc          #+#    #+#             */
-/*   Updated: 2020/03/04 12:04:54 by llefranc         ###   ########.fr       */
+/*   Updated: 2020/03/04 16:04:46 by llefranc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,5 +102,5 @@ int		nb_pixel_wall(t_rcast *cam, double angle)
 		h_wall = height_wall(cam, x_ray);	//Compare something with NAN will always be false.
 	else									//y_ray != y_ray can be true only if y_ray is NAN.
 		h_wall = height_wall(cam, y_ray);	//If x_ray is NAN, x_ray <= y_ray will be false
-	return ((int)h_wall);
+	return ((unsigned int)h_wall);
 }

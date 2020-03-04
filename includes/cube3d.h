@@ -6,7 +6,7 @@
 /*   By: llefranc <llefranc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/12 16:17:24 by lucaslefran       #+#    #+#             */
-/*   Updated: 2020/03/04 12:22:35 by llefranc         ###   ########.fr       */
+/*   Updated: 2020/03/04 17:45:36 by llefranc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@
 # define WALL_SIZE 64	//height of wall
 # define MOVE_SIZE 0.1
 # define ROTA_SIZE 5.0
+# define MOUSE_ROTA_SIZE 2.5
 # define FOV 60			//field of view
 
 //angle in degrees
@@ -87,6 +88,14 @@ typedef struct s_rcast
 	double	dist_screen;
 	int		nb_rows;		//number of rows in the map, for avoiding segfault
 	int		nb_lines;
+	int		m_up;			//booleans for movement (be able to press multiple keys)
+	int		m_down;
+	int		m_left;
+	int		m_right;
+	int		r_left;
+	int		r_right;
+	int		mouse_bool;
+	int		mouse_x;
 	int		**map;
 	t_pars	*par;			//allow to carry only t_rcast struct
 }				t_rcast;
@@ -175,5 +184,17 @@ double	y_ray_len(t_rcast *cam, double angle);
 
 void	struct_init_camera(t_pars *par, t_rcast *cam);
 void	struct_init_mlx(t_mlx *mlx, t_img *img, t_addr *addr, t_info *info);
+
+//movement.c
+void	move_up_in_map(t_mlx *mlx);
+void	move_down_in_map(t_mlx *mlx);
+void	move_left_in_map(t_mlx *mlx);
+void	move_right_in_map(t_mlx *mlx);
+
+//events.c
+int		motionnotify(int x, int y, t_mlx *mlx);
+int		keypress(int keycode, t_mlx *mlx);
+int		keyrelease(int keycode, t_mlx *mlx);
+int		destroynotify(t_pars *par);
 
 #endif
