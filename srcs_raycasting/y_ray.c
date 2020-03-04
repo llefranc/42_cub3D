@@ -6,7 +6,7 @@
 /*   By: llefranc <llefranc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/27 09:59:56 by llefranc          #+#    #+#             */
-/*   Updated: 2020/02/27 17:00:25 by llefranc         ###   ########.fr       */
+/*   Updated: 2020/03/04 12:07:38 by llefranc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,6 +98,24 @@ double	y_ray_ya_value(double angle, double x1, double xa)
 }
 
 /*
+** Return 1 if it finds a wall for a certain position in the map, 0 otherwise.
+** Return -1 if it's out of the map. Corrects the position in the map because
+** we're evolving in a tab[y][x]:
+** for angle > 90 && < 270 : tab[y][x - 1] (checking if there's a wall at our left).
+*/
+int		y_ray_find_wall(t_rcast *cam, double angle, double x_len, double y_len)
+{
+	if (angle > 90.0 && angle < 270.0)
+		x_len = (double)((int)x_len) - 1.0; //at the intersection with y axe, checking if wall at our left
+	if ((int)(cam->y + y_len) < 0 || (int)(cam->y + y_len) >= cam->nb_lines //if we're out of the map
+		|| (int)(cam->x + x_len) < 0 || (int)(cam->x + x_len) >= cam->nb_rows)
+		return (-1);
+	if (cam->map[(int)(cam->y + y_len)][(int)(cam->x + x_len)] != 1) //if not a wall
+		return (0);
+	return (1); //only if we find a wall
+}
+
+/*
 ** Checking y values on 'y axe' each time the ray cross 'x axe' until it meets a
 ** a wall or exit the map. Return the len of the ray on 'y axe', depending on
 ** the angle. If angle == 90 or 270 degrees, nan will be returned (ray will 
@@ -119,7 +137,7 @@ double	y_ray_len(t_rcast *cam, double angle)
 	xa = y_ray_xa_value(angle);
 	y1 = y_ray_y1_value(angle, x1); //cam->y + y1 => border of the actual case (y axe)
 	ya = y_ray_ya_value(angle, x1, xa) - y1;
-	while (!find_wall(cam, angle, x1, y1)) //until we find a wall or exit map
+	while (!y_ray_find_wall(cam, angle, x1, y1)) //until we find a wall or exit map
 	{
 		x1 += xa; //moving of (+-)1 unity on 'x axe'
 		y1 += ya; //next cross with 'x axe' 		

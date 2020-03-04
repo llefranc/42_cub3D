@@ -6,7 +6,7 @@
 /*   By: llefranc <llefranc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/01/10 09:19:40 by llepage           #+#    #+#             */
-/*   Updated: 2020/02/21 13:52:58 by llefranc         ###   ########.fr       */
+/*   Updated: 2020/03/03 19:30:27 by llefranc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -191,8 +191,8 @@
 
 # define UP_KEY 13
 # define DOWN_KEY 1
-# define RIGHT_KEY 2
-# define LEFT_KEY 0
+# define RIGHT_KEY 124
+# define LEFT_KEY 123
 
 /*
 ** Special keys

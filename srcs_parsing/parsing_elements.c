@@ -6,7 +6,7 @@
 /*   By: llefranc <llefranc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/13 18:04:46 by lucaslefran       #+#    #+#             */
-/*   Updated: 2020/02/27 18:54:22 by llefranc         ###   ########.fr       */
+/*   Updated: 2020/02/28 11:15:24 by llefranc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,9 +97,10 @@ int		parse_flo_rgb(t_pars *par, char *line)
 		error_msg("File .cub, colors : 4 arguments are waited for the floor\n"
 		"The key (F), R, G and B values (those last three between 000 and 255)\n", par, line);
 	}
-	*((unsigned char *)(&par->flo_rgb)) = (unsigned char)ft_atoi(tmp[1]);
+	*((unsigned char *)(&par->flo_rgb)) = (unsigned char)ft_atoi(tmp[1]); //stocking each RGB color in an int, byte per byte
 	*((unsigned char *)(&par->flo_rgb) + 1) = (unsigned char)ft_atoi(tmp[2]);
 	*((unsigned char *)(&par->flo_rgb) + 2) = (unsigned char)ft_atoi(tmp[3]);
+	*((unsigned char *)(&par->flo_rgb) + 3) = (unsigned char)0;
 	free_split(tmp);
 	return (1);
 }
@@ -131,9 +132,10 @@ int		parse_sky_rgb(t_pars *par, char *line)
 		error_msg("File .cub, colors : 4 arguments are waited for the sky\n"
 		"The key (C), R, G and B values (those last three between 000 and 255)\n", par, line);
 	}
-	*((unsigned char *)(&par->sky_rgb)) = (unsigned char)ft_atoi(tmp[1]);
+	*((unsigned char *)(&par->sky_rgb)) = (unsigned char)ft_atoi(tmp[1]); //stocking each RGB color in an int, byte per byte
 	*((unsigned char *)(&par->sky_rgb) + 1) = (unsigned char)ft_atoi(tmp[2]);
 	*((unsigned char *)(&par->sky_rgb) + 2) = (unsigned char)ft_atoi(tmp[3]);
+	*((unsigned char *)(&par->sky_rgb) + 3) = (unsigned char)0;
 	free_split(tmp);
 	return (1);
 }

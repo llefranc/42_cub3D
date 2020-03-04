@@ -6,23 +6,45 @@
 /*   By: llefranc <llefranc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/25 14:34:54 by llefranc          #+#    #+#             */
-/*   Updated: 2020/02/27 18:47:35 by llefranc         ###   ########.fr       */
+/*   Updated: 2020/03/03 18:59:00 by llefranc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "includes/cube3d.h"
 
 /*
-** Init a mlx struct, all *ptr will value NULL and all int will value -1.
+** Getting addresses and informations of each images loaded.
 */
-void	struct_init_mlx(t_mlx *mlx)
+void	struct_init_addr_info(t_mlx *mlx, t_addr *addr, t_info *info)
 {
-	mlx->ptr = NULL;
-	mlx->win = NULL;
-	mlx->img_screen = NULL;
-	mlx->img_addr = NULL;
-	mlx->size_line = -1;
-	mlx->endian = -1;
+	addr->screen = (int *)mlx_get_data_addr(mlx->img->screen, &(info->screen[BITS_PER_PIX]), 
+			&(info->screen[SIZE_LINE]), &(info->screen[ENDIAN]));
+	info->screen[SIZE_LINE] /= (info->screen[BITS_PER_PIX] / 8); //to fill the colors with 1 int value and not 3 bytes RGB
+}
+
+/*
+** Loading each images.
+*/
+void	struct_init_img(t_mlx *mlx)
+{
+	mlx->img->screen = mlx_new_image(mlx->ptr, (int)mlx->par->reso[0], (int)mlx->par->reso[1]);
+}
+
+/*
+** Init a mlx struct. Create a mlx->ptr with mlx_init() and a new window for
+** mlx->win, links addr, img, info structures to mlx. Loads the differents
+** images on mlx->img, and filled the addresses and informations of those
+** images in respectively mlx->addr and mlx->info.
+*/
+void	struct_init_mlx(t_mlx *mlx, t_img *img, t_addr *addr, t_info *info)
+{
+	mlx->ptr = mlx_init();
+	mlx->win = mlx_new_window(mlx->ptr, (int)mlx->par->reso[0], (int)mlx->par->reso[1], "cub3d");
+	mlx->img = img;
+	mlx->addr = addr;
+	mlx->info = info;
+	struct_init_img(mlx);
+	struct_init_addr_info(mlx, addr, info);
 }
 
 /*
@@ -61,7 +83,7 @@ void	transf_map_atoi(t_pars *par, t_rcast *cam)
 ** Number of lines / rows in the map, player position (x, y), angle of view for
 ** the camera. Also transform the map from **char (in par) to a **int (in cam).
 */
-int		**struct_init_camera(t_pars *par, t_rcast *cam)
+void	struct_init_camera(t_pars *par, t_rcast *cam)
 {
 	int row;
 	int line;
@@ -83,6 +105,8 @@ int		**struct_init_camera(t_pars *par, t_rcast *cam)
 			error_msg("Malloc failed\n", par, NULL);
 	}
 	transf_map_atoi(par, cam);
-	cam->par = par;
-	return (cam->map);
+	cam->dist_screen = (par->reso[0] / 2.0) / tan(((double)FOV / 2.0) * (TO_RAD)); //pythagore, 
+		//cam->dist_screen : dist between cam (who's launching rays) and screen of projection
+	cam->freq_ray = (double)FOV / par->reso[0];
+	cam->par = par;	//allow to only carry t_rcast struct
 }

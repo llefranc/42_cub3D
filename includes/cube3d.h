@@ -6,7 +6,7 @@
 /*   By: llefranc <llefranc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/12 16:17:24 by lucaslefran       #+#    #+#             */
-/*   Updated: 2020/02/27 18:11:13 by llefranc         ###   ########.fr       */
+/*   Updated: 2020/03/04 12:22:35 by llefranc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,9 +42,10 @@
 # define MAP_LINE 9
 
 //raycasting constants
-# define WALL_SIZE 64 //height of wall
-# define SIZE_MOVE 0.01
-# define FOV 60 //field of view
+# define WALL_SIZE 64	//height of wall
+# define MOVE_SIZE 0.1
+# define ROTA_SIZE 5.0
+# define FOV 60			//field of view
 
 //angle in degrees
 # define V_EAST 0
@@ -53,48 +54,74 @@
 # define V_SOUTH 270
 
 //usefull to convert degrees <=> radians
-# define TO_DEG 180 / M_PI
-# define TO_RAD M_PI / 180
+# define TO_DEG 180.0 / M_PI
+# define TO_RAD M_PI / 180.0
 
+//usefull for t_info structure, allow to move in the tab of 3 ints
+// and selects the parameter expected
+# define BITS_PER_PIX 0
+# define SIZE_LINE 1
+# define ENDIAN 2
+
+//contains all the information from the config file
 typedef struct	s_pars
 {
-	int			fd;
-	double		reso[2];
-	char		*path_no;
+	int			fd;			//for be allowed to closed flux when error occurs
+	double		reso[2];	//reso x / reso y
+	char		*path_no;	//path for finding north textures
 	char		*path_so;
 	char		*path_ea;
 	char		*path_we;
-	char		*path_sp;
-	int			flo_rgb;//transformer en int dans le parsing
-	int			sky_rgb;//transformer en int dans le parsing
+	char		*path_sp;	//path for finding sprites
+	int			flo_rgb;	//floor color contained in an int
+	int			sky_rgb;	//sky color contained in a int
 	char		**map;
-}				t_pars; //changer en t_pars
+}				t_pars;
 
 typedef struct s_rcast
 {
-	int		**map;
-	double	angle;
-	double	dist_screen;
-	double	x;
+	double	angle;			//direction where player looks
+	double	freq_ray;		//distance between to rays in degrees
+	double	x;				//player position
 	double	y;
-	int		nb_rows;
+	double	dist_screen;
+	int		nb_rows;		//number of rows in the map, for avoiding segfault
 	int		nb_lines;
-	t_pars	*par;
+	int		**map;
+	t_pars	*par;			//allow to carry only t_rcast struct
 }				t_rcast;
+
+typedef struct s_img
+{
+	void	*screen;
+}				t_img;
+
+typedef struct s_addr
+{
+	int		*screen;
+}				t_addr;
+
+typedef struct s_info
+{
+	int		screen[3];
+}				t_info;
 
 typedef struct s_mlx
 {
 	void	*ptr;
 	void	*win;
-	void	*img_screen;
-	int		*img_addr;//implmentation endian ?
-	int		size_line;
-	int		endian; //rajouter l'inmplemntation endian
+	t_img	*img;
+	t_addr	*addr;//implmentation endian ?
+	t_info	*info;
+	t_pars	*par;			//allow to carry only t_mlx struct
+	t_rcast	*cam;
 }				t_mlx;
+
+
 
 void 	print_struct(t_pars *par); //a supprimer
 void	print_map(t_rcast cam, int player); //a enlever
-int		raycasting(t_pars *par); //a modifier
+int		drawing(t_pars *par); //a modifier
 
 /*
 ** ------ srcs_parsing -------
@@ -130,10 +157,11 @@ int		map_check(t_pars *par);
 */
 
 //raycasting.c
+double	positive_angle(double angle);
 double	angle_tri_rect(double angle);
 int		find_wall(t_rcast *cam, double angle, double x_len, double y_len);
 double	ray_len(t_rcast *cam, double x_len, double y_len);
-int		nb_pixel_wall(t_pars *par, t_rcast *cam, double angle);
+int		nb_pixel_wall(t_rcast *cam, double angle);
 
 //x_ray.c
 double	x_ray_len(t_rcast *cam, double angle);
@@ -145,8 +173,7 @@ double	y_ray_len(t_rcast *cam, double angle);
 ** ----- srcs_drawing -----
 */
 
-int		**struct_init_camera(t_pars *par, t_rcast *cam);
-void	struct_init_mlx(t_mlx *mlx);
-
+void	struct_init_camera(t_pars *par, t_rcast *cam);
+void	struct_init_mlx(t_mlx *mlx, t_img *img, t_addr *addr, t_info *info);
 
 #endif

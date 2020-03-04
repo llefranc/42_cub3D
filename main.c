@@ -6,7 +6,7 @@
 /*   By: llefranc <llefranc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/12 16:16:20 by lucaslefran       #+#    #+#             */
-/*   Updated: 2020/02/27 18:51:42 by llefranc         ###   ########.fr       */
+/*   Updated: 2020/03/03 18:43:26 by llefranc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,8 +23,10 @@ void print_struct(t_pars *par)
 	printf("path we = |%s|\n", par->path_we);
 	printf("path ea = |%s|\n", par->path_ea);
 	printf("path sp = |%s|\n", par->path_sp);
-	printf("sky_rgb = [%c][%c][%c]\n", *(unsigned char *)(&par->sky_rgb), *((unsigned char *)(&par->sky_rgb) + 1), *((unsigned char *)(&par->sky_rgb) + 2));
-	printf("flor_rgb = [%c][%c][%c]\n", *(unsigned char *)(&par->flo_rgb), *((unsigned char *)(&par->flo_rgb) + 1), *((unsigned char *)(&par->flo_rgb) + 2));
+	printf("sky_rgb = color = [%d] RGB[%d][%d][%d]\n", par->sky_rgb,*(unsigned char *)(&par->sky_rgb), 
+			*((unsigned char *)(&par->sky_rgb) + 1), *((unsigned char *)(&par->sky_rgb) + 2));
+	printf("flor_rgb = color = [%d] RGB[%d][%d][%d]\n", par->flo_rgb,*(unsigned char *)(&par->flo_rgb),
+			*((unsigned char *)(&par->flo_rgb) + 1), *((unsigned char *)(&par->flo_rgb) + 2));
 	if (!par->map)
 		printf("map inexistante\n");
 	else
@@ -68,9 +70,9 @@ int main(int ac, char **av)
 	if ((par.fd = open(av[1], O_RDONLY)) == -1)
 		error_msg("Error\nArguments : incorrect file\n", &par, NULL);
 	parsing(&par);
-	print_struct(&par);
-	raycasting(&par);
+	// print_struct(&par);
+	drawing(&par);
 	struct_free(&par);
-    close(par.fd);
+    close(par.fd); //peut etre le mettre avant mais tchecker avec struct free
     return (0);
 }
