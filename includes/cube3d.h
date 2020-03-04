@@ -6,7 +6,7 @@
 /*   By: llefranc <llefranc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/12 16:17:24 by lucaslefran       #+#    #+#             */
-/*   Updated: 2020/03/04 17:45:36 by llefranc         ###   ########.fr       */
+/*   Updated: 2020/03/04 19:23:32 by llefranc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,8 +43,8 @@
 
 //raycasting constants
 # define WALL_SIZE 64	//height of wall
-# define MOVE_SIZE 0.1
-# define ROTA_SIZE 5.0
+# define MOVE_SIZE 0.065
+# define ROTA_SIZE 2.5
 # define MOUSE_ROTA_SIZE 2.5
 # define FOV 60			//field of view
 
@@ -63,6 +63,8 @@
 # define BITS_PER_PIX 0
 # define SIZE_LINE 1
 # define ENDIAN 2
+# define WIDTH 3
+# define HEIGHT 4
 
 //contains all the information from the config file
 typedef struct	s_pars
@@ -92,9 +94,9 @@ typedef struct s_rcast
 	int		m_down;
 	int		m_left;
 	int		m_right;
-	int		r_left;
+	int		r_left;			//booleans for rotation with keyboard
 	int		r_right;
-	int		mouse_bool;
+	int		mouse_bool;		//for rotation with mouse
 	int		mouse_x;
 	int		**map;
 	t_pars	*par;			//allow to carry only t_rcast struct
@@ -103,16 +105,28 @@ typedef struct s_rcast
 typedef struct s_img
 {
 	void	*screen;
+	void	*t_north;
+	void	*t_south;
+	void	*t_east;
+	void	*t_west;
 }				t_img;
 
 typedef struct s_addr
 {
 	int		*screen;
+	int		*t_north;
+	int		*t_south;
+	int		*t_east;
+	int		*t_west;
 }				t_addr;
 
 typedef struct s_info
 {
-	int		screen[3];
+	int		screen[5];
+	int		t_north[5];
+	int		t_south[5];
+	int		t_east[5];
+	int		t_west[5];
 }				t_info;
 
 typedef struct s_mlx
@@ -184,6 +198,7 @@ double	y_ray_len(t_rcast *cam, double angle);
 
 void	struct_init_camera(t_pars *par, t_rcast *cam);
 void	struct_init_mlx(t_mlx *mlx, t_img *img, t_addr *addr, t_info *info);
+void	raycasting(t_mlx *mlx);
 
 //movement.c
 void	move_up_in_map(t_mlx *mlx);
@@ -192,9 +207,10 @@ void	move_left_in_map(t_mlx *mlx);
 void	move_right_in_map(t_mlx *mlx);
 
 //events.c
-int		motionnotify(int x, int y, t_mlx *mlx);
-int		keypress(int keycode, t_mlx *mlx);
-int		keyrelease(int keycode, t_mlx *mlx);
-int		destroynotify(t_pars *par);
+int		motion_notify(int x, int y, t_mlx *mlx);
+int		key_press(int keycode, t_mlx *mlx);
+int		key_release(int keycode, t_mlx *mlx);
+int		destroy_notify(t_pars *par);
+int		no_event(t_mlx *mlx);
 
 #endif

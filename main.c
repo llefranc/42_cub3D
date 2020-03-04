@@ -6,7 +6,7 @@
 /*   By: llefranc <llefranc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/12 16:16:20 by lucaslefran       #+#    #+#             */
-/*   Updated: 2020/03/03 18:43:26 by llefranc         ###   ########.fr       */
+/*   Updated: 2020/03/04 17:58:34 by llefranc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,5 @@ int main(int ac, char **av)
 	// print_struct(&par);
 	drawing(&par);
 	struct_free(&par);
-    close(par.fd); //peut etre le mettre avant mais tchecker avec struct free
     return (0);
 }

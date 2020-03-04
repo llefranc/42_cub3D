@@ -6,7 +6,7 @@
 /*   By: llefranc <llefranc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/25 11:07:23 by llefranc          #+#    #+#             */
-/*   Updated: 2020/03/04 17:44:59 by llefranc         ###   ########.fr       */
+/*   Updated: 2020/03/04 19:22:41 by llefranc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,13 +16,12 @@
 //faire du raycasting pour chaque colonne de pixel
 //mettre la gestion des events (deplacement dnas la map)
 //rajouter les textures
-//penser a fermer les flux etc
 
 //EN PLUS
 //rajouter 2 touches en meme temps
-//rajouter exit
-//rajouter mouvement souris pour rotation
 //refaire le parsing de la map
+//rajouter nom du fichier
+//revoir un peu les noms des parametres dans init struct
 
 //verifier pourquoi mettre wall_size car il s'annule dans l'equation. pourtant si je change la hauteur du mur,
 //cela ne devrait pas rendre pareil sur l'ecran de projection en theorie ? bien garder en tete que la camera est
@@ -31,6 +30,11 @@
 
 #include "includes/cube3d.h"
 
+/*
+** Launches a ray for each row of pixel and calculates the height of the wall
+** in pixel. Then color the row with the sky_color, wall color and floor color
+** by moving ih the memory of the image with a *int ptr.
+*/
 void	raycasting(t_mlx *mlx)
 {
 	int		i;
@@ -80,10 +84,11 @@ int		drawing(t_pars *par) //l'appeler drawing ?
 	raycasting(&mlx); //allow to print first image
 	mlx_put_image_to_window(mlx.ptr, mlx.win, mlx.img->screen, 0, 0); //ici ?
 
-	mlx_hook(mlx.win, MOTIONNOTIFY, 0, &motionnotify, &mlx);
-	mlx_hook(mlx.win, KEYPRESS, 0, &keypress, &mlx);
-	mlx_hook(mlx.win, KEYRELEASE, 0, &keyrelease, &mlx);
-	mlx_hook(mlx.win, DESTROYNOTIFY, 0, &destroynotify, par);
+	mlx_hook(mlx.win, MOTIONNOTIFY, 0, &motion_notify, &mlx);
+	mlx_hook(mlx.win, KEYPRESS, 0, &key_press, &mlx);
+	mlx_hook(mlx.win, KEYRELEASE, 0, &key_release, &mlx);
+	mlx_hook(mlx.win, DESTROYNOTIFY, 0, &destroy_notify, par);
+	mlx_loop_hook(mlx.ptr, &no_event, &mlx);
 	mlx_loop(mlx.ptr);
 	return (1);
 }
