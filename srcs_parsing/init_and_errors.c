@@ -6,7 +6,7 @@
 /*   By: llefranc <llefranc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/12 18:49:53 by lucaslefran       #+#    #+#             */
-/*   Updated: 2020/02/27 18:27:45 by llefranc         ###   ########.fr       */
+/*   Updated: 2020/03/05 14:08:20 by llefranc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,43 @@ int		error_msg(char *str, t_pars *par, char *line)
 	free(line);
 	exit(EXIT_FAILURE);
 }
+
+/*
+** Print the error msg (= str), and if par exist free each elements of the 
+** structure filled with map parameters. Print also the errored line of the
+** map. Then close the file descriptor and exit.
+*/
+int		error_msg_map(char *str, t_pars *par, int *line)
+{
+	int		i;
+
+	i = -1;
+    ft_printf("Error\n%s", str);
+	if (line)
+	{
+		ft_printf("Errored line : |");
+		while (line[++i] != -2)
+		{
+			if (line[i] == -1)
+				ft_printf(" ");
+			else if (line[i] == NORTH)
+				ft_printf("N");
+			else if (line[i] == SOUTH)
+				ft_printf("S");
+			else if (line[i] == EAST)
+				ft_printf("E");
+			else if (line[i] == WEST)
+				ft_printf("W");
+			else
+				ft_printf("%d", line[i]);
+		}
+		ft_printf("|\n");
+	}
+	if (par)
+		struct_free(par); //also close file descriptor
+	exit(EXIT_FAILURE);
+}
+
 
 /*
 ** Check if there is only one argument (the map) and if the extension of the

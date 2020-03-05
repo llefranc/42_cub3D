@@ -6,7 +6,7 @@
 /*   By: llefranc <llefranc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/25 11:07:23 by llefranc          #+#    #+#             */
-/*   Updated: 2020/03/04 19:22:41 by llefranc         ###   ########.fr       */
+/*   Updated: 2020/03/05 09:22:26 by llefranc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@
 //rajouter les textures
 
 //EN PLUS
-//rajouter 2 touches en meme temps
 //refaire le parsing de la map
 //rajouter nom du fichier
 //revoir un peu les noms des parametres dans init struct

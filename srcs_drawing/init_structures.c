@@ -6,7 +6,7 @@
 /*   By: llefranc <llefranc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/25 14:34:54 by llefranc          #+#    #+#             */
-/*   Updated: 2020/03/04 19:22:09 by llefranc         ###   ########.fr       */
+/*   Updated: 2020/03/04 19:24:54 by llefranc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,18 +20,18 @@ void	struct_init_addr_info(t_mlx *mlx, t_addr *addr, t_info *info)
 	addr->screen = (int *)mlx_get_data_addr(mlx->img->screen, &(info->screen[BITS_PER_PIX]), 
 			&(info->screen[SIZE_LINE]), &(info->screen[ENDIAN]));
 	info->screen[SIZE_LINE] /= (info->screen[BITS_PER_PIX] / 8); //to fill the colors with 1 int value and not 3 bytes RGB
-	addr->t_north = (int *)mlx_get_data_addr(mlx->img->t_north, &(info->t_north[BITS_PER_PIX]), 
-			&(info->t_north[SIZE_LINE]), &(info->t_north[ENDIAN]));
-	info->t_north[SIZE_LINE] /= (info->t_north[BITS_PER_PIX] / 8);
-	addr->t_south = (int *)mlx_get_data_addr(mlx->img->t_south, &(info->t_south[BITS_PER_PIX]), 
-			&(info->t_south[SIZE_LINE]), &(info->t_south[ENDIAN]));
-	info->t_south[SIZE_LINE] /= (info->t_south[BITS_PER_PIX] / 8);
-	addr->t_east = (int *)mlx_get_data_addr(mlx->img->t_east, &(info->t_east[BITS_PER_PIX]), 
-			&(info->t_east[SIZE_LINE]), &(info->t_east[ENDIAN]));
-	info->t_east[SIZE_LINE] /= (info->t_east[BITS_PER_PIX] / 8);
-	addr->t_west = (int *)mlx_get_data_addr(mlx->img->t_west, &(info->t_west[BITS_PER_PIX]), 
-			&(info->t_west[SIZE_LINE]), &(info->t_west[ENDIAN]));
-	info->t_west[SIZE_LINE] /= (info->t_west[BITS_PER_PIX] / 8);
+	// addr->t_north = (int *)mlx_get_data_addr(mlx->img->t_north, &(info->t_north[BITS_PER_PIX]), 
+	// 		&(info->t_north[SIZE_LINE]), &(info->t_north[ENDIAN]));
+	// info->t_north[SIZE_LINE] /= (info->t_north[BITS_PER_PIX] / 8);
+	// addr->t_south = (int *)mlx_get_data_addr(mlx->img->t_south, &(info->t_south[BITS_PER_PIX]), 
+	// 		&(info->t_south[SIZE_LINE]), &(info->t_south[ENDIAN]));
+	// info->t_south[SIZE_LINE] /= (info->t_south[BITS_PER_PIX] / 8);
+	// addr->t_east = (int *)mlx_get_data_addr(mlx->img->t_east, &(info->t_east[BITS_PER_PIX]), 
+	// 		&(info->t_east[SIZE_LINE]), &(info->t_east[ENDIAN]));
+	// info->t_east[SIZE_LINE] /= (info->t_east[BITS_PER_PIX] / 8);
+	// addr->t_west = (int *)mlx_get_data_addr(mlx->img->t_west, &(info->t_west[BITS_PER_PIX]), 
+	// 		&(info->t_west[SIZE_LINE]), &(info->t_west[ENDIAN]));
+	// info->t_west[SIZE_LINE] /= (info->t_west[BITS_PER_PIX] / 8);
 }
 
 /*
@@ -40,14 +40,15 @@ void	struct_init_addr_info(t_mlx *mlx, t_addr *addr, t_info *info)
 void	struct_init_img(t_mlx *mlx, t_info *info)
 {
 	mlx->img->screen = mlx_new_image(mlx->ptr, (int)mlx->par->reso[0], (int)mlx->par->reso[1]);
-	if (!(mlx->img->t_north = mlx_xpm_file_to_image(mlx->ptr, mlx->par->path_no, &(info->t_north[WIDTH]), &(info->t_north[HEIGHT]))))
-		error_msg("Textures : erreur chargement texture north\n", mlx->par, NULL);
-	if (!(mlx->img->t_south = mlx_xpm_file_to_image(mlx->ptr, mlx->par->path_so, &(info->t_south[WIDTH]), &(info->t_south[HEIGHT]))))
-		error_msg("Textures : erreur chargement texture south\n", mlx->par, NULL);
-	if (!(mlx->img->t_east = mlx_xpm_file_to_image(mlx->ptr, mlx->par->path_ea, &(info->t_east[WIDTH]), &(info->t_east[HEIGHT]))))
-		error_msg("Textures : erreur chargement texture east\n", mlx->par, NULL);
-	if (!(mlx->img->t_west = mlx_xpm_file_to_image(mlx->ptr, mlx->par->path_we, &(info->t_west[WIDTH]), &(info->t_west[HEIGHT]))))
-		error_msg("Textures : erreur chargement texture west\n", mlx->par, NULL);
+	(void)info;
+	// if (!(mlx->img->t_north = mlx_xpm_file_to_image(mlx->ptr, mlx->par->path_no, &(info->t_north[WIDTH]), &(info->t_north[HEIGHT]))))
+	// 	error_msg("Textures : erreur chargement texture north\n", mlx->par, NULL);
+	// if (!(mlx->img->t_south = mlx_xpm_file_to_image(mlx->ptr, mlx->par->path_so, &(info->t_south[WIDTH]), &(info->t_south[HEIGHT]))))
+	// 	error_msg("Textures : erreur chargement texture south\n", mlx->par, NULL);
+	// if (!(mlx->img->t_east = mlx_xpm_file_to_image(mlx->ptr, mlx->par->path_ea, &(info->t_east[WIDTH]), &(info->t_east[HEIGHT]))))
+	// 	error_msg("Textures : erreur chargement texture east\n", mlx->par, NULL);
+	// if (!(mlx->img->t_west = mlx_xpm_file_to_image(mlx->ptr, mlx->par->path_we, &(info->t_west[WIDTH]), &(info->t_west[HEIGHT]))))
+	// 	error_msg("Textures : erreur chargement texture west\n", mlx->par, NULL);
 }
 
 /*

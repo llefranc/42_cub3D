@@ -6,7 +6,7 @@
 /*   By: llefranc <llefranc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/04 17:44:38 by llefranc          #+#    #+#             */
-/*   Updated: 2020/03/04 19:05:15 by llefranc         ###   ########.fr       */
+/*   Updated: 2020/03/05 09:51:01 by llefranc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,9 +26,9 @@ int		motion_notify(int x, int y, t_mlx *mlx)
 	if (mlx->cam->mouse_bool) 
 	{
 		if (x < mlx->cam->mouse_x) //allow to know if the mouse is moving left or right
-			mlx->cam->angle = positive_angle(mlx->cam->angle + MOUSE_ROTA_SIZE);
+			mlx->cam->angle = positive_angle(mlx->cam->angle + M_ROTA_SIZE);
 		else if (x > mlx->cam->mouse_x)
-			mlx->cam->angle = positive_angle(mlx->cam->angle - MOUSE_ROTA_SIZE);
+			mlx->cam->angle = positive_angle(mlx->cam->angle - M_ROTA_SIZE);
 		mlx->cam->mouse_x = x;
 	}
 	return (1);

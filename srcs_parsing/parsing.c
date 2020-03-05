@@ -6,7 +6,7 @@
 /*   By: llefranc <llefranc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/12 20:57:54 by lucaslefran       #+#    #+#             */
-/*   Updated: 2020/02/27 18:48:38 by llefranc         ###   ########.fr       */
+/*   Updated: 2020/03/05 17:21:59 by llefranc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,8 +40,6 @@ void	check_spaces_end_of_line(t_pars *par, char *line, int key)
 						" at the end of 'F' line are not allowed\n", par, line) : 0;
 		key == SKY_RGB ? error_msg("File .cub, colors : Spaces"
 						" at the end of 'C' line are not allowed\n", par, line) : 0;
-		key == MAP_LINE ? error_msg("File .cub, map : Spaces"
-						" at the end of map lines are not allowed\n", par, line) : 0;
 	}
 }
 
@@ -93,22 +91,21 @@ int		parsing(t_pars *par)
 		check_spaces_end_of_line(par, line, key); //print error_msg if spaces at the end of lines
 		if (parse_func(par, line, key) == -1) //call the right parse_function
 			error_msg("Malloc failed\n", par, line);
-		if (key == MAP_LINE) //if we met the first line
-			parse_map(par, line); //we trim the spaces and add new trim_line to par->map
+		if (key == MAP_LINE) //if we meet the first line
+			parse_map(par, line); //converts to int the line and add new int_line to par->map
 		free(line);
 	}
 	while (ret > 0 && key == MAP_LINE) //then parse the map
 	{
 		ret = get_next_line(par->fd, &line);
-		check_spaces_end_of_line(par, line, key); //print error_msg if spaces at the end of lines
 		key = key_type(line, par);
-		key == MAP_LINE ? parse_map(par, line) : 0; //trim the spaces and add a new trim_line to par->map
+		key == MAP_LINE ? parse_map(par, line) : 0;  //converts to int the line and add new int_line to par->map
 		free(line);
 	}
-	if (!key) //no empty lines after map
+	if (!key) //no empty lines authorized after map
 		error_msg("File .cub, map : must end the file and be followed by nothing\n", par, NULL);
-	else if (key && key != MAP_LINE) //if line isn't empty and doesn't begin by a 1
-		error_msg("File .cub, map : each line must begin by '1'\n", par, NULL);
+	else if (key && key != MAP_LINE) //if line isn't empty and isn't a map line
+		error_msg("File .cub, map : must only contains ' 012NSWE' characters\n", par, NULL);
 	key_check(par); //check if keys are missing in the file
 	map_check(par); //check if the map is correct
 	return (1);

@@ -6,7 +6,7 @@
 /*   By: llefranc <llefranc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/12 16:17:24 by lucaslefran       #+#    #+#             */
-/*   Updated: 2020/03/04 19:23:32 by llefranc         ###   ########.fr       */
+/*   Updated: 2020/03/05 17:16:09 by llefranc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,46 +25,51 @@
 # include "mlx_macro.h"
 
 //resolution values
-#define RESO_MAX_X 2560
-#define RESO_MIN_X 640 //PENSER A TCHECKER LE CAS DE LA RESO MIN
-#define RESO_MAX_Y 1440
-#define RESO_MIN_Y 480
+#define RESO_MAX_X		2560
+#define RESO_MIN_X		640 //PENSER A TCHECKER LE CAS DE LA RESO MIN
+#define RESO_MAX_Y		1440
+#define RESO_MIN_Y		480
 
 //keys values
-# define RESO 1
-# define P_NORTH 2
-# define P_SOUTH 3
-# define P_EAST 4
-# define P_WEST 5
-# define P_SPRIT 6
-# define FLO_RGB 7
-# define SKY_RGB 8
-# define MAP_LINE 9
+# define RESO			1
+# define P_NORTH		2
+# define P_SOUTH		3
+# define P_EAST			4
+# define P_WEST			5
+# define P_SPRIT		6
+# define FLO_RGB		7
+# define SKY_RGB		8
+# define MAP_LINE		9
+
+# define NORTH			30
+# define SOUTH			35
+# define EAST			21
+# define WEST			39
 
 //raycasting constants
-# define WALL_SIZE 64	//height of wall
-# define MOVE_SIZE 0.065
-# define ROTA_SIZE 2.5
-# define MOUSE_ROTA_SIZE 2.5
-# define FOV 60			//field of view
+# define WALL_SIZE		64			//height of wall
+# define MOVE_SIZE		0.065
+# define ROTA_SIZE		2.5
+# define M_ROTA_SIZE	2.5
+# define FOV			60			//field of view
 
 //angle in degrees
-# define V_EAST 0
-# define V_NORTH 90
-# define V_WEST 180
-# define V_SOUTH 270
+# define V_EAST			0
+# define V_NORTH		90
+# define V_WEST			180
+# define V_SOUTH		270
 
 //usefull to convert degrees <=> radians
-# define TO_DEG 180.0 / M_PI
-# define TO_RAD M_PI / 180.0
+# define TO_DEG			180.0 / M_PI
+# define TO_RAD			M_PI / 180.0
 
 //usefull for t_info structure, allow to move in the tab of 3 ints
 // and selects the parameter expected
-# define BITS_PER_PIX 0
-# define SIZE_LINE 1
-# define ENDIAN 2
-# define WIDTH 3
-# define HEIGHT 4
+# define BITS_PER_PIX	0
+# define SIZE_LINE		1
+# define ENDIAN			2
+# define WIDTH			3
+# define HEIGHT			4
 
 //contains all the information from the config file
 typedef struct	s_pars
@@ -78,66 +83,66 @@ typedef struct	s_pars
 	char		*path_sp;	//path for finding sprites
 	int			flo_rgb;	//floor color contained in an int
 	int			sky_rgb;	//sky color contained in a int
-	char		**map;
+	int			**map;
 }				t_pars;
 
-typedef struct s_rcast
+typedef struct	s_rcast
 {
-	double	angle;			//direction where player looks
-	double	freq_ray;		//distance between to rays in degrees
-	double	x;				//player position
-	double	y;
-	double	dist_screen;
-	int		nb_rows;		//number of rows in the map, for avoiding segfault
-	int		nb_lines;
-	int		m_up;			//booleans for movement (be able to press multiple keys)
-	int		m_down;
-	int		m_left;
-	int		m_right;
-	int		r_left;			//booleans for rotation with keyboard
-	int		r_right;
-	int		mouse_bool;		//for rotation with mouse
-	int		mouse_x;
-	int		**map;
-	t_pars	*par;			//allow to carry only t_rcast struct
+	double		angle;			//direction where player looks
+	double		freq_ray;		//distance between to rays in degrees
+	double		x;				//player position
+	double		y;
+	double		dist_screen;
+	int			nb_rows;		//number of rows in the map, for avoiding segfault
+	int			nb_lines;
+	int			m_up;			//booleans for movement (be able to press multiple keys)
+	int			m_down;
+	int			m_left;
+	int			m_right;
+	int			r_left;			//booleans for rotation with keyboard
+	int			r_right;
+	int			mouse_bool;		//for rotation with mouse
+	int			mouse_x;
+	int			**map;
+	t_pars		*par;			//allow to carry only t_rcast struct
 }				t_rcast;
 
-typedef struct s_img
+typedef struct	s_img
 {
-	void	*screen;
-	void	*t_north;
-	void	*t_south;
-	void	*t_east;
-	void	*t_west;
+	void		*screen;
+	void		*t_north;
+	void		*t_south;
+	void		*t_east;
+	void		*t_west;
 }				t_img;
 
-typedef struct s_addr
+typedef struct	s_addr
 {
-	int		*screen;
-	int		*t_north;
-	int		*t_south;
-	int		*t_east;
-	int		*t_west;
+	int			*screen;
+	int			*t_north;
+	int			*t_south;
+	int			*t_east;
+	int			*t_west;
 }				t_addr;
 
-typedef struct s_info
+typedef struct	s_info
 {
-	int		screen[5];
-	int		t_north[5];
-	int		t_south[5];
-	int		t_east[5];
-	int		t_west[5];
+	int			screen[5];
+	int			t_north[5];
+	int			t_south[5];
+	int			t_east[5];
+	int			t_west[5];
 }				t_info;
 
-typedef struct s_mlx
+typedef struct	s_mlx
 {
-	void	*ptr;
-	void	*win;
-	t_img	*img;
-	t_addr	*addr;//implmentation endian ?
-	t_info	*info;
-	t_pars	*par;			//allow to carry only t_mlx struct
-	t_rcast	*cam;
+	void		*ptr;
+	void		*win;
+	t_img		*img;
+	t_addr		*addr;//implmentation endian ?
+	t_info		*info;
+	t_pars		*par;			//allow to carry only t_mlx struct
+	t_rcast		*cam;
 }				t_mlx;
 
 
@@ -152,6 +157,7 @@ int		drawing(t_pars *par); //a modifier
 
 //check_arg.c
 int		error_msg(char *str, t_pars *par, char *line);
+int		error_msg_map(char *str, t_pars *par, int *line);
 int		check_arg(int ac, char **av);
 void	free_split(char **split);
 int		ft_strisdigit(char *str);

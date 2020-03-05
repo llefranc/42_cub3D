@@ -6,11 +6,30 @@
 /*   By: llefranc <llefranc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/18 15:56:38 by lucaslefran       #+#    #+#             */
-/*   Updated: 2020/02/27 18:10:37 by llefranc         ###   ########.fr       */
+/*   Updated: 2020/03/05 10:38:07 by llefranc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/cube3d.h"
+
+/*
+** Check if the line contains only map characters. If it's the case, return 1
+** to indicate it's a map line. Return 0 otherwise.
+*/
+int		key_map_line(t_pars *par, char *line)
+{
+	int i;
+
+	i = -1;
+	while (line[++i])
+	{
+		if (!ft_strchr("012NSWE ", line[i]) && !par->map)
+			return (0);
+		else if (!ft_strchr("012NSWE ", line[i]) && par->map)
+			error_msg("File .cub, map : must only contains ' 012NSWE' characters\n", par, line);
+	}
+	return (1);
+}
 
 /*
 ** Check the first characters of the line and look if it's a key or an empty
@@ -34,8 +53,6 @@ int		key_type(char *line, t_pars *par)
 		return (FLO_RGB);
 	else if (line[0] == 'C' && line[1] == ' ')
 		return (SKY_RGB);
-	else if (line[0] == '1')
-		return (MAP_LINE);
 	else if (line[0] == '\0') //in the case of a \n
 	{
 		if (par->reso[0] == -1 && !par->path_no && !par->path_so && !par->path_ea
@@ -44,10 +61,12 @@ int		key_type(char *line, t_pars *par)
 			error_msg("File .cub : must begin by one element\n", par, line);
 		return (0);
 	}
+	else if (key_map_line(par, line))
+		return (MAP_LINE);
 	else //if the beginning of a line ins't a key or isn't empty, error
 		error_msg("File .cub, keys : wrong key, or some lines between keys aren't empty\n"
-		"Expected keys : 'R', 'NO', 'SO', 'EA', 'WE', 'S', 'F', 'C' followed \n"
-		"by at least one space and lines of the map beginning by a '1'\n", par, line);
+		"Expected keys : 'R', 'NO', 'SO', 'EA', 'WE', 'S', 'F', 'C' followed by at least\n"
+		"one space and first line of the map containing only ' 012NSWE' characters\n", par, line);
 	return (-1); 
 }
 
@@ -79,7 +98,7 @@ void	key_check(t_pars *par)
 	if (numbers_key_missing(par) > 1)
 		error_msg("File .cub, keys : several keys are missing. Expected keys :\n"
 		"'R ', 'NO ', 'SO ', 'EA ', 'WE ', 'S ', 'F ', 'C ',\n"
-		"and first line of the map beginning by a '1'\n", par, NULL);
+		"and first line of the map containing only ' 012NSWE' characters\n", par, NULL);
 	else if (par->reso[0] == -1)
 		error_msg("File .cub, resolution : 'R ' key is missing\n", par, NULL);
 	else if (!par->path_no)
