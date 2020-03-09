@@ -6,7 +6,7 @@
 /*   By: llefranc <llefranc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/12 16:17:24 by lucaslefran       #+#    #+#             */
-/*   Updated: 2020/03/05 17:16:09 by llefranc         ###   ########.fr       */
+/*   Updated: 2020/03/09 12:43:09 by llefranc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,7 @@ typedef struct	s_rcast
 	double		x;				//player position
 	double		y;
 	double		dist_screen;
-	int			nb_rows;		//number of rows in the map, for avoiding segfault
+	int			*nb_rows;		//number of rows in the map for each line, for avoiding segfault
 	int			nb_lines;
 	int			m_up;			//booleans for movement (be able to press multiple keys)
 	int			m_down;
@@ -110,28 +110,28 @@ typedef struct	s_rcast
 typedef struct	s_img
 {
 	void		*screen;
-	void		*t_north;
-	void		*t_south;
-	void		*t_east;
-	void		*t_west;
+	void		*t_no;
+	void		*t_so;
+	void		*t_ea;
+	void		*t_we;
 }				t_img;
 
 typedef struct	s_addr
 {
 	int			*screen;
-	int			*t_north;
-	int			*t_south;
-	int			*t_east;
-	int			*t_west;
+	int			*t_no;
+	int			*t_so;
+	int			*t_ea;
+	int			*t_we;
 }				t_addr;
 
 typedef struct	s_info
 {
-	int			screen[5];
-	int			t_north[5];
-	int			t_south[5];
-	int			t_east[5];
-	int			t_west[5];
+	int			screen[5];		//[0] = BITS_PER_PIX
+	int			t_no[5];		//[1] = SIZE_LINE
+	int			t_so[5];		//[2] = ENDIAN
+	int			t_ea[5];		//[3] = WIDTH (only for xpm images)
+	int			t_we[5];		//[4] = HEIGHT (only for xpm images)
 }				t_info;
 
 typedef struct	s_mlx
@@ -148,7 +148,7 @@ typedef struct	s_mlx
 
 
 void 	print_struct(t_pars *par); //a supprimer
-void	print_map(t_rcast cam, int player); //a enlever
+void	print_map(int **map); //a enlever
 int		drawing(t_pars *par); //a modifier
 
 /*

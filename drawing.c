@@ -6,7 +6,7 @@
 /*   By: llefranc <llefranc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/25 11:07:23 by llefranc          #+#    #+#             */
-/*   Updated: 2020/03/05 09:22:26 by llefranc         ###   ########.fr       */
+/*   Updated: 2020/03/09 12:32:20 by llefranc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,9 @@
 //rajouter les textures
 
 //EN PLUS
-//refaire le parsing de la map
 //rajouter nom du fichier
 //revoir un peu les noms des parametres dans init struct
+//revoir les deplacements en diagonal
 
 //verifier pourquoi mettre wall_size car il s'annule dans l'equation. pourtant si je change la hauteur du mur,
 //cela ne devrait pas rendre pareil sur l'ecran de projection en theorie ? bien garder en tete que la camera est
@@ -66,28 +66,26 @@ int		drawing(t_pars *par) //l'appeler drawing ?
 	t_info info;
 	t_rcast cam;
 	
+	print_map(par->map);
 	mlx.par = par; //allow to carry only t_mlx struct
-	struct_init_mlx(&mlx, &img, &addr, &info); //all *ptr == NULL, all int == -1, link img and addr to mlx
+	mlx.cam = &cam; //allow to carry only t_mlx struct
+	struct_init_mlx(&mlx, &img, &addr, &info); //all *ptr == NULL, all int == -1, link img info and addr to mlx
 	struct_init_camera(par, &cam); //create a tab of **int for the map, from the prev map in **char. Link par to cam
-	mlx.par = par; //allow to carry only t_mlx struct
-	mlx.cam = &cam;
 
 	/* infos sur les variables */
 	printf("x = %f et y = %f, angle = %f, distscreen = %f, freq_ray = %f\n", cam.x, cam.y, cam.angle, cam.dist_screen, cam.freq_ray);
-	printf("nb_rows = %d et nb_lines = %d\n", cam.nb_rows, cam.nb_lines);
 	printf("size line = %d\n", mlx.info->screen[SIZE_LINE]);
-	print_map(cam, 1);
 	/* infos sur les variables */
 
 
 	raycasting(&mlx); //allow to print first image
 	mlx_put_image_to_window(mlx.ptr, mlx.win, mlx.img->screen, 0, 0); //ici ?
 
-	mlx_hook(mlx.win, MOTIONNOTIFY, 0, &motion_notify, &mlx);
-	mlx_hook(mlx.win, KEYPRESS, 0, &key_press, &mlx);
-	mlx_hook(mlx.win, KEYRELEASE, 0, &key_release, &mlx);
-	mlx_hook(mlx.win, DESTROYNOTIFY, 0, &destroy_notify, par);
-	mlx_loop_hook(mlx.ptr, &no_event, &mlx);
+	mlx_hook(mlx.win, MOTIONNOTIFY, 0, &motion_notify, &mlx); //configure fonction pour deplacement souris
+	mlx_hook(mlx.win, KEYPRESS, 0, &key_press, &mlx); //configure fonction quand on presse une touche
+	mlx_hook(mlx.win, KEYRELEASE, 0, &key_release, &mlx); //configure fonction quand on relache une touche
+	mlx_hook(mlx.win, DESTROYNOTIFY, 0, &destroy_notify, par); //configure fonction quand on ferme une fenetre
+	mlx_loop_hook(mlx.ptr, &no_event, &mlx); //configure fonction quand pas d'evenements. Permet de print
 	mlx_loop(mlx.ptr);
 	return (1);
 }

@@ -6,7 +6,7 @@
 /*   By: llefranc <llefranc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/26 14:56:38 by llefranc          #+#    #+#             */
-/*   Updated: 2020/03/02 19:09:44 by llefranc         ###   ########.fr       */
+/*   Updated: 2020/03/09 12:01:50 by llefranc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,8 +104,9 @@ int		x_ray_find_wall(t_rcast *cam, double angle, double x_len, double y_len)
 {
 	if (angle > 0.0 && angle < 180.0)
 		y_len = (double)((int)y_len) - 1.0; //at the intersection with y axe, checking if wall above us
-	if ((int)(cam->y + y_len) < 0 || (int)(cam->y + y_len) >= cam->nb_lines //if we're out of the map
-		|| (int)(cam->x + x_len) < 0 || (int)(cam->x + x_len) >= cam->nb_rows)
+	if ((int)(cam->y + y_len) < 0 || (int)(cam->y + y_len) >= cam->nb_lines) //if we're out of the map (lines)
+		return (-1);
+	if ((int)(cam->x + x_len) < 0 || (int)(cam->x + x_len) >= cam->nb_rows[(int)(cam->y + y_len)]) //same for rows
 		return (-1);
 	if (cam->map[(int)(cam->y + y_len)][(int)(cam->x + x_len)] != 1) //if not a wall
 		return (0);

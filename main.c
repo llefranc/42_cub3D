@@ -6,35 +6,35 @@
 /*   By: llefranc <llefranc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/12 16:16:20 by lucaslefran       #+#    #+#             */
-/*   Updated: 2020/03/05 13:56:04 by llefranc         ###   ########.fr       */
+/*   Updated: 2020/03/09 14:25:03 by llefranc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "includes/cube3d.h"
 
-void	print_map2(t_pars * par)
+void	print_map(int **map)
 {
 	int i = 0;
 	int j;
 
-	while (par->map[i])
+	while (map[i])
 	{
 		j = -1;
 		printf("|");
-		while (par->map[i][++j] != -2)
+		while (map[i][++j] != -2)
 		{
-			if (par->map[i][j] == -1)
+			if (map[i][j] == -1)
 				printf(" ");
-			else if (par->map[i][j] == NORTH)
+			else if (map[i][j] == NORTH)
 				printf("N");
-			else if (par->map[i][j] == SOUTH)
+			else if (map[i][j] == SOUTH)
 				printf("S");
-			else if (par->map[i][j] == EAST)
+			else if (map[i][j] == EAST)
 				printf("E");
-			else if (par->map[i][j] == WEST)
+			else if (map[i][j] == WEST)
 				printf("W");
 			else
-				printf("%d", par->map[i][j]);
+				printf("%d", map[i][j]);
 		}
 		printf("|\n");
 		i++;
@@ -59,33 +59,9 @@ void	print_struct(t_pars *par)
 	if (!par->map)
 		printf("map inexistante\n");
 	else
-		print_map2(par);
+		print_map(par->map);
 }
 
-//envoyer 0 ou 1 dan s player en fonction de si on veut l'afficher (= 1).
-void	print_map(t_rcast cam, int player)
-{
-	int line = 0;
-	int row;
-
-	while (line < cam.nb_lines)
-	{
-		row = 0;
-		while (row < cam.nb_rows)
-		{
-			if (player && (int)cam.x == row && (int)cam.y == line)
-				ft_printf("P");
-			else
-				ft_printf("%d", (cam.map)[line][row]);
-			row++;
-		}
-		ft_printf("\n");
-		line++;
-	}
-}
-
-//gerer les maps non carres
-//rajouter la ligne d'erreur pour la map
 int main(int ac, char **av)
 {
 	char *line;
@@ -97,8 +73,8 @@ int main(int ac, char **av)
 	if ((par.fd = open(av[1], O_RDONLY)) == -1)
 		error_msg("Error\nArguments : incorrect file\n", &par, NULL);
 	parsing(&par);
-	print_struct(&par);
-	// drawing(&par);
+	// print_struct(&par);
+	drawing(&par);
 	struct_free(&par);
     return (0);
 }

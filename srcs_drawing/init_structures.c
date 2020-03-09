@@ -6,7 +6,7 @@
 /*   By: llefranc <llefranc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/25 14:34:54 by llefranc          #+#    #+#             */
-/*   Updated: 2020/03/04 19:24:54 by llefranc         ###   ########.fr       */
+/*   Updated: 2020/03/09 14:45:31 by llefranc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,35 +20,59 @@ void	struct_init_addr_info(t_mlx *mlx, t_addr *addr, t_info *info)
 	addr->screen = (int *)mlx_get_data_addr(mlx->img->screen, &(info->screen[BITS_PER_PIX]), 
 			&(info->screen[SIZE_LINE]), &(info->screen[ENDIAN]));
 	info->screen[SIZE_LINE] /= (info->screen[BITS_PER_PIX] / 8); //to fill the colors with 1 int value and not 3 bytes RGB
-	// addr->t_north = (int *)mlx_get_data_addr(mlx->img->t_north, &(info->t_north[BITS_PER_PIX]), 
-	// 		&(info->t_north[SIZE_LINE]), &(info->t_north[ENDIAN]));
-	// info->t_north[SIZE_LINE] /= (info->t_north[BITS_PER_PIX] / 8);
-	// addr->t_south = (int *)mlx_get_data_addr(mlx->img->t_south, &(info->t_south[BITS_PER_PIX]), 
-	// 		&(info->t_south[SIZE_LINE]), &(info->t_south[ENDIAN]));
-	// info->t_south[SIZE_LINE] /= (info->t_south[BITS_PER_PIX] / 8);
-	// addr->t_east = (int *)mlx_get_data_addr(mlx->img->t_east, &(info->t_east[BITS_PER_PIX]), 
-	// 		&(info->t_east[SIZE_LINE]), &(info->t_east[ENDIAN]));
-	// info->t_east[SIZE_LINE] /= (info->t_east[BITS_PER_PIX] / 8);
-	// addr->t_west = (int *)mlx_get_data_addr(mlx->img->t_west, &(info->t_west[BITS_PER_PIX]), 
-	// 		&(info->t_west[SIZE_LINE]), &(info->t_west[ENDIAN]));
-	// info->t_west[SIZE_LINE] /= (info->t_west[BITS_PER_PIX] / 8);
+	addr->t_no = (int *)mlx_get_data_addr(mlx->img->t_no, &(info->t_no[BITS_PER_PIX]), 
+			&(info->t_no[SIZE_LINE]), &(info->t_no[ENDIAN]));
+	info->t_no[SIZE_LINE] /= (info->t_no[BITS_PER_PIX] / 8);
+	addr->t_so = (int *)mlx_get_data_addr(mlx->img->t_so, &(info->t_so[BITS_PER_PIX]), 
+			&(info->t_so[SIZE_LINE]), &(info->t_so[ENDIAN]));
+	info->t_so[SIZE_LINE] /= (info->t_so[BITS_PER_PIX] / 8);
+	addr->t_ea = (int *)mlx_get_data_addr(mlx->img->t_ea, &(info->t_ea[BITS_PER_PIX]), 
+			&(info->t_ea[SIZE_LINE]), &(info->t_ea[ENDIAN]));
+	info->t_ea[SIZE_LINE] /= (info->t_ea[BITS_PER_PIX] / 8);
+	addr->t_we = (int *)mlx_get_data_addr(mlx->img->t_we, &(info->t_we[BITS_PER_PIX]), 
+			&(info->t_we[SIZE_LINE]), &(info->t_we[ENDIAN]));
+	info->t_we[SIZE_LINE] /= (info->t_we[BITS_PER_PIX] / 8);
 }
 
+
 /*
-** Loading each images.
+** Loading each images. 
 */
 void	struct_init_img(t_mlx *mlx, t_info *info)
 {
 	mlx->img->screen = mlx_new_image(mlx->ptr, (int)mlx->par->reso[0], (int)mlx->par->reso[1]);
-	(void)info;
-	// if (!(mlx->img->t_north = mlx_xpm_file_to_image(mlx->ptr, mlx->par->path_no, &(info->t_north[WIDTH]), &(info->t_north[HEIGHT]))))
-	// 	error_msg("Textures : erreur chargement texture north\n", mlx->par, NULL);
-	// if (!(mlx->img->t_south = mlx_xpm_file_to_image(mlx->ptr, mlx->par->path_so, &(info->t_south[WIDTH]), &(info->t_south[HEIGHT]))))
-	// 	error_msg("Textures : erreur chargement texture south\n", mlx->par, NULL);
-	// if (!(mlx->img->t_east = mlx_xpm_file_to_image(mlx->ptr, mlx->par->path_ea, &(info->t_east[WIDTH]), &(info->t_east[HEIGHT]))))
-	// 	error_msg("Textures : erreur chargement texture east\n", mlx->par, NULL);
-	// if (!(mlx->img->t_west = mlx_xpm_file_to_image(mlx->ptr, mlx->par->path_we, &(info->t_west[WIDTH]), &(info->t_west[HEIGHT]))))
-	// 	error_msg("Textures : erreur chargement texture west\n", mlx->par, NULL);
+	if (!(mlx->img->t_no = mlx_xpm_file_to_image(mlx->ptr, mlx->par->path_no, &(info->t_no[WIDTH]), &(info->t_no[HEIGHT]))))
+		error_msg("Textures : error loading north texture\n", mlx->par, NULL);
+	if (!(mlx->img->t_so = mlx_xpm_file_to_image(mlx->ptr, mlx->par->path_so, &(info->t_so[WIDTH]), &(info->t_so[HEIGHT]))))
+		error_msg("Textures : error loading south texture\n", mlx->par, NULL);
+	if (!(mlx->img->t_ea = mlx_xpm_file_to_image(mlx->ptr, mlx->par->path_ea, &(info->t_ea[WIDTH]), &(info->t_ea[HEIGHT]))))
+		error_msg("Textures : error loading east texture\n", mlx->par, NULL);
+	if (!(mlx->img->t_we = mlx_xpm_file_to_image(mlx->ptr, mlx->par->path_we, &(info->t_we[WIDTH]), &(info->t_we[HEIGHT]))))
+		error_msg("Textures : error loading west texture\n", mlx->par, NULL);
+}
+
+/*
+** Join the path of one file and his filename, and then free the path.
+*/
+void	join_path_filename(t_pars *par, char **path, char *name)
+{
+	char	*tmp;
+
+	tmp = *path;
+	if (!(*path = ft_strjoin(*path, name)))
+		error_msg("Malloc failed\n", par, NULL);
+	free(tmp);
+}
+
+/*
+** Add the filename to the path for each textures / sprites.
+*/
+void	struct_init_paths(t_pars *par)
+{
+	join_path_filename(par, &(par->path_no), "t_north.xpm");
+	join_path_filename(par, &(par->path_so), "t_south.xpm");
+	join_path_filename(par, &(par->path_ea), "t_east.xpm");
+	join_path_filename(par, &(par->path_we), "t_west.xpm");
 }
 
 /*
@@ -64,37 +88,40 @@ void	struct_init_mlx(t_mlx *mlx, t_img *img, t_addr *addr, t_info *info)
 	mlx->img = img;
 	mlx->addr = addr;
 	mlx->info = info;
+	struct_init_paths(mlx->par);
 	struct_init_img(mlx, info);
 	struct_init_addr_info(mlx, addr, info);
 }
 
 /*
-** Read the **char map and fill the **int map.
+** Read the map and search for the player position in order to initiate his
+** starting position and angle of view. Also save number of max rows for each
+** line.
 */
-void	transf_map_atoi(t_pars *par, t_rcast *cam)
+void	init_player_pos(t_rcast *cam)
 {
 	int		line;
 	int		row;
 
 	line = 0;
-	while (line < cam->nb_lines)
+	while (cam->map[line]) //map is terminated by a NULL *ptr
 	{
 		row = 0;
-		while (row < cam->nb_rows)
+		while (cam->map[line][row] != -2)
 		{
-			cam->map[line][row] = par->map[line][row] - '0';
-			if (cam->map[line][row] > 1) //player position
+			if (cam->map[line][row] > 10) //player position
 			{
 				cam->x = (double)row + 0.5;		//adding 0.5 so the player will start
 				cam->y = (double)line + 0.5;	//in the middle of the case
-				par->map[line][row] == 'E' ? cam->angle = V_EAST : 0; //0 degees
-				par->map[line][row] == 'N' ? cam->angle = V_NORTH : 0; //90 degrees
-				par->map[line][row] == 'W' ? cam->angle = V_WEST : 0; //180 degrees
-				par->map[line][row] == 'S' ? cam->angle = V_SOUTH : 0; //270 degrees
+				cam->map[line][row] == EAST ? cam->angle = V_EAST : 0; //0 degees
+				cam->map[line][row] == NORTH ? cam->angle = V_NORTH : 0; //90 degrees
+				cam->map[line][row] == WEST ? cam->angle = V_WEST : 0; //180 degrees
+				cam->map[line][row] == SOUTH ? cam->angle = V_SOUTH : 0; //270 degrees
 				cam->map[line][row] = 0;
 			}
 			row++;
 		}
+		cam->nb_rows[line] = row; //save number max of rows for each line
 		line++;
 	}
 }
@@ -118,29 +145,18 @@ void	struct_init_cam_bool(t_rcast *cam)
 */
 void	struct_init_camera(t_pars *par, t_rcast *cam)
 {
-	int row;
 	int line;
 
-	row = 0;
 	line = 0;
 	struct_init_cam_bool(cam);
 	while (par->map[line]) //counting number of lines
 		line++;
 	cam->nb_lines = line;
-	while (par->map[0][row]) //counting number of rows
-		row++;
-	cam->nb_rows = row;
-	if (!(cam->map = malloc(sizeof(int *) * line)))
+	if (!(cam->nb_rows = malloc(line * sizeof(int)))) //for nb rows max for each line
 		error_msg("Malloc failed\n", par, NULL);
-	line = 0;
-	while (line < cam->nb_lines)
-	{
-		if (!(cam->map[line++] = malloc(sizeof(int) * row)))
-			error_msg("Malloc failed\n", par, NULL);
-	}
-	transf_map_atoi(par, cam);
+	cam->map = par->map;
+	init_player_pos(cam); //save player position + number of max rows for each line
 	cam->dist_screen = (par->reso[0] / 2.0) / tan(((double)FOV / 2.0) * (TO_RAD)); //pythagore, 
-		//cam->dist_screen : dist between cam (who's launching rays) and screen of projection
 	cam->freq_ray = (double)FOV / par->reso[0];
 	cam->par = par;	//allow to only carry t_rcast struct
 }

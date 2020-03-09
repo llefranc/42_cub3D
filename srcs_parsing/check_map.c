@@ -6,17 +6,16 @@
 /*   By: llefranc <llefranc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/05 14:08:50 by llefranc          #+#    #+#             */
-/*   Updated: 2020/03/05 17:15:37 by llefranc         ###   ########.fr       */
+/*   Updated: 2020/03/09 10:59:05 by llefranc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/cube3d.h"
 
 /*
-** Check if all the characters of one line of the map are corrects, and return
-** the number of times player position was detected ("NSWE" characters).
+** Return the number of times player position was detected ("NSWE" characters).
 */
-int		line_check(int *line_map)
+int		pos_player_check(int *line_map)
 {
 	int		i;
 	int		pos;
@@ -90,8 +89,8 @@ void	walls_check_previous(t_pars *par, int i, int *previous)
 	j = len_line_map(previous) - 1; //we start at the end of previous
 		i--;
 	while (++i <= 0)
-		if (previous[j + i] != 1 && previous[j + i] != -1)		//and compare until we reach
-			error_msg_map("PREVFile .cub, map : must only be"	//the size of actual
+		if (previous[j + i] != 1 && previous[j + i] != -1)	//and compare until we reach
+			error_msg_map("File .cub, map : must only be"	//the size of actual
 			" surrunded by walls ('1')\n", par, previous);
 }
 
@@ -106,8 +105,8 @@ void	walls_check_actual(t_pars *par, int i, int *actual, int *previous)
 	j = len_line_map(previous) - 1;
 	i++;
 	while (--i >= 0) //if actual is equal to previous, we check only the last charac of actual
-		if (actual[j + i] != 1 && actual[j + i] != -1)			//we compare from the end of actual
-			error_msg_map("ACTFile .cub, map : must only be"	//until we reach size of previous
+		if (actual[j + i] != 1 && actual[j + i] != -1)		//we compare from the end of actual
+			error_msg_map("File .cub, map : must only be"	//until we reach size of previous
 			" surrunded by walls ('1')\n", par, actual);
 }
 
@@ -200,7 +199,7 @@ int		map_check(t_pars *par)
 	pos = 0;
 	while (par->map[i])
 	{
-		pos += line_check(par->map[i++]); //return nb times player position is detected in a line
+		pos += pos_player_check(par->map[i++]); //return nb times player position is detected in a line
 		pos > 1 ? error_msg_map("File .cub, map : several player positions\n", par , par->map[i]) : 0;
 	}
 	!pos ? error_msg("File .cub, map : no player position\n", par, NULL) : 0;
