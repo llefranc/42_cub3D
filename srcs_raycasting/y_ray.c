@@ -6,7 +6,7 @@
 /*   By: llefranc <llefranc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/27 09:59:56 by llefranc          #+#    #+#             */
-/*   Updated: 2020/03/09 12:01:36 by llefranc         ###   ########.fr       */
+/*   Updated: 2020/03/11 11:57:13 by llefranc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -106,7 +106,9 @@ double	y_ray_ya_value(double angle, double x1, double xa)
 int		y_ray_find_wall(t_rcast *cam, double angle, double x_len, double y_len)
 {
 	if (angle > 90.0 && angle < 270.0)
-		x_len = (double)((int)x_len) - 1.0; //at the intersection with y axe, checking if wall at our left
+		x_len = (double)((int)(x_len)) - 1.0; //at the intersection with y axe, checking if wall at our left
+	else if (cam->x + x_len - (double)((int)(cam->x + x_len)) > 0.99)
+		x_len = (double)((int)(x_len)) + 1.0;
 	if ((int)(cam->y + y_len) < 0 || (int)(cam->y + y_len) >= cam->nb_lines) //if we're out of the map (lines)
 		return (-1);
 	if ((int)(cam->x + x_len) < 0 || (int)(cam->x + x_len) >= cam->nb_rows[(int)(cam->y + y_len)]) //same for rows
@@ -123,7 +125,7 @@ int		y_ray_find_wall(t_rcast *cam, double angle, double x_len, double y_len)
 ** never cross 'x axe'). If angle == 0 or 180 degrees, 0 will be returned (ray
 ** go left or right but doesn't move on 'y axe').
 */
-double	y_ray_len(t_rcast *cam, double angle)
+double	y_ray_len(t_rcast *cam, double angle, t_texture *textu)
 {
 	double	x1; //distance on 'x axe' when we first cross 'y axe' with a certain angle
 	double	y1; //distance on 'y axe' when we first cross 'x axe' with a certain angle
@@ -143,5 +145,7 @@ double	y_ray_len(t_rcast *cam, double angle)
 		x1 += xa; //moving of (+-)1 unity on 'x axe'
 		y1 += ya; //next cross with 'x axe' 		
 	}
+	textu->y_xa = x1;	//saving coordonates of where the ray is touching the wall
+	textu->y_ya = y1;	//usefull later for calculating textures rendering
 	return (ray_len(cam, x1, y1)); //len of ray when we cross 'y axe' and we meet a wall
 }

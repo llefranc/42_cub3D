@@ -6,7 +6,7 @@
 /*   By: llefranc <llefranc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/04 17:44:38 by llefranc          #+#    #+#             */
-/*   Updated: 2020/03/05 09:51:01 by llefranc         ###   ########.fr       */
+/*   Updated: 2020/03/11 11:57:21 by llefranc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,7 +105,11 @@ int		no_event(t_mlx *mlx)
 	mlx->cam->m_right ? move_right_in_map(mlx) : 0;
 	mlx->cam->r_left ? mlx->cam->angle = positive_angle(mlx->cam->angle + ROTA_SIZE) : 0; //rotation
 	mlx->cam->r_right ? mlx->cam->angle = positive_angle(mlx->cam->angle - ROTA_SIZE) : 0;
-	raycasting(mlx);
-	mlx_put_image_to_window(mlx->ptr, mlx->win, mlx->img->screen, 0, 0);
+	if (mlx->cam->m_up || mlx->cam->m_down || mlx->cam->m_left || mlx->cam->m_right ||
+				mlx->cam->r_right || mlx->cam->r_left) //to prevent using ressources when the player isn't moving
+	{
+		raycasting(mlx);
+		mlx_put_image_to_window(mlx->ptr, mlx->win, mlx->img->screen, 0, 0);
+	}
 	return (1);
 }

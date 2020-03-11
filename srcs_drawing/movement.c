@@ -6,7 +6,7 @@
 /*   By: llefranc <llefranc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/04 15:04:03 by llefranc          #+#    #+#             */
-/*   Updated: 2020/03/09 12:22:15 by llefranc         ###   ########.fr       */
+/*   Updated: 2020/03/10 14:53:17 by llefranc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,8 @@
 */
 void	move(t_rcast *cam, double len, char coordinate)
 {
+	static int d;
+	d++;
 	if (coordinate == 'x') //allow to use this fucntion for 'x' or 'y'
 	{
 		if ((int)(cam->x + len) < 0 || (int)(cam->x + len) >= cam->nb_rows[(int)cam->y]) //if we're out of the map 

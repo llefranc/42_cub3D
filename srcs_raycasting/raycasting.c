@@ -6,7 +6,7 @@
 /*   By: llefranc <llefranc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/21 13:40:24 by llefranc          #+#    #+#             */
-/*   Updated: 2020/03/04 16:04:46 by llefranc         ###   ########.fr       */
+/*   Updated: 2020/03/11 11:57:17 by llefranc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,21 +66,43 @@ double	ray_len(t_rcast *cam, double x_len, double y_len)
 /*
 ** Use Thales theoreme to determinate height of the wall projected on the
 ** screen, and return the number of pixels that need to be colored.
-** distance cam_screen / distance cam_wall == hegiht wall_on_screen / height wall_in_game
+** distance cam_projection_screen / distance cam_wall == height wall_on_screen / height wall_in_game
 */
 double	height_wall(t_rcast *cam, double ray_len)
 {
 	double	h_wall;
 	double	dist_cam_wall_ing;
 
-	dist_cam_wall_ing = ray_len * (double)WALL_SIZE; //one case of the map == WALL_SIZE
-	h_wall = ((double)WALL_SIZE / dist_cam_wall_ing) * cam->dist_screen;
-
-	//verifier pourquoi mettre wall_size car il s'annule dans l'equation. pourtant si je change la hauteur du mur,
-	//cela ne devrait pas rendre pareil sur l'ecran de projection en theorie ? bien garder en tete que la camera est
-	//fixee au milieu du mur donc elle si on change auteur du mur ca grandit notre personnage. Mais le mur devriat quand
-	//meme en theorie ressortir plus grand sur l'ecran de projection non ?
+	dist_cam_wall_ing = ray_len * (double)WALL_SIZE; //one case of the map (x = 1 or y = 1) == WALL_SIZE
+	h_wall = ((double)WALL_SIZE / dist_cam_wall_ing) * (cam->dist_screen);
 	return (h_wall);
+}
+
+/*
+** Return the row of img texture that will be needed later to fill the wall on
+** screen, by determinating which row of the wall is touched (with a size of 64)
+** is touched by the ray. Also determinate which side of the wall is touched by
+** the row (NORTH, SOUTH, EAST, WEST).
+*/
+int		nb_image_row(t_rcast *cam, t_texture *textu, double xa, double ya)
+{
+	int		row_img;	//if ray touch NORTH or SOUTH -> y_len = 0 || x_len = 0 for EAST and WEST
+	double	x_len;		//x_len is the len of the portion touched by ray on 'x axe'
+	double	y_len;		//y_len is the len of the portion touched by ray on 'y axe'
+
+	x_len = cam->x + xa - (double)((int)(cam->x + xa));
+	y_len = cam->y + ya - (double)((int)(cam->y + ya));
+	if (x_len > y_len || y_len > 0.99)	//y_len > 0.99 handle a strange case where y_len should value 0 but
+	{									//it's taking 0.999... value to to round errors
+		row_img = (int)(x_len * (double)WALL_SIZE);
+		textu->side_wall = (textu->angle_raycast >= 0.0 && textu->angle_raycast < 180.0) ? NORTH : SOUTH;
+	}
+	else
+	{
+		row_img = (int)(y_len * (double)WALL_SIZE); //if y_len == 0.33 >> we will print the row number (WALL_SIZE / 3)
+		textu->side_wall = (textu->angle_raycast >= 90.0 && textu->angle_raycast < 270.0) ? EAST : WEST;
+	}
+	return (row_img);
 }
 
 /*
@@ -88,19 +110,27 @@ double	height_wall(t_rcast *cam, double ray_len)
 ** x_ray, stopping when it meets a wall and checking each time it crosses 'y axe')
 ** y_ray, stopping when it meets a wall and checking each time it crosses 'x axe')
 ** Then using the smaller one to determinate in pixel the size of the wall on the
-** screen.
+** screen. Also determinate which row of texture img we will use to fill the wall
+** on screen.
 */
-int		nb_pixel_wall(t_rcast *cam, double angle)
+double		nb_pixel_wall(t_rcast *cam, t_texture *textu, double angle)
 {
-	double	h_wall;
+	double	h_wall; //size of the wall on the screen in pixels
 	double	x_ray;
 	double	y_ray;
 
-	x_ray = x_ray_len(cam, angle) * cos(fabs(cam->angle - angle) * TO_RAD); //correcting fisheye with pythagore and cos
-	y_ray = y_ray_len(cam, angle) * cos(fabs(cam->angle - angle) * TO_RAD);
-	if (y_ray != y_ray || x_ray <= y_ray)	//y_ray != y_ray handle the case of y_ray == NAN. 
-		h_wall = height_wall(cam, x_ray);	//Compare something with NAN will always be false.
-	else									//y_ray != y_ray can be true only if y_ray is NAN.
-		h_wall = height_wall(cam, y_ray);	//If x_ray is NAN, x_ray <= y_ray will be false
-	return ((unsigned int)h_wall);
+	textu->angle_raycast = angle; //needed in nb_image_row func
+	x_ray = x_ray_len(cam, angle, textu) * cos(fabs(cam->angle - angle) * TO_RAD); //correcting fisheye with pythagore
+	y_ray = y_ray_len(cam, angle, textu) * cos(fabs(cam->angle - angle) * TO_RAD);
+	if (y_ray != y_ray || x_ray <= y_ray)	//y_ray != y_ray handle the case of y_ray = NAN, can be true only if y_ray is NAN
+	{										//Compare something with NAN will always be false.
+		textu->row_img = nb_image_row(cam, textu, textu->x_xa, textu->x_ya);
+		h_wall = height_wall(cam, x_ray);	
+	}
+	else									//If x_ray is NAN, x_ray <= y_ray will be false
+	{										
+		textu->row_img = nb_image_row(cam, textu, textu->y_xa, textu->y_ya);
+		h_wall = height_wall(cam, y_ray);
+	}
+	return (h_wall);
 }

@@ -6,7 +6,7 @@
 /*   By: llefranc <llefranc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/12 16:17:24 by lucaslefran       #+#    #+#             */
-/*   Updated: 2020/03/09 12:43:09 by llefranc         ###   ########.fr       */
+/*   Updated: 2020/03/11 12:00:01 by llefranc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,6 +86,22 @@ typedef struct	s_pars
 	int			**map;
 }				t_pars;
 
+//allows to print the textures for walls
+typedef struct	s_texture
+{
+	double		x_xa;
+	double		x_ya;
+	double		y_xa;
+	double		y_ya;
+	double		angle_raycast;
+	int			side_wall;
+	int			no_limit_pix_wall;
+	int			start_line_img;
+	double		freq_pixel;
+	int			row_img;
+}				t_texture;
+
+//handle raycasting + player's movements events
 typedef struct	s_rcast
 {
 	double		angle;			//direction where player looks
@@ -190,13 +206,13 @@ double	positive_angle(double angle);
 double	angle_tri_rect(double angle);
 int		find_wall(t_rcast *cam, double angle, double x_len, double y_len);
 double	ray_len(t_rcast *cam, double x_len, double y_len);
-int		nb_pixel_wall(t_rcast *cam, double angle);
+double	nb_pixel_wall(t_rcast *cam, t_texture *textu, double angle);
 
 //x_ray.c
-double	x_ray_len(t_rcast *cam, double angle);
+double	x_ray_len(t_rcast *cam, double angle, t_texture *textu);
 
 //y_ray.c
-double	y_ray_len(t_rcast *cam, double angle);
+double	y_ray_len(t_rcast *cam, double angle, t_texture *textu);
 
 /*
 ** ----- srcs_drawing -----
