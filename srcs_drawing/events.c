@@ -6,7 +6,7 @@
 /*   By: llefranc <llefranc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/04 17:44:38 by llefranc          #+#    #+#             */
-/*   Updated: 2020/03/11 11:57:21 by llefranc         ###   ########.fr       */
+/*   Updated: 2020/03/11 18:19:50 by llefranc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -99,10 +99,21 @@ int		destroy_notify(t_pars *par)
 */
 int		no_event(t_mlx *mlx)
 {
-	mlx->cam->m_up ? move_up_in_map(mlx) : 0;		//movements
-	mlx->cam->m_down ? move_down_in_map(mlx) : 0;
-	mlx->cam->m_left ? move_left_in_map(mlx) : 0;
-	mlx->cam->m_right ? move_right_in_map(mlx) : 0;
+	if (((mlx->cam->m_up || mlx->cam->m_down) && (mlx->cam->m_left || mlx->cam->m_right))
+			&& (!(mlx->cam->m_up && mlx->cam->m_down) || !(mlx->cam->m_left && mlx->cam->m_right)))
+	{
+		mlx->cam->m_up ? move_up_in_map(mlx, MOVE_SIZE / 2.0) : 0;
+		mlx->cam->m_down ? move_down_in_map(mlx, MOVE_SIZE / 2.0) : 0;
+		mlx->cam->m_left ? move_left_in_map(mlx, MOVE_SIZE / 2.0) : 0;
+		mlx->cam->m_right ? move_right_in_map(mlx, MOVE_SIZE / 2.0) : 0;
+	}
+	else
+	{
+		mlx->cam->m_up ? move_up_in_map(mlx, MOVE_SIZE) : 0;		//movements
+		mlx->cam->m_down ? move_down_in_map(mlx, MOVE_SIZE) : 0;
+		mlx->cam->m_left ? move_left_in_map(mlx, MOVE_SIZE) : 0;
+		mlx->cam->m_right ? move_right_in_map(mlx, MOVE_SIZE) : 0;
+	}
 	mlx->cam->r_left ? mlx->cam->angle = positive_angle(mlx->cam->angle + ROTA_SIZE) : 0; //rotation
 	mlx->cam->r_right ? mlx->cam->angle = positive_angle(mlx->cam->angle - ROTA_SIZE) : 0;
 	if (mlx->cam->m_up || mlx->cam->m_down || mlx->cam->m_left || mlx->cam->m_right ||

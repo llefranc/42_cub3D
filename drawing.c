@@ -6,7 +6,7 @@
 /*   By: llefranc <llefranc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/25 11:07:23 by llefranc          #+#    #+#             */
-/*   Updated: 2020/03/11 11:58:27 by llefranc         ###   ########.fr       */
+/*   Updated: 2020/03/11 18:15:49 by llefranc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,18 +36,20 @@ int		draw_texture(t_mlx *mlx, t_texture *textu, int x)
 {
 	int		color;
 
+	x = (int)((double)x * textu->freq_pixel);
+	x >= mlx->info->t_no[WIDTH] ? x = mlx->info->t_no[WIDTH] - 1 : 0; //for avoiding segfault when round error with double
 	if (textu->side_wall == NORTH)
 		color = mlx->addr->t_no[textu->row_img + textu->start_line_img * mlx->info->t_no[SIZE_LINE]
-					+ (int)((double)x * textu->freq_pixel) * mlx->info->t_no[SIZE_LINE]];
+					+ x * mlx->info->t_no[SIZE_LINE]];
 	if (textu->side_wall == SOUTH)
 		color = mlx->addr->t_so[textu->row_img + textu->start_line_img * mlx->info->t_so[SIZE_LINE]
-					+ (int)((double)x * textu->freq_pixel) * mlx->info->t_so[SIZE_LINE]];
+					+ x * mlx->info->t_so[SIZE_LINE]];
 	if (textu->side_wall == EAST)
 		color = mlx->addr->t_ea[textu->row_img + textu->start_line_img * mlx->info->t_ea[SIZE_LINE]
-					+ (int)((double)x * textu->freq_pixel) * mlx->info->t_ea[SIZE_LINE]];
+					+ x * mlx->info->t_ea[SIZE_LINE]];
 	if (textu->side_wall == WEST)
 		color = mlx->addr->t_we[textu->row_img + textu->start_line_img * mlx->info->t_we[SIZE_LINE]
-					+ (int)((double)x * textu->freq_pixel) * mlx->info->t_we[SIZE_LINE]];
+					+ x * mlx->info->t_we[SIZE_LINE]];
 	return (color);
 }
 
@@ -130,7 +132,7 @@ int		drawing(t_pars *par) //l'appeler drawing ?
 	printf("size line = %d\n", mlx.info->screen[SIZE_LINE]);
 	/* infos sur les variables */
 
-
+	printf("height no = %d\n", info.t_no[HEIGHT]);
 	raycasting(&mlx); //allow to print first image
 	mlx_put_image_to_window(mlx.ptr, mlx.win, mlx.img->screen, 0, 0); //ici ?
 

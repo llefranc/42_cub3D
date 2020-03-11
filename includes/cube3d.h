@@ -6,7 +6,7 @@
 /*   By: llefranc <llefranc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/12 16:17:24 by lucaslefran       #+#    #+#             */
-/*   Updated: 2020/03/11 12:00:01 by llefranc         ###   ########.fr       */
+/*   Updated: 2020/03/11 18:19:17 by llefranc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@
 # define MOVE_SIZE		0.065
 # define ROTA_SIZE		2.5
 # define M_ROTA_SIZE	2.5
-# define FOV			60			//field of view
+# define FOV			50			//field of view
 
 //angle in degrees
 # define V_EAST			0
@@ -223,10 +223,10 @@ void	struct_init_mlx(t_mlx *mlx, t_img *img, t_addr *addr, t_info *info);
 void	raycasting(t_mlx *mlx);
 
 //movement.c
-void	move_up_in_map(t_mlx *mlx);
-void	move_down_in_map(t_mlx *mlx);
-void	move_left_in_map(t_mlx *mlx);
-void	move_right_in_map(t_mlx *mlx);
+void	move_up_in_map(t_mlx *mlx, double move_size);
+void	move_down_in_map(t_mlx *mlx, double move_size);
+void	move_left_in_map(t_mlx *mlx, double move_size);
+void	move_right_in_map(t_mlx *mlx, double move_size);
 
 //events.c
 int		motion_notify(int x, int y, t_mlx *mlx);

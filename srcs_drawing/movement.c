@@ -6,7 +6,7 @@
 /*   By: llefranc <llefranc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/04 15:04:03 by llefranc          #+#    #+#             */
-/*   Updated: 2020/03/10 14:53:17 by llefranc         ###   ########.fr       */
+/*   Updated: 2020/03/11 18:19:05 by llefranc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,107 +43,107 @@ void	move(t_rcast *cam, double len, char coordinate)
 /*
 ** Using trigonometry to determinate new player's coordinates when he's going up.
 */
-void	move_up_in_map(t_mlx *mlx)
+void	move_up_in_map(t_mlx *mlx, double move_size)
 {
 	if (mlx->cam->angle >= 0.0 && mlx->cam->angle < 90.0)
 	{
-		move(mlx->cam, cos(angle_tri_rect(mlx->cam->angle) * TO_RAD) * MOVE_SIZE, 'x');
-		move(mlx->cam, -sin(angle_tri_rect(mlx->cam->angle) * TO_RAD) * MOVE_SIZE, 'y');
+		move(mlx->cam, cos(angle_tri_rect(mlx->cam->angle) * TO_RAD) * move_size, 'x');
+		move(mlx->cam, -sin(angle_tri_rect(mlx->cam->angle) * TO_RAD) * move_size, 'y');
 	}
 	else if (mlx->cam->angle >= 90.0 && mlx->cam->angle < 180.0)
 	{
-		move(mlx->cam, -cos(angle_tri_rect(mlx->cam->angle) * TO_RAD) * MOVE_SIZE, 'x');
-		move(mlx->cam, -sin(angle_tri_rect(mlx->cam->angle) * TO_RAD) * MOVE_SIZE, 'y');
+		move(mlx->cam, -cos(angle_tri_rect(mlx->cam->angle) * TO_RAD) * move_size, 'x');
+		move(mlx->cam, -sin(angle_tri_rect(mlx->cam->angle) * TO_RAD) * move_size, 'y');
 	}
 	else if (mlx->cam->angle >= 180.0 && mlx->cam->angle < 270.0)
 	{
-		move(mlx->cam, -cos(angle_tri_rect(mlx->cam->angle) * TO_RAD) * MOVE_SIZE, 'x');
-		move(mlx->cam, sin(angle_tri_rect(mlx->cam->angle) * TO_RAD) * MOVE_SIZE, 'y');
+		move(mlx->cam, -cos(angle_tri_rect(mlx->cam->angle) * TO_RAD) * move_size, 'x');
+		move(mlx->cam, sin(angle_tri_rect(mlx->cam->angle) * TO_RAD) * move_size, 'y');
 	}
 	else
 	{
-		move(mlx->cam, cos(angle_tri_rect(mlx->cam->angle) * TO_RAD) * MOVE_SIZE, 'x');
-		move(mlx->cam, sin(angle_tri_rect(mlx->cam->angle) * TO_RAD) * MOVE_SIZE, 'y');
+		move(mlx->cam, cos(angle_tri_rect(mlx->cam->angle) * TO_RAD) * move_size, 'x');
+		move(mlx->cam, sin(angle_tri_rect(mlx->cam->angle) * TO_RAD) * move_size, 'y');
 	}
 }
 
 /*
 ** Using trigonometry to determinate new player's coordinates when he's going down.
 */
-void	move_down_in_map(t_mlx *mlx)
+void	move_down_in_map(t_mlx *mlx, double move_size)
 {
 	if (mlx->cam->angle >= 0.0 && mlx->cam->angle < 90.0)
 	{
-		move(mlx->cam, -cos(angle_tri_rect(mlx->cam->angle) * TO_RAD) * MOVE_SIZE, 'x');
-		move(mlx->cam, sin(angle_tri_rect(mlx->cam->angle) * TO_RAD) * MOVE_SIZE, 'y');
+		move(mlx->cam, -cos(angle_tri_rect(mlx->cam->angle) * TO_RAD) * move_size, 'x');
+		move(mlx->cam, sin(angle_tri_rect(mlx->cam->angle) * TO_RAD) * move_size, 'y');
 	}
 	else if (mlx->cam->angle >= 90.0 && mlx->cam->angle < 180.0)
 	{
-		move(mlx->cam, cos(angle_tri_rect(mlx->cam->angle) * TO_RAD) * MOVE_SIZE, 'x');
-		move(mlx->cam, sin(angle_tri_rect(mlx->cam->angle) * TO_RAD) * MOVE_SIZE, 'y');
+		move(mlx->cam, cos(angle_tri_rect(mlx->cam->angle) * TO_RAD) * move_size, 'x');
+		move(mlx->cam, sin(angle_tri_rect(mlx->cam->angle) * TO_RAD) * move_size, 'y');
 	}
 	else if (mlx->cam->angle >= 180.0 && mlx->cam->angle < 270.0)
 	{
-		move(mlx->cam, cos(angle_tri_rect(mlx->cam->angle) * TO_RAD) * MOVE_SIZE, 'x');
-		move(mlx->cam, -sin(angle_tri_rect(mlx->cam->angle) * TO_RAD) * MOVE_SIZE, 'y');
+		move(mlx->cam, cos(angle_tri_rect(mlx->cam->angle) * TO_RAD) * move_size, 'x');
+		move(mlx->cam, -sin(angle_tri_rect(mlx->cam->angle) * TO_RAD) * move_size, 'y');
 	}
 	else
 	{
-		move(mlx->cam, -cos(angle_tri_rect(mlx->cam->angle) * TO_RAD) * MOVE_SIZE, 'x');
-		move(mlx->cam, -sin(angle_tri_rect(mlx->cam->angle) * TO_RAD) * MOVE_SIZE, 'y');
+		move(mlx->cam, -cos(angle_tri_rect(mlx->cam->angle) * TO_RAD) * move_size, 'x');
+		move(mlx->cam, -sin(angle_tri_rect(mlx->cam->angle) * TO_RAD) * move_size, 'y');
 	}
 }
 
 /*
 ** Using trigonometry to determinate new player's coordinates when he's going left.
 */
-void	move_left_in_map(t_mlx *mlx)
+void	move_left_in_map(t_mlx *mlx, double move_size)
 {
 	if (mlx->cam->angle >= 0.0 && mlx->cam->angle < 90.0)
 	{
-		move(mlx->cam, -sin(angle_tri_rect(mlx->cam->angle) * TO_RAD) * MOVE_SIZE, 'x');
-		move(mlx->cam, -cos(angle_tri_rect(mlx->cam->angle) * TO_RAD) * MOVE_SIZE, 'y');
+		move(mlx->cam, -sin(angle_tri_rect(mlx->cam->angle) * TO_RAD) * move_size, 'x');
+		move(mlx->cam, -cos(angle_tri_rect(mlx->cam->angle) * TO_RAD) * move_size, 'y');
 	}
 	else if (mlx->cam->angle >= 90.0 && mlx->cam->angle < 180.0)
 	{
-		move(mlx->cam, -sin(angle_tri_rect(mlx->cam->angle) * TO_RAD) * MOVE_SIZE, 'x');
-		move(mlx->cam, cos(angle_tri_rect(mlx->cam->angle) * TO_RAD) * MOVE_SIZE, 'y');
+		move(mlx->cam, -sin(angle_tri_rect(mlx->cam->angle) * TO_RAD) * move_size, 'x');
+		move(mlx->cam, cos(angle_tri_rect(mlx->cam->angle) * TO_RAD) * move_size, 'y');
 	}
 	else if (mlx->cam->angle >= 180.0 && mlx->cam->angle < 270.0)
 	{
-		move(mlx->cam, +sin(angle_tri_rect(mlx->cam->angle) * TO_RAD) * MOVE_SIZE, 'x');
-		move(mlx->cam, +cos(angle_tri_rect(mlx->cam->angle) * TO_RAD) * MOVE_SIZE, 'y');
+		move(mlx->cam, +sin(angle_tri_rect(mlx->cam->angle) * TO_RAD) * move_size, 'x');
+		move(mlx->cam, +cos(angle_tri_rect(mlx->cam->angle) * TO_RAD) * move_size, 'y');
 	}
 	else
 	{
-		move(mlx->cam, +sin(angle_tri_rect(mlx->cam->angle) * TO_RAD) * MOVE_SIZE, 'x');
-		move(mlx->cam, -cos(angle_tri_rect(mlx->cam->angle) * TO_RAD) * MOVE_SIZE, 'y');
+		move(mlx->cam, +sin(angle_tri_rect(mlx->cam->angle) * TO_RAD) * move_size, 'x');
+		move(mlx->cam, -cos(angle_tri_rect(mlx->cam->angle) * TO_RAD) * move_size, 'y');
 	}
 }
 
 /*
 ** Using trigonometry to determinate new player's coordinates when he's going right.
 */
-void	move_right_in_map(t_mlx *mlx)
+void	move_right_in_map(t_mlx *mlx, double move_size)
 {
 	if (mlx->cam->angle >= 0.0 && mlx->cam->angle < 90.0)
 	{
-		move(mlx->cam, sin(angle_tri_rect(mlx->cam->angle) * TO_RAD) * MOVE_SIZE, 'x');
-		move(mlx->cam, cos(angle_tri_rect(mlx->cam->angle) * TO_RAD) * MOVE_SIZE, 'y');
+		move(mlx->cam, sin(angle_tri_rect(mlx->cam->angle) * TO_RAD) * move_size, 'x');
+		move(mlx->cam, cos(angle_tri_rect(mlx->cam->angle) * TO_RAD) * move_size, 'y');
 	}
 	else if (mlx->cam->angle >= 90.0 && mlx->cam->angle < 180.0)
 	{
-		move(mlx->cam, sin(angle_tri_rect(mlx->cam->angle) * TO_RAD) * MOVE_SIZE, 'x');
-		move(mlx->cam, -cos(angle_tri_rect(mlx->cam->angle) * TO_RAD) * MOVE_SIZE, 'y');
+		move(mlx->cam, sin(angle_tri_rect(mlx->cam->angle) * TO_RAD) * move_size, 'x');
+		move(mlx->cam, -cos(angle_tri_rect(mlx->cam->angle) * TO_RAD) * move_size, 'y');
 	}
 	else if (mlx->cam->angle >= 180.0 && mlx->cam->angle < 270.0)
 	{
-		move(mlx->cam, -sin(angle_tri_rect(mlx->cam->angle) * TO_RAD) * MOVE_SIZE, 'x');
-		move(mlx->cam, -cos(angle_tri_rect(mlx->cam->angle) * TO_RAD) * MOVE_SIZE, 'y');
+		move(mlx->cam, -sin(angle_tri_rect(mlx->cam->angle) * TO_RAD) * move_size, 'x');
+		move(mlx->cam, -cos(angle_tri_rect(mlx->cam->angle) * TO_RAD) * move_size, 'y');
 	}
 	else
 	{
-		move(mlx->cam, -sin(angle_tri_rect(mlx->cam->angle) * TO_RAD) * MOVE_SIZE, 'x');
-		move(mlx->cam, cos(angle_tri_rect(mlx->cam->angle) * TO_RAD) * MOVE_SIZE, 'y');
+		move(mlx->cam, -sin(angle_tri_rect(mlx->cam->angle) * TO_RAD) * move_size, 'x');
+		move(mlx->cam, cos(angle_tri_rect(mlx->cam->angle) * TO_RAD) * move_size, 'y');
 	}
 }
