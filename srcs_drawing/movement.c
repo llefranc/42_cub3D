@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   movement.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: llefranc <llefranc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/04 15:04:03 by llefranc          #+#    #+#             */
-/*   Updated: 2020/03/11 18:19:05 by llefranc         ###   ########.fr       */
+/*   Updated: 2020/03/18 11:49:29 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,21 +20,22 @@
 */
 void	move(t_rcast *cam, double len, char coordinate)
 {
-	static int d;
-	d++;
+	double	tmp_len;
+
+	tmp_len = (len > 0.0) ? len + 0.1 : len - 0.1; //to prevent player to be to close to walls
 	if (coordinate == 'x') //allow to use this fucntion for 'x' or 'y'
 	{
-		if ((int)(cam->x + len) < 0 || (int)(cam->x + len) >= cam->nb_rows[(int)cam->y]) //if we're out of the map 
+		if ((int)(cam->x + tmp_len) < 0 || (int)(cam->x + tmp_len) >= cam->nb_rows[(int)cam->y]) //if we're out of the map 
 			return ;
-		if (cam->map[(int)(cam->y)][(int)(cam->x + len)] == 1) //if a wall
+		if (cam->map[(int)(cam->y)][(int)(cam->x + tmp_len)] == 1) //if a wall
 			return ;
 		cam->x += len;
 	}
 	else if (coordinate == 'y')
 	{
-		if ((int)(cam->y + len) < 0 || (int)(cam->y + len) >= cam->nb_lines) //if we're out of the map
+		if ((int)(cam->y + tmp_len) < 0 || (int)(cam->y + tmp_len) >= cam->nb_lines) //if we're out of the map
 			return ;
-		if (cam->map[(int)(cam->y + len)][(int)(cam->x)] == 1) //if a wall
+		if (cam->map[(int)(cam->y + tmp_len)][(int)(cam->x)] == 1) //if a wall
 			return ;
 		cam->y += len;
 	}

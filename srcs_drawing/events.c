@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   events.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: llefranc <llefranc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/04 17:44:38 by llefranc          #+#    #+#             */
-/*   Updated: 2020/03/11 18:19:50 by llefranc         ###   ########.fr       */
+/*   Updated: 2020/03/18 12:05:27 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,7 @@ int		destroy_notify(t_pars *par)
 int		no_event(t_mlx *mlx)
 {
 	if (((mlx->cam->m_up || mlx->cam->m_down) && (mlx->cam->m_left || mlx->cam->m_right))
-			&& (!(mlx->cam->m_up && mlx->cam->m_down) || !(mlx->cam->m_left && mlx->cam->m_right)))
+			&& (!(mlx->cam->m_up && mlx->cam->m_down) && !(mlx->cam->m_left && mlx->cam->m_right)))
 	{
 		mlx->cam->m_up ? move_up_in_map(mlx, MOVE_SIZE / 2.0) : 0;
 		mlx->cam->m_down ? move_down_in_map(mlx, MOVE_SIZE / 2.0) : 0;

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   init_structures.c                                  :+:      :+:    :+:   */
+/*   init_mlx_struct.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: llefranc <llefranc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/02/25 14:34:54 by llefranc          #+#    #+#             */
-/*   Updated: 2020/03/09 14:45:31 by llefranc         ###   ########.fr       */
+/*   Created: 2020/03/12 16:23:29 by lucaslefran       #+#    #+#             */
+/*   Updated: 2020/03/18 12:34:19 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,8 +32,27 @@ void	struct_init_addr_info(t_mlx *mlx, t_addr *addr, t_info *info)
 	addr->t_we = (int *)mlx_get_data_addr(mlx->img->t_we, &(info->t_we[BITS_PER_PIX]), 
 			&(info->t_we[SIZE_LINE]), &(info->t_we[ENDIAN]));
 	info->t_we[SIZE_LINE] /= (info->t_we[BITS_PER_PIX] / 8);
+	addr->s_2 = (int *)mlx_get_data_addr(mlx->img->s_2, &(info->s_2[BITS_PER_PIX]), 
+			&(info->s_2[SIZE_LINE]), &(info->s_2[ENDIAN]));
+	info->s_2[SIZE_LINE] /= (info->s_2[BITS_PER_PIX] / 8);
+
 }
 
+/*
+** Loads one specific sprite, using the path in argument.
+*/
+void	load_sprites(t_mlx *mlx, char *path, char *name, int num_sprite)
+{
+	char	*tmp;
+
+	if (!(tmp = ft_strjoin(path, name)))
+		error_msg("Malloc failed\n", mlx->par, NULL);
+	if (num_sprite == 2)
+		if (!(mlx->img->s_2 = mlx_xpm_file_to_image(mlx->ptr, tmp, 
+				&(mlx->info->s_2[WIDTH]), &(mlx->info->s_2[HEIGHT]))))
+			error_msg("Textures : error loading sprite number 2\n", mlx->par, NULL);
+	free(tmp);
+}
 
 /*
 ** Loading each images. 
@@ -49,6 +68,7 @@ void	struct_init_img(t_mlx *mlx, t_info *info)
 		error_msg("Textures : error loading east texture\n", mlx->par, NULL);
 	if (!(mlx->img->t_we = mlx_xpm_file_to_image(mlx->ptr, mlx->par->path_we, &(info->t_we[WIDTH]), &(info->t_we[HEIGHT]))))
 		error_msg("Textures : error loading west texture\n", mlx->par, NULL);
+	load_sprites(mlx, mlx->par->path_sp, "num_2/tree.xpm", 2);
 }
 
 /*
@@ -91,72 +111,5 @@ void	struct_init_mlx(t_mlx *mlx, t_img *img, t_addr *addr, t_info *info)
 	struct_init_paths(mlx->par);
 	struct_init_img(mlx, info);
 	struct_init_addr_info(mlx, addr, info);
-}
-
-/*
-** Read the map and search for the player position in order to initiate his
-** starting position and angle of view. Also save number of max rows for each
-** line.
-*/
-void	init_player_pos(t_rcast *cam)
-{
-	int		line;
-	int		row;
-
-	line = 0;
-	while (cam->map[line]) //map is terminated by a NULL *ptr
-	{
-		row = 0;
-		while (cam->map[line][row] != -2)
-		{
-			if (cam->map[line][row] > 10) //player position
-			{
-				cam->x = (double)row + 0.5;		//adding 0.5 so the player will start
-				cam->y = (double)line + 0.5;	//in the middle of the case
-				cam->map[line][row] == EAST ? cam->angle = V_EAST : 0; //0 degees
-				cam->map[line][row] == NORTH ? cam->angle = V_NORTH : 0; //90 degrees
-				cam->map[line][row] == WEST ? cam->angle = V_WEST : 0; //180 degrees
-				cam->map[line][row] == SOUTH ? cam->angle = V_SOUTH : 0; //270 degrees
-				cam->map[line][row] = 0;
-			}
-			row++;
-		}
-		cam->nb_rows[line] = row; //save number max of rows for each line
-		line++;
-	}
-}
-
-void	struct_init_cam_bool(t_rcast *cam)
-{
-	cam->m_up = 0;		//booleans for movements
-	cam->m_down = 0;
-	cam->m_left = 0;
-	cam->m_right = 0;
-	cam->r_left = 0;	//booleans for rotations
-	cam->r_right = 0;
-	cam->mouse_bool = 0; //first use of the mouse
-	cam->mouse_x = 0;	 //x position of the mouse
-}
-
-/*
-** Fill structure cam with the following parameters :
-** Number of lines / rows in the map, player position (x, y), angle of view for
-** the camera. Also transform the map from **char (in par) to a **int (in cam).
-*/
-void	struct_init_camera(t_pars *par, t_rcast *cam)
-{
-	int line;
-
-	line = 0;
-	struct_init_cam_bool(cam);
-	while (par->map[line]) //counting number of lines
-		line++;
-	cam->nb_lines = line;
-	if (!(cam->nb_rows = malloc(line * sizeof(int)))) //for nb rows max for each line
-		error_msg("Malloc failed\n", par, NULL);
-	cam->map = par->map;
-	init_player_pos(cam); //save player position + number of max rows for each line
-	cam->dist_screen = (par->reso[0] / 2.0) / tan(((double)FOV / 2.0) * (TO_RAD)); //pythagore, 
-	cam->freq_ray = (double)FOV / par->reso[0];
-	cam->par = par;	//allow to only carry t_rcast struct
+	mlx->spri = NULL;
 }

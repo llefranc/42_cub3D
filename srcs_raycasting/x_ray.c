@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   x_ray.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: llefranc <llefranc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/26 14:56:38 by llefranc          #+#    #+#             */
-/*   Updated: 2020/03/11 11:56:44 by llefranc         ###   ########.fr       */
+/*   Updated: 2020/03/18 18:46:20 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,15 +104,17 @@ int		x_ray_find_wall(t_rcast *cam, double angle, double x_len, double y_len)
 {
 	if (angle > 0.0 && angle < 180.0)
 		y_len = (double)((int)(y_len)) - 1.0; //at the intersection with y axe, checking if wall above us
-	else if (cam->y + y_len - (double)((int)(cam->y + y_len)))
+	else if (cam->y + y_len - (double)((int)(cam->y + y_len)) > 0.99)
 		y_len = (double)((int)(y_len)) + 1.0;
 	if ((int)(cam->y + y_len) < 0 || (int)(cam->y + y_len) >= cam->nb_lines) //if we're out of the map (lines)
 		return (-1);
 	if ((int)(cam->x + x_len) < 0 || (int)(cam->x + x_len) >= cam->nb_rows[(int)(cam->y + y_len)]) //same for rows
 		return (-1);
-	if (cam->map[(int)(cam->y + y_len)][(int)(cam->x + x_len)] != 1) //if not a wall
-		return (0);
-	return (1); //only if we find a wall
+	if (cam->map[(int)(cam->y + y_len)][(int)(cam->x + x_len)] > 1) //if a sprite
+		return (2);
+	else if (cam->map[(int)(cam->y + y_len)][(int)(cam->x + x_len)] == 0) //if empty
+		return (1);
+	return (0); //only if we find a wall
 }
 
 /*
@@ -122,8 +124,9 @@ int		x_ray_find_wall(t_rcast *cam, double angle, double x_len, double y_len)
 ** never cross 'y axe'). If angle == 90 or 270 degrees, 0 will be returned (ray
 ** go up or down but doesn't move on 'x axe').
 */
-double	x_ray_len(t_rcast *cam, double angle, t_texture *textu)
+double	x_ray_len(t_mlx *mlx, t_rcast *cam, double angle, t_texture *textu)
 {
+	int		ret;
 	double	y1; //distance on 'y axe' when we first cross 'x axe' with a certain angle
 	double	x1; //distance on 'x axe' when we first cross 'y axe' with a certain angle
 	double	ya; //next crosses on x = y1 + nb * ya, with ya the distance between
@@ -137,12 +140,15 @@ double	x_ray_len(t_rcast *cam, double angle, t_texture *textu)
 	ya = x_ray_ya_value(angle); 
 	x1 = x_ray_x1_value(angle, y1); //cam->x + x1 => border of the actual case (x axe)
 	xa = x_ray_xa_value(angle, y1, ya) - x1;
-	while (!x_ray_find_wall(cam, angle, x1, y1)) //until we find a wall or exit map
+	while ((ret = x_ray_find_wall(cam, angle, x1, y1)) > 0) //until we find a wall or exit map
 	{
+		if (ret == 2) //we're adding again xa and ya to be sure the line will be over the sprite case and cross sprite plan
+			find_sprites(mlx, sprites_ptr_x_ray(mlx, angle, x1,
+					y1), cam->x + x1 + xa, cam->y + y1 + ya, angle);
 		x1 += xa; //next cross with y axe 
 		y1 += ya; //moving of (+-)1 unity on 'y axe'
 	}
 	textu->x_xa = x1;	//saving coordonates of where the ray is touching the wall
 	textu->x_ya = y1;	//usefull later for calculating textures rendering
-	return (ray_len(cam, x1, y1)); //len of ray when we cross 'x axe' and meet a wall
+	return (ray_len(cam->x, cam->y, cam->x + x1, cam->y + y1)); //len of ray when we cross 'x axe' and meet a wall
 }

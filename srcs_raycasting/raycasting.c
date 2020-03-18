@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   raycasting.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: llefranc <llefranc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/21 13:40:24 by llefranc          #+#    #+#             */
-/*   Updated: 2020/03/11 11:57:17 by llefranc         ###   ########.fr       */
+/*   Updated: 2020/03/18 16:23:20 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,26 +56,25 @@ double	angle_tri_rect(double angle)
 /*
 ** Use pythagore to calculate the len of a ray (distance between two coordinates).
 */
-double	ray_len(t_rcast *cam, double x_len, double y_len)
+double	ray_len(double xa, double ya, double xb, double yb)
 {
-	x_len = cam->x + x_len;
-	y_len = cam->y + y_len;
-	return (sqrt(pow(x_len - cam->x, 2.0) + pow(y_len - cam->y, 2.0))); //√((xb - xa)² + (yb - ya)²)
+	return (sqrt(pow(xb - xa, 2.0) + pow(yb - ya, 2.0))); //√((xb - xa)² + (yb - ya)²)
 }
 
 /*
-** Use Thales theoreme to determinate height of the wall projected on the
+** Use Thales theoreme to determinate height of 1 object projected on the
 ** screen, and return the number of pixels that need to be colored.
-** distance cam_projection_screen / distance cam_wall == height wall_on_screen / height wall_in_game
+** All objects must be size of the walls (defined).
+** distance cam_projection_screen / distance cam_obj == height obj_on_screen / height wall_in_game
 */
-double	height_wall(t_rcast *cam, double ray_len)
+double	height_object(t_rcast *cam, double ray_len)
 {
-	double	h_wall;
-	double	dist_cam_wall_ing;
+	double	h_object;
+	double	dist_cam_obj_ing;
 
-	dist_cam_wall_ing = ray_len * (double)WALL_SIZE; //one case of the map (x = 1 or y = 1) == WALL_SIZE
-	h_wall = ((double)WALL_SIZE / dist_cam_wall_ing) * (cam->dist_screen);
-	return (h_wall);
+	dist_cam_obj_ing = ray_len * (double)WALL_SIZE; //one case of the map (x = 1 or y = 1) == WALL_SIZE
+	h_object = ((double)WALL_SIZE / dist_cam_obj_ing) * (cam->dist_screen);
+	return (h_object);
 }
 
 /*
@@ -92,8 +91,8 @@ int		nb_image_row(t_rcast *cam, t_texture *textu, double xa, double ya)
 
 	x_len = cam->x + xa - (double)((int)(cam->x + xa));
 	y_len = cam->y + ya - (double)((int)(cam->y + ya));
-	if (x_len > y_len || y_len > 0.99)	//y_len > 0.99 handle a strange case where y_len should value 0 but
-	{									//it's taking 0.999... value to to round errors
+	if ((x_len > y_len && x_len < 0.9999999) || y_len > 0.99) //y_len > 0.99 handle a strange case where y_len should value 0 but
+	{													 	  //it's taking 0.9999999... value due to round errors
 		row_img = (int)(x_len * (double)WALL_SIZE);
 		textu->side_wall = (textu->angle_raycast >= 0.0 && textu->angle_raycast < 180.0) ? NORTH : SOUTH;
 	}
@@ -113,24 +112,24 @@ int		nb_image_row(t_rcast *cam, t_texture *textu, double xa, double ya)
 ** screen. Also determinate which row of texture img we will use to fill the wall
 ** on screen.
 */
-double		nb_pixel_wall(t_rcast *cam, t_texture *textu, double angle)
+double		nb_pixel_wall(t_mlx *mlx, t_rcast *cam, t_texture *textu, double angle)
 {
 	double	h_wall; //size of the wall on the screen in pixels
 	double	x_ray;
 	double	y_ray;
 
 	textu->angle_raycast = angle; //needed in nb_image_row func
-	x_ray = x_ray_len(cam, angle, textu) * cos(fabs(cam->angle - angle) * TO_RAD); //correcting fisheye with pythagore
-	y_ray = y_ray_len(cam, angle, textu) * cos(fabs(cam->angle - angle) * TO_RAD);
+	x_ray = x_ray_len(mlx, cam, angle, textu) * cos(fabs(cam->angle - angle) * TO_RAD); //correcting fisheye with pythagore
+	y_ray = y_ray_len(mlx, cam, angle, textu) * cos(fabs(cam->angle - angle) * TO_RAD);
 	if (y_ray != y_ray || x_ray <= y_ray)	//y_ray != y_ray handle the case of y_ray = NAN, can be true only if y_ray is NAN
 	{										//Compare something with NAN will always be false.
 		textu->row_img = nb_image_row(cam, textu, textu->x_xa, textu->x_ya);
-		h_wall = height_wall(cam, x_ray);	
+		h_wall = height_object(cam, x_ray);
 	}
 	else									//If x_ray is NAN, x_ray <= y_ray will be false
 	{										
 		textu->row_img = nb_image_row(cam, textu, textu->y_xa, textu->y_ya);
-		h_wall = height_wall(cam, y_ray);
+		h_wall = height_object(cam, y_ray);
 	}
 	return (h_wall);
 }
