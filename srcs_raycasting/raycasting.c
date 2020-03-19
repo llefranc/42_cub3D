@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/21 13:40:24 by llefranc          #+#    #+#             */
-/*   Updated: 2020/03/18 16:23:20 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/03/19 10:51:22 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,6 +105,24 @@ int		nb_image_row(t_rcast *cam, t_texture *textu, double xa, double ya)
 }
 
 /*
+** Due to using 2 differents ray algo (one for 'x axe', one for 'y axe'),
+** some ray_len sprites can be longer than ray_len_wall (ray_len_wall detecting
+** a wall after a distance of 5 in 'x axe' algo, but sprite detected afet a
+** distance of 6 in 'y axe' algo), and so sprites will appear behind walls.
+** This function sets ray_len_sprites to -1.0 if this one is longer than
+** ray_len_walls.
+*/
+void		erase_sprites_behing_walls(t_sprites **spri, double ray_len)
+{
+	int		i;
+
+	i = -1;
+	while (spri[++i])
+		if (ray_len < spri[i]->ray_len)
+			spri[i]->ray_len = -1.0;
+}
+
+/*
 ** Compare the len of 2 rays :
 ** x_ray, stopping when it meets a wall and checking each time it crosses 'y axe')
 ** y_ray, stopping when it meets a wall and checking each time it crosses 'x axe')
@@ -123,11 +141,13 @@ double		nb_pixel_wall(t_mlx *mlx, t_rcast *cam, t_texture *textu, double angle)
 	y_ray = y_ray_len(mlx, cam, angle, textu) * cos(fabs(cam->angle - angle) * TO_RAD);
 	if (y_ray != y_ray || x_ray <= y_ray)	//y_ray != y_ray handle the case of y_ray = NAN, can be true only if y_ray is NAN
 	{										//Compare something with NAN will always be false.
+		erase_sprites_behing_walls(mlx->spri, x_ray);
 		textu->row_img = nb_image_row(cam, textu, textu->x_xa, textu->x_ya);
 		h_wall = height_object(cam, x_ray);
 	}
 	else									//If x_ray is NAN, x_ray <= y_ray will be false
 	{										
+		erase_sprites_behing_walls(mlx->spri, y_ray);
 		textu->row_img = nb_image_row(cam, textu, textu->y_xa, textu->y_ya);
 		h_wall = height_object(cam, y_ray);
 	}
