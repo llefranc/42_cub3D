@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/25 14:34:54 by llefranc          #+#    #+#             */
-/*   Updated: 2020/03/18 18:17:17 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/03/19 15:39:33 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,17 @@ void	add_sprite_struct(t_mlx *mlx, t_sprites *new)
 }
 
 /*
+** Return depending on the type the background color (in a int) that we will
+** not print.
+*/
+int		sprites_background_color(int type)
+{
+	if (type == 2)
+		return (9961608);
+	return (1);
+}
+
+/*
 ** Return the memory address of sprite image depending on spri_num.
 */
 int		*add_sprite_img_addr(t_mlx *mlx, int spri_num)
@@ -79,10 +90,13 @@ void	add_sprite_info(t_mlx *mlx, t_rcast *cam, int line, int row)
 	t_sprites	*new;
 
 	if (!(new = malloc(sizeof(*new))))
+	{
+		free_sprite_struct(mlx->spri);
 		error_msg("Malloc failed\n", cam->par, NULL);
+	}
 	new->type = cam->map[line][row];
 	new->addr_img = add_sprite_img_addr(mlx, new->type);
-	new->inv_color = 9961608; //A FINIR DE CONFIGURER ICI, RAJOUTER UNE FONCTION
+	new->inv_color = sprites_background_color(new->type);
 	new->x = row;
 	new->y = line;
 	new->ray_len = -1.0;
@@ -140,6 +154,8 @@ void	struct_init_cam_bool(t_rcast *cam)
 	cam->m_right = 0;
 	cam->r_left = 0;	//booleans for rotations
 	cam->r_right = 0;
+	cam->rm_left = 0;
+	cam->rm_right = 0;
 	cam->mouse_bool = 0; //first use of the mouse
 	cam->mouse_x = 0;	 //x position of the mouse
 }

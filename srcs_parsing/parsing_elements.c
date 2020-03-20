@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing_elements.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: llefranc <llefranc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/13 18:04:46 by lucaslefran       #+#    #+#             */
-/*   Updated: 2020/02/28 11:15:24 by llefranc         ###   ########.fr       */
+/*   Updated: 2020/03/19 11:04:37 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,8 +42,6 @@ int		parse_reso(t_pars *par, char *line)
 	else
 		par->reso[1] = (i = ft_atoi(tmp[2])) > RESO_MAX_Y ? RESO_MAX_Y : i;
 	free_split(tmp);
-	// if (par->reso[0] < RESO_MIN_X || par->reso[1] < RESO_MIN_Y)
-	// 	error_msg("File .cub, resolution : minimum is 640 x 480\n", par, line);
 	return (1);
 }
 

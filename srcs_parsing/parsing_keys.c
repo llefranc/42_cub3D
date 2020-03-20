@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing_keys.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: llefranc <llefranc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/18 15:56:38 by lucaslefran       #+#    #+#             */
-/*   Updated: 2020/03/05 10:38:07 by llefranc         ###   ########.fr       */
+/*   Updated: 2020/03/20 13:05:28 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 

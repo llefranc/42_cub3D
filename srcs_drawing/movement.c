@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/04 15:04:03 by llefranc          #+#    #+#             */
-/*   Updated: 2020/03/18 11:49:29 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/03/19 17:40:08 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -147,4 +147,44 @@ void	move_right_in_map(t_mlx *mlx, double move_size)
 		move(mlx->cam, -sin(angle_tri_rect(mlx->cam->angle) * TO_RAD) * move_size, 'x');
 		move(mlx->cam, cos(angle_tri_rect(mlx->cam->angle) * TO_RAD) * move_size, 'y');
 	}
+}
+
+/*
+** Calculates the time between two frames when a movement key is pressed, and
+** adjusts the size of the movement so player's movement are not slowed when
+** the framerate is dropping (with huge resolution for exemple).
+*/
+void	move_accords_framerate(t_mlx *mlx, double move)
+{
+	clock_t		end;
+	double		time;
+
+	end = clock();
+	time = (double)(end - mlx->start_move) / CLOCKS_PER_SEC;
+	if (mlx->start_move != 0.0) //if the key wasn't just pressed
+		move = move * (time / TIME_MOVE);
+	mlx->cam->m_up ? move_up_in_map(mlx, move) : 0;
+	mlx->cam->m_down ? move_down_in_map(mlx, move) : 0;
+	mlx->cam->m_left ? move_left_in_map(mlx, move) : 0;
+	mlx->cam->m_right ? move_right_in_map(mlx, move) : 0;
+	mlx->start_move = clock(); //setting start here for the next move
+}
+
+/*
+** Calculates the time between two frames when a rotation key is pressed, and
+** adjusts the size of the rotation so player's rotation is not slowed when
+** the framerate is dropping (with huge resolution for exemple).
+*/
+void	rota_accords_framerate(t_mlx *mlx, double rota)
+{
+	clock_t		end;
+	double		time;
+
+	end = clock();
+	time = (double)(end - mlx->start_rota) / CLOCKS_PER_SEC;
+	if (mlx->start_rota != 0.0) //if the key wasn't just pressed
+		rota = rota * (time / TIME_MOVE);
+	mlx->cam->r_left ? mlx->cam->angle = positive_angle(mlx->cam->angle + rota) : 0; //rotation
+	mlx->cam->r_right ? mlx->cam->angle = positive_angle(mlx->cam->angle - rota) : 0;
+	mlx->start_rota = clock(); //setting start here for the next rotation
 }

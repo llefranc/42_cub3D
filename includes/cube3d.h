@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/12 16:17:24 by lucaslefran       #+#    #+#             */
-/*   Updated: 2020/03/18 19:26:04 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/03/20 13:03:09 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 # include <fcntl.h>
 # include <math.h>
 # include <float.h>
+# include <time.h>
 
 # include "libftprintf.h"
 # include "mlx.h"
@@ -26,9 +27,7 @@
 
 //resolution values
 # define RESO_MAX_X		2560
-# define RESO_MIN_X		640 //PENSER A TCHECKER LE CAS DE LA RESO MIN
 # define RESO_MAX_Y		1440
-# define RESO_MIN_Y		480
 
 //keys values
 # define RESO			1
@@ -38,8 +37,10 @@
 # define P_WEST			5
 # define P_SPRIT		6
 # define FLO_RGB		7
-# define SKY_RGB		8
-# define MAP_LINE		9
+# define FLO_BONUS		8
+# define SKY_RGB		9
+# define SKY_BONUS		10
+# define MAP_LINE		11
 
 # define NORTH			30
 # define SOUTH			35
@@ -49,8 +50,9 @@
 //raycasting constants
 # define WALL_SIZE		64			//height of wall
 # define MOVE_SIZE		0.065
+# define TIME_MOVE		0.015
 # define ROTA_SIZE		2.5
-# define M_ROTA_SIZE	2.5
+# define M_ROTA_SIZE	0.75
 # define FOV			50			//field of view
 
 //angle in degrees
@@ -81,6 +83,8 @@ typedef struct	s_pars
 	char		*path_ea;
 	char		*path_we;
 	char		*path_sp;			//path for finding sprites
+	char		*path_b_fl;			//path for bonus floor texture 
+	char		*path_b_sk;			//path for bonus sky texture 
 	int			flo_rgb;			//floor color contained in an int
 	int			sky_rgb;			//sky color contained in a int
 	int			**map;
@@ -142,6 +146,8 @@ typedef struct	s_rcast
 	int			m_right;
 	int			r_left;				//booleans for rotation with keyboard
 	int			r_right;
+	double		rm_left;			//value of rotation with mouse
+	double		rm_right;
 	int			mouse_bool;			//for rotation with mouse
 	int			mouse_x;
 	int			**map;
@@ -183,6 +189,8 @@ typedef struct	s_mlx
 {
 	void		*ptr;
 	void		*win;
+	clock_t		start_move;
+	clock_t		start_rota;
 	t_img		*img;				//allow to carry only t_mlx struct
 	t_addr		*addr;//implmentation endian ?
 	t_info		*info;
@@ -195,6 +203,7 @@ typedef struct	s_mlx
 void	 	print_struct(t_pars *par); //a supprimer
 void		print_map(int **map); //a enlever
 int			drawing(t_pars *par); //a modifier
+void		raycasting(t_mlx *mlx);
 
 /*
 ** ------ srcs_parsing -------
@@ -238,7 +247,7 @@ double		ray_len(double xa, double ya, double xb, double yb);
 double		height_object(t_rcast *cam, double ray_len);
 double		nb_pixel_wall(t_mlx *mlx, t_rcast *cam, t_texture *textu, double angle);
 
-//raycast_sprites.c
+//sprites_raycast.c
 void		reset_ray_len_sprites(t_sprites **spri);
 void		calc_sprites_orientation(t_sprites **spri, double angle);
 t_sprites	*sprites_ptr_x_ray(t_mlx *mlx, double angle, double x1, double y1);
@@ -255,24 +264,31 @@ double		y_ray_len(t_mlx *mlx, t_rcast *cam, double angle, t_texture *textu);
 ** ----- srcs_drawing -----
 */
 
+//init_cam_struct.c
+void		free_sprite_struct(t_sprites **spri);
 void		struct_init_camera(t_mlx *mlx, t_rcast *cam, t_pars *par);
+
+//init_mlx_struct.c
 void		struct_init_mlx(t_mlx *mlx, t_img *img, t_addr *addr, t_info *info);
-void		raycasting(t_mlx *mlx);
 
 //movement.c
-void		move_up_in_map(t_mlx *mlx, double move_size);
-void		move_down_in_map(t_mlx *mlx, double move_size);
-void		move_left_in_map(t_mlx *mlx, double move_size);
-void		move_right_in_map(t_mlx *mlx, double move_size);
+void		move_accords_framerate(t_mlx *mlx, double move);
+void		rota_accords_framerate(t_mlx *mlx, double rota);
 
 //events.c
 int			motion_notify(int x, int y, t_mlx *mlx);
 int			key_press(int keycode, t_mlx *mlx);
 int			key_release(int keycode, t_mlx *mlx);
-int			destroy_notify(t_pars *par);
+int			destroy_notify(t_mlx *mlx);
 int			no_event(t_mlx *mlx);
 
 //draw_sprites.c
 void		draw_sprites(t_mlx *mlx, t_sprites **spri, int screen_row);
+
+
+
+//BONUS
+int		floor_raycasting(t_mlx *mlx, double height, double rcast_angle);
+int		sky_raycasting(t_mlx *mlx, double height, double rcast_angle);
 
 #endif

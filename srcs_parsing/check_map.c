@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   check_map.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: llefranc <llefranc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/05 14:08:50 by llefranc          #+#    #+#             */
-/*   Updated: 2020/03/09 10:59:05 by llefranc         ###   ########.fr       */
+/*   Updated: 2020/03/19 11:29:25 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -200,7 +200,7 @@ int		map_check(t_pars *par)
 	while (par->map[i])
 	{
 		pos += pos_player_check(par->map[i++]); //return nb times player position is detected in a line
-		pos > 1 ? error_msg_map("File .cub, map : several player positions\n", par , par->map[i]) : 0;
+		pos > 1 ? error_msg_map("File .cub, map : several player positions\n", par , par->map[i - 1]) : 0;
 	}
 	!pos ? error_msg("File .cub, map : no player position\n", par, NULL) : 0;
 	if (!first_last_line_check(par, par->map[0]))

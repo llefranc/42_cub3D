@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/04 17:44:38 by llefranc          #+#    #+#             */
-/*   Updated: 2020/03/18 12:05:27 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/03/19 17:00:05 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@
 */
 int		motion_notify(int x, int y, t_mlx *mlx)
 {
+	unsigned int	x_tmp;
+
 	(void)y;
 	if (mlx->cam->mouse_bool == 1) //at the moment the mouse is activated, to initiate it
 	{
@@ -25,11 +27,14 @@ int		motion_notify(int x, int y, t_mlx *mlx)
 	}
 	if (mlx->cam->mouse_bool) 
 	{
+		x_tmp = abs(x - mlx->cam->mouse_x); //usefull for acceleration
+		if (x_tmp > 9)		//to lower to huge acceleration
+			x_tmp = (int)sqrt((double)x_tmp) * 3;
 		if (x < mlx->cam->mouse_x) //allow to know if the mouse is moving left or right
-			mlx->cam->angle = positive_angle(mlx->cam->angle + M_ROTA_SIZE);
+			mlx->cam->rm_left = M_ROTA_SIZE * x_tmp;
 		else if (x > mlx->cam->mouse_x)
-			mlx->cam->angle = positive_angle(mlx->cam->angle - M_ROTA_SIZE);
-		mlx->cam->mouse_x = x;
+			mlx->cam->rm_right = M_ROTA_SIZE * x_tmp;
+		mlx->cam->mouse_x = x;		//for the next moove with the mouse
 	}
 	return (1);
 }
@@ -87,40 +92,42 @@ int		key_release(int keycode, t_mlx *mlx)
 /*
 ** Allow to properly qui the program when the player is closing the window.
 */
-int		destroy_notify(t_pars *par)
+int		destroy_notify(t_mlx *mlx)
 {
-	struct_free(par);
+	struct_free(mlx->par);
+	free_sprite_struct(mlx->spri);
 	exit(EXIT_SUCCESS);
 }
 
 /*
 ** Moove the player's position if some movements were activated in keypress
-** and keyrelease, then actualize the screen by doing the raycasting. 
+** and keyrelease, rotates the camera, then actualize the screen by doing the raycasting. 
 */
 int		no_event(t_mlx *mlx)
 {
+	//update player position
 	if (((mlx->cam->m_up || mlx->cam->m_down) && (mlx->cam->m_left || mlx->cam->m_right))
 			&& (!(mlx->cam->m_up && mlx->cam->m_down) && !(mlx->cam->m_left && mlx->cam->m_right)))
-	{
-		mlx->cam->m_up ? move_up_in_map(mlx, MOVE_SIZE / 2.0) : 0;
-		mlx->cam->m_down ? move_down_in_map(mlx, MOVE_SIZE / 2.0) : 0;
-		mlx->cam->m_left ? move_left_in_map(mlx, MOVE_SIZE / 2.0) : 0;
-		mlx->cam->m_right ? move_right_in_map(mlx, MOVE_SIZE / 2.0) : 0;
-	}
+		move_accords_framerate(mlx, MOVE_SIZE / 2.0); //so player doesn't move 2x faster when 2 keys are pressed
+	else if (mlx->cam->m_up || mlx->cam->m_down || mlx->cam->m_left || mlx->cam->m_right)
+		move_accords_framerate(mlx, MOVE_SIZE);
 	else
-	{
-		mlx->cam->m_up ? move_up_in_map(mlx, MOVE_SIZE) : 0;		//movements
-		mlx->cam->m_down ? move_down_in_map(mlx, MOVE_SIZE) : 0;
-		mlx->cam->m_left ? move_left_in_map(mlx, MOVE_SIZE) : 0;
-		mlx->cam->m_right ? move_right_in_map(mlx, MOVE_SIZE) : 0;
-	}
-	mlx->cam->r_left ? mlx->cam->angle = positive_angle(mlx->cam->angle + ROTA_SIZE) : 0; //rotation
-	mlx->cam->r_right ? mlx->cam->angle = positive_angle(mlx->cam->angle - ROTA_SIZE) : 0;
+		mlx->start_move = 0.0;
+	//update camera rotation
+	if (mlx->cam->r_left || mlx->cam->r_right)
+		rota_accords_framerate(mlx, ROTA_SIZE);
+	else
+		mlx->start_rota = 0.0;
+	mlx->cam->rm_left ? mlx->cam->angle = positive_angle(mlx->cam->angle + mlx->cam->rm_left) : 0;
+	mlx->cam->rm_right ? mlx->cam->angle = positive_angle(mlx->cam->angle - mlx->cam->rm_right) : 0;
+	//to prevent using ressources when the player isn't moving
 	if (mlx->cam->m_up || mlx->cam->m_down || mlx->cam->m_left || mlx->cam->m_right ||
-				mlx->cam->r_right || mlx->cam->r_left) //to prevent using ressources when the player isn't moving
+			mlx->cam->r_right || mlx->cam->r_left || mlx->cam->rm_right || mlx->cam->rm_left)
 	{
 		raycasting(mlx);
 		mlx_put_image_to_window(mlx->ptr, mlx->win, mlx->img->screen, 0, 0);
 	}
+	mlx->cam->rm_left = 0.0;
+	mlx->cam->rm_right = 0.0;
 	return (1);
 }

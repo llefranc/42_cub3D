@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/12 16:23:29 by lucaslefran       #+#    #+#             */
-/*   Updated: 2020/03/18 12:34:19 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/03/19 16:56:13 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -103,6 +103,8 @@ void	struct_init_paths(t_pars *par)
 */
 void	struct_init_mlx(t_mlx *mlx, t_img *img, t_addr *addr, t_info *info)
 {
+	mlx->start_move = 0; //booleans for movement and rotation
+	mlx->start_rota = 0;
 	mlx->ptr = mlx_init();
 	mlx->win = mlx_new_window(mlx->ptr, (int)mlx->par->reso[0], (int)mlx->par->reso[1], "cub3d");
 	mlx->img = img;
