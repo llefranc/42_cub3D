@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/04 17:44:38 by llefranc          #+#    #+#             */
-/*   Updated: 2020/03/19 17:00:05 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/03/23 11:33:49 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,6 +96,7 @@ int		destroy_notify(t_mlx *mlx)
 {
 	struct_free(mlx->par);
 	free_sprite_struct(mlx->spri);
+	destroy_all_images(mlx, mlx->img);
 	exit(EXIT_SUCCESS);
 }
 

@@ -7,7 +7,8 @@ SO ./images/textures/south/
 WE ./images/textures/west/
 S ./images/sprites/
 
-
+CB ./images/textures/ceil/
+FB ./images/textures/floor/
 
 C 220,10,23
 

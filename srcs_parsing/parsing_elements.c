@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/13 18:04:46 by lucaslefran       #+#    #+#             */
-/*   Updated: 2020/03/19 11:04:37 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/03/20 13:38:04 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,8 +139,8 @@ int		parse_sky_rgb(t_pars *par, char *line)
 }
 
 /*
-** Parse one line of the map and malloc the path of some sprites on *par.
-** (Key : "NO ", "SO ", "WE ", "EA ", "S ")
+** Parse one line of the map and malloc the path of textures/sprites on *par.
+** (Key : "NO ", "SO ", "WE ", "EA ", "S ", "FB ", "CB ").
 */
 int		parse_path(t_pars *par, char **path, char *line)
 {

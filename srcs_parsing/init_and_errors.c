@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init_and_errors.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: llefranc <llefranc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/12 18:49:53 by lucaslefran       #+#    #+#             */
-/*   Updated: 2020/03/09 11:00:12 by llefranc         ###   ########.fr       */
+/*   Updated: 2020/03/23 11:16:33 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,8 @@ void	struct_init_par(t_pars *par)
 	par->path_ea = NULL;
 	par->path_we = NULL;
 	par->path_sp = NULL;
+	par->path_b_fl = NULL;
+	par->path_b_sk = NULL;
 	par->flo_rgb = -1;
 	par->sky_rgb = -1;
 	par->map = NULL;
@@ -47,6 +49,8 @@ void	struct_free(t_pars *par)
 	free(par->path_ea);
 	free(par->path_we);
 	free(par->path_sp);
+	free(par->path_b_fl);
+	free(par->path_b_sk);
 	if (par->map)
 	{
 		while (par->map[++i]) // until we reach the NULL *ptr in map
@@ -62,7 +66,7 @@ void	struct_free(t_pars *par)
 */
 int		error_msg(char *str, t_pars *par, char *line)
 {
-    printf("Error\n%s", str);
+    ft_printf("Error\n%s", str);
 	if (par)
 		struct_free(par); //also close file descriptor
 	free(line);

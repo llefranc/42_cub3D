@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/25 11:07:23 by llefranc          #+#    #+#             */
-/*   Updated: 2020/03/20 12:25:15 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/03/23 11:30:48 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,12 +21,14 @@
 
 //EN PLUS
 //rajouter plusieurs sprites
+//rajouter choix entre coueur ou texture pour sol et plafond
+//utiliser mlx destroy img
 
 /*
 BONUS PART : 
 GOOD : Wall collisions.
-->• A skybox.
-->• Floor and/or ceiling texture.
+GOOD : A skybox.
+GOOD : Floor and/or ceiling texture.
 ->• An HUD.
 • Ability to look up and down.
 • Jump or crouch.
@@ -46,13 +48,14 @@ GOOD : Rotate the point of view with the mouse.
 Par theme :
 
 RAYCASTING :
-->• A skybox.
-->• Floor and/or ceiling texture.
+GOOD : A skybox.
+GOOD : Floor and/or ceiling texture.
 
 PLUSIEURS SPRITES :
 ->• Doors which can open and close.
 ->• Earning points and/or losing life by picking up objects/traps.
 ->• More items in the maze.
+->• Secret doors.
 
 HUD / ANIMATIONS AVEC TIMER :
 ->• Animations of a gun shot or animated sprite.
@@ -62,7 +65,6 @@ HUD / ANIMATIONS AVEC TIMER :
 AUTRES :
 ->• Several levels. (on peut mettre un ptit ecran de transition, et genre on passe d'un level a un autre)
 ->• Sounds and music.
-->• Secret doors.
 ->• Object collisions. (calculer size sprite, redefinir le plan ab, faire algo si droites mvt se croisent ou rayons lances par sprite)
 
 */
@@ -148,7 +150,7 @@ void	raycasting(t_mlx *mlx)
 		pix_sky_floor = (mlx->par->reso[1] - pix_wall) / 2.0;
 		while (++x < (unsigned int)pix_sky_floor)				//filling the sky
 			mlx->addr->screen[i + x * mlx->info->screen[SIZE_LINE]] = 
-				sky_raycasting(mlx, mlx->par->reso[1] / 2.0 - (double)x, 
+				draw_skybox(mlx, mlx->par->reso[1] - (double)x, 
 				positive_angle(mlx->cam->angle + (FOV / 2.0) - mlx->cam->freq_ray * (double)i));
 		while (++x < (unsigned int)(pix_sky_floor + pix_wall))	//filling the walls with textures
 			mlx->addr->screen[i + x * mlx->info->screen[SIZE_LINE]] = draw_texture(mlx, &textu, x - pix_sky_floor);
@@ -197,7 +199,7 @@ int		drawing(t_pars *par) //l'appeler drawing ?
 	// y_ray_len(&mlx, &cam, cam.angle, &textu);
 	// draw_sprites(&mlx, mlx.spri);
 	// printf("ray_len = %f, rowimg = %f\n", mlx.spri[0]->ray_len, mlx.spri[0]->row_percent);
-	
+	// printf("sizeline %d, width %d, height %d\n", info.t_sk[SIZE_LINE], info.t_sk[WIDTH], info.t_sk[HEIGHT]);
 	raycasting(&mlx); //allow to print first image
 	mlx_put_image_to_window(mlx.ptr, mlx.win, mlx.img->screen, 0, 0); //ici ?
 

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parsing.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: llefranc <llefranc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/12 20:57:54 by lucaslefran       #+#    #+#             */
-/*   Updated: 2020/03/09 13:04:33 by llefranc         ###   ########.fr       */
+/*   Updated: 2020/03/20 13:42:12 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,10 @@ void	check_spaces_end_of_line(t_pars *par, char *line, int key)
 						" at the end of 'WE' line are not allowed\n", par, line) : 0;
 		key == P_SPRIT ? error_msg("File .cub, path : Spaces"
 						" at the end of 'S' line are not allowed\n", par, line) : 0;
+		key == P_B_FLOOR ? error_msg("File .cub, path : Spaces"
+						" at the end of 'FB' line are not allowed\n", par, line) : 0;
+		key == P_B_SKY ? error_msg("File .cub, path : Spaces"
+						" at the end of 'CB' line are not allowed\n", par, line) : 0;
 		key == FLO_RGB ? error_msg("File .cub, colors : Spaces"
 						" at the end of 'F' line are not allowed\n", par, line) : 0;
 		key == SKY_RGB ? error_msg("File .cub, colors : Spaces"
@@ -64,6 +68,10 @@ int		parse_func(t_pars *par, char *line, int key)
 		ret = parse_path(par, &(par->path_we), line);
 	else if (key == P_SPRIT)
 		ret = parse_path(par, &(par->path_sp), line);
+	else if (key == P_B_FLOOR)
+		ret = parse_path(par, &(par->path_b_fl), line);
+	else if (key == P_B_SKY)
+		ret = parse_path(par, &(par->path_b_sk), line);
 	else if (key == FLO_RGB)
 		ret = parse_flo_rgb(par, line);
 	else if (key == SKY_RGB)

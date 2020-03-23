@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/25 14:34:54 by llefranc          #+#    #+#             */
-/*   Updated: 2020/03/19 15:39:33 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/03/23 11:23:51 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ void	add_sprite_struct(t_mlx *mlx, t_sprites *new)
 	if (!mlx->spri) //if it's the first sprite in our sprites'tab
 	{
 		if (!(mlx->spri = malloc(sizeof(*tmp) * 2))) //+2 for new sprite and NULL terminating
-			error_msg("Malloc failed\n", mlx->par, NULL);
+			error_msg_destroy_img("Malloc failed\n", mlx);
 		mlx->spri[0] = new;
 		mlx->spri[1] = NULL;
 	}
@@ -50,7 +50,7 @@ void	add_sprite_struct(t_mlx *mlx, t_sprites *new)
 		if (!(mlx->spri = malloc(sizeof(*tmp) * (i + 2)))) //+2 for new sprite and NULL terminating
 		{
 			free_sprite_struct(mlx->spri);
-			error_msg("Malloc failed\n", mlx->par, NULL);
+			error_msg_destroy_img("Malloc failed\n", mlx);
 		}
 		mlx->spri[i] = new;
 		mlx->spri[i + 1] = NULL;
@@ -92,7 +92,7 @@ void	add_sprite_info(t_mlx *mlx, t_rcast *cam, int line, int row)
 	if (!(new = malloc(sizeof(*new))))
 	{
 		free_sprite_struct(mlx->spri);
-		error_msg("Malloc failed\n", cam->par, NULL);
+		error_msg_destroy_img("Malloc failed\n", mlx);
 	}
 	new->type = cam->map[line][row];
 	new->addr_img = add_sprite_img_addr(mlx, new->type);
@@ -175,7 +175,7 @@ void	struct_init_camera(t_mlx *mlx, t_rcast *cam, t_pars *par)
 		line++;
 	cam->nb_lines = line;
 	if (!(cam->nb_rows = malloc(line * sizeof(int)))) //for nb rows max for each line
-		error_msg("Malloc failed\n", par, NULL);
+		error_msg_destroy_img("Malloc failed\n", mlx);
 	cam->map = par->map;
 	init_player_pos(mlx, cam); //save player position + number of max rows for each line + sprites info
 	cam->dist_screen = (par->reso[0] / 2.0) / tan(((double)FOV / 2.0) * (TO_RAD)); //pythagore, 

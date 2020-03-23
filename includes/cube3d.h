@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/12 16:17:24 by lucaslefran       #+#    #+#             */
-/*   Updated: 2020/03/20 13:03:09 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/03/23 11:31:14 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,10 +36,10 @@
 # define P_EAST			4
 # define P_WEST			5
 # define P_SPRIT		6
-# define FLO_RGB		7
-# define FLO_BONUS		8
-# define SKY_RGB		9
-# define SKY_BONUS		10
+# define P_B_FLOOR		7
+# define P_B_SKY		8
+# define FLO_RGB		9
+# define SKY_RGB		10
 # define MAP_LINE		11
 
 # define NORTH			30
@@ -162,6 +162,8 @@ typedef struct	s_img
 	void		*t_so;
 	void		*t_ea;
 	void		*t_we;
+	void		*t_fl;
+	void		*t_sk;
 	void		*s_2;
 }				t_img;
 
@@ -172,6 +174,8 @@ typedef struct	s_addr
 	int			*t_so;
 	int			*t_ea;
 	int			*t_we;
+	int			*t_fl;
+	int			*t_sk;
 	int			*s_2;
 }				t_addr;
 
@@ -182,6 +186,8 @@ typedef struct	s_info
 	int			t_so[5];			//[2] = ENDIAN
 	int			t_ea[5];			//[3] = WIDTH (only for xpm images)
 	int			t_we[5];			//[4] = HEIGHT (only for xpm images)
+	int			t_fl[5];
+	int			t_sk[5];
 	int			s_2[5];
 }				t_info;
 
@@ -269,6 +275,8 @@ void		free_sprite_struct(t_sprites **spri);
 void		struct_init_camera(t_mlx *mlx, t_rcast *cam, t_pars *par);
 
 //init_mlx_struct.c
+void		destroy_all_images(t_mlx *mlx, t_img *img);
+void		error_msg_destroy_img(const char *str, t_mlx *mlx);
 void		struct_init_mlx(t_mlx *mlx, t_img *img, t_addr *addr, t_info *info);
 
 //movement.c
@@ -289,6 +297,6 @@ void		draw_sprites(t_mlx *mlx, t_sprites **spri, int screen_row);
 
 //BONUS
 int		floor_raycasting(t_mlx *mlx, double height, double rcast_angle);
-int		sky_raycasting(t_mlx *mlx, double height, double rcast_angle);
+int		draw_skybox(t_mlx *mlx, double height, double rcast_angle);
 
 #endif
