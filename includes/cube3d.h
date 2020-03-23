@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/12 16:17:24 by lucaslefran       #+#    #+#             */
-/*   Updated: 2020/03/23 11:31:14 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/03/23 14:23:45 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@
 # include <math.h>
 # include <float.h>
 # include <time.h>
+# include <sys/time.h>
 
 # include "libftprintf.h"
 # include "mlx.h"
@@ -74,136 +75,142 @@
 # define HEIGHT			4
 
 //contains all the information from the config file
-typedef struct	s_pars
+typedef struct		s_pars
 {
-	int			fd;					//for be allowed to closed flux when error occurs
-	double		reso[2];			//reso x / reso y
-	char		*path_no;			//path for finding north textures
-	char		*path_so;
-	char		*path_ea;
-	char		*path_we;
-	char		*path_sp;			//path for finding sprites
-	char		*path_b_fl;			//path for bonus floor texture 
-	char		*path_b_sk;			//path for bonus sky texture 
-	int			flo_rgb;			//floor color contained in an int
-	int			sky_rgb;			//sky color contained in a int
-	int			**map;
-}				t_pars;
+	int				fd;					//for be allowed to closed flux when error occurs
+	double			reso[2];			//reso x / reso y
+	char			*path_no;			//path for finding north textures
+	char			*path_so;
+	char			*path_ea;
+	char			*path_we;
+	char			*path_sp;			//path for finding sprites
+	char			*path_b_fl;			//path for bonus floor texture 
+	char			*path_b_sk;			//path for bonus sky texture 
+	int				flo_rgb;			//floor color contained in an int
+	int				sky_rgb;			//sky color contained in a int
+	int				**map;
+}					t_pars;
 
 //allows to print the textures for walls
-typedef struct	s_texture
+typedef struct		s_texture
 {
-	double		x_xa;				//save coordinates of the wall hitted by x_ray
-	double		x_ya;
-	double		y_xa;				//same but for y_ray
-	double		y_ya;
-	double		angle_raycast;		//for determinate side_wall
-	int			side_wall;			//NORTH, SOUTH... for printing different textures on walls
-	int			no_limit_pix_wall;	//can be larger then reso y >> if the texture is taller than the reso
-	int			start_line_img;		//when huge texture, for starting to print from a certain height
-	double		freq_pixel;			//for printing several times or not some pixels (allow to resize texture)
-	int			row_img;			//row of the texture that we have to print on the wall
-}				t_texture;
+	double			x_xa;				//save coordinates of the wall hitted by x_ray
+	double			x_ya;
+	double			y_xa;				//same but for y_ray
+	double			y_ya;
+	double			angle_raycast;		//for determinate side_wall
+	int				side_wall;			//NORTH, SOUTH... for printing different textures on walls
+	int				no_limit_pix_wall;	//can be larger then reso y >> if the texture is taller than the reso
+	int				start_line_img;		//when huge texture, for starting to print from a certain height
+	double			freq_pixel;			//for printing several times or not some pixels (allow to resize texture)
+	int				row_img;			//row of the texture that we have to print on the wall
+}					t_texture;
 
 //represent the coordinates of one point
-typedef struct	s_point
+typedef struct		s_point
 {
-	double		x;
-	double		y;
-}				t_point;
+	double			x;
+	double			y;
+}					t_point;
 
 //allows to print sprites
-typedef struct	s_sprites
+typedef struct		s_sprites
 {
-	int			type;				//value of the sprite on the map (2, 3, 4..)
-	int			*addr_img;			//memory adress of the sprite image
-	int			inv_color;			//color that we're not printing for the sprite's background
-	int			x;					//sprite's coordinates
-	int			y;
-	double		ray_len;			//len of the ray when it meets the sprite
-	double		nb_pix;				//number of pixels print on screen for the sprite
-	int			start_line_img;		//first line of the image that we will print (for resizing)
-	double		freq_pixel;			//nb of time one pixel should be print (for resizing)
-	double		row_percent;		//portion of the sprite image touched by the ray
-	t_point		a;					//segment AB is the plan of the sprite, always facing and perpendicular
-	t_point		b;					//to the angle of the camere
-}				t_sprites;
-
+	int				type;				//value of the sprite on the map (2, 3, 4..)
+	int				*addr_img;			//memory adress of the sprite image
+	int				inv_color;			//color that we're not printing for the sprite's background
+	int				x;					//sprite's coordinates
+	int				y;
+	double			ray_len;			//len of the ray when it meets the sprite
+	double			nb_pix;				//number of pixels print on screen for the sprite
+	int				start_line_img;		//first line of the image that we will print (for resizing)
+	double			freq_pixel;			//nb of time one pixel should be print (for resizing)
+	double			row_percent;		//portion of the sprite image touched by the ray
+	t_point			a;					//segment AB is the plan of the sprite, always facing and perpendicular
+	t_point			b;					//to the angle of the camere
+}					t_sprites;
 
 //handle raycasting + player's movements events
-typedef struct	s_rcast
+typedef struct		s_rcast
 {
-	double		angle;				//direction where player looks
-	double		freq_ray;			//distance between to rays in degrees
-	double		x;					//player position
-	double		y;
-	double		dist_screen;
-	int			*nb_rows;			//number of rows in the map for each line, for avoiding segfault
-	int			nb_lines;
-	int			m_up;				//booleans for movement (be able to press multiple keys)
-	int			m_down;
-	int			m_left;
-	int			m_right;
-	int			r_left;				//booleans for rotation with keyboard
-	int			r_right;
-	double		rm_left;			//value of rotation with mouse
-	double		rm_right;
-	int			mouse_bool;			//for rotation with mouse
-	int			mouse_x;
-	int			**map;
-	t_pars		*par;				//allow to carry only t_rcast struct
-}				t_rcast;
+	double			angle;				//direction where player looks
+	double			freq_ray;			//distance between to rays in degrees
+	double			x;					//player position
+	double			y;
+	double			dist_screen;
+	int				*nb_rows;			//number of rows in the map for each line, for avoiding segfault
+	int				nb_lines;
+	int				m_up;				//booleans for movement (be able to press multiple keys)
+	int				m_down;
+	int				m_left;
+	int				m_right;
+	int				r_left;				//booleans for rotation with keyboard
+	int				r_right;
+	double			rm_left;			//value of rotation with mouse
+	double			rm_right;
+	int				mouse_bool;			//for rotation with mouse
+	int				mouse_x;
+	int				**map;
+	t_pars			*par;				//allow to carry only t_rcast struct
+}					t_rcast;
+
+//handle events and interactions with player
+typedef struct		s_event
+{
+	int				print_texture;		//boolean to print or not floor and sky textures
+}					t_event;
 
 //t_* == textures || s_* == sprites
-typedef struct	s_img
+typedef struct		s_img
 {
-	void		*screen;
-	void		*t_no;
-	void		*t_so;
-	void		*t_ea;
-	void		*t_we;
-	void		*t_fl;
-	void		*t_sk;
-	void		*s_2;
-}				t_img;
+	void			*screen;
+	void			*t_no;
+	void			*t_so;
+	void			*t_ea;
+	void			*t_we;
+	void			*t_fl;
+	void			*t_sk;
+	void			*s_2;
+}					t_img;
 
-typedef struct	s_addr
+typedef struct		s_addr
 {
-	int			*screen;
-	int			*t_no;
-	int			*t_so;
-	int			*t_ea;
-	int			*t_we;
-	int			*t_fl;
-	int			*t_sk;
-	int			*s_2;
-}				t_addr;
+	int				*screen;
+	int				*t_no;
+	int				*t_so;
+	int				*t_ea;
+	int				*t_we;
+	int				*t_fl;
+	int				*t_sk;
+	int				*s_2;
+}					t_addr;
 
-typedef struct	s_info
+typedef struct		s_info
 {
-	int			screen[5];			//[0] = BITS_PER_PIX
-	int			t_no[5];			//[1] = SIZE_LINE
-	int			t_so[5];			//[2] = ENDIAN
-	int			t_ea[5];			//[3] = WIDTH (only for xpm images)
-	int			t_we[5];			//[4] = HEIGHT (only for xpm images)
-	int			t_fl[5];
-	int			t_sk[5];
-	int			s_2[5];
-}				t_info;
+	int				screen[5];			//[0] = BITS_PER_PIX
+	int				t_no[5];			//[1] = SIZE_LINE
+	int				t_so[5];			//[2] = ENDIAN
+	int				t_ea[5];			//[3] = WIDTH (only for xpm images)
+	int				t_we[5];			//[4] = HEIGHT (only for xpm images)
+	int				t_fl[5];
+	int				t_sk[5];
+	int				s_2[5];
+}					t_info;
 
-typedef struct	s_mlx
+typedef struct		s_mlx
 {
-	void		*ptr;
-	void		*win;
-	clock_t		start_move;
-	clock_t		start_rota;
-	t_img		*img;				//allow to carry only t_mlx struct
-	t_addr		*addr;//implmentation endian ?
-	t_info		*info;
-	t_pars		*par;
-	t_rcast		*cam;
-	t_sprites	**spri;
-}				t_mlx;
+	void			*ptr;
+	void			*win;
+	struct timeval	start_move;			//for actualizing player's movements and rotation according to time
+	struct timeval	start_rota;			//and avoid framerate drops
+	t_img			*img;				//allow to carry only t_mlx struct
+	t_addr			*addr;//implmentation endian ?
+	t_info			*info;
+	t_pars			*par;
+	t_rcast			*cam;
+	t_event			*eve;
+	t_sprites		**spri;
+}					t_mlx;
 
 
 void	 	print_struct(t_pars *par); //a supprimer
@@ -293,6 +300,8 @@ int			no_event(t_mlx *mlx);
 //draw_sprites.c
 void		draw_sprites(t_mlx *mlx, t_sprites **spri, int screen_row);
 
+//draw_hud_messages.c
+void		draw_hud_messages(t_mlx *mlx, t_pars *par);
 
 
 //BONUS

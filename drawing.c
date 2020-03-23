@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/25 11:07:23 by llefranc          #+#    #+#             */
-/*   Updated: 2020/03/23 11:30:48 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/03/23 14:24:16 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,7 @@
 
 //EN PLUS
 //rajouter plusieurs sprites
-//rajouter choix entre coueur ou texture pour sol et plafond
-//utiliser mlx destroy img
+//rajouter meesage souris active/desactive, choix texture
 
 /*
 BONUS PART : 
@@ -126,38 +125,63 @@ void	texture_resizing(t_mlx *mlx, t_texture *textu, double *pix_wall)
 }
 
 /*
+** Draw on the screen first x pixels of sky texture / color, x pixels of walls'
+** texture, and then x pixels of floor texture / color.
+*/
+void	drawing_sky_wall_floor(t_mlx *mlx, t_texture *textu, int i, unsigned int pix_wall)
+{
+	unsigned int	x;				//to fill each line of the pixel's row
+	unsigned int	pix_sky_floor;
+
+	x = 0;
+	pix_sky_floor = (unsigned int)((mlx->par->reso[1] - pix_wall) / 2.0);
+	pix_wall += pix_sky_floor;
+	while (x < pix_sky_floor)				//filling the sky
+	{
+		if (mlx->eve->print_texture)					//printing either textures or RGB color
+			mlx->addr->screen[i + x * mlx->info->screen[SIZE_LINE]] = 
+				draw_skybox(mlx, mlx->par->reso[1] - (double)x, 
+				positive_angle(mlx->cam->angle + (FOV / 2.0) - mlx->cam->freq_ray * (double)i));
+		else
+			mlx->addr->screen[i + x * mlx->info->screen[SIZE_LINE]] = mlx->par->sky_rgb;
+		x++;
+	}
+	while (x < pix_wall)	//filling the walls with textures
+	{
+		mlx->addr->screen[i + x * mlx->info->screen[SIZE_LINE]] = draw_texture(mlx, textu, x - pix_sky_floor);
+		x++;
+	}
+	while (x < (unsigned int)mlx->par->reso[1])		//filling the floor
+	{
+		if (mlx->eve->print_texture)					//printing either textures or RGB color
+			mlx->addr->screen[i + x * mlx->info->screen[SIZE_LINE]] = 
+				floor_raycasting(mlx, (double)x - mlx->par->reso[1] / 2.0, 
+				positive_angle(mlx->cam->angle + (FOV / 2.0) - mlx->cam->freq_ray * (double)i));
+		else
+			mlx->addr->screen[i + x * mlx->info->screen[SIZE_LINE]] = mlx->par->flo_rgb;
+		x++;
+	}
+}
+
+/*
 ** Launches a ray for each row of pixel and calculates the height of the wall
-** in pixel. Then color the row with the sky_color, wall with the texture and
-** floor with floor color by moving ih the memory of the image with a *int ptr.
+** in pixel. Then color the row with this order : sky > walls > floor > sprites.
 */
 void	raycasting(t_mlx *mlx)
 {
 	int				i;
-	unsigned int	x;
 	double			pix_wall;		//number of pixels colored for wall
-	double			pix_sky_floor;	//number of pixels colored for sky / floor
 	t_texture		textu;
 
 	i = -1;
 	calc_sprites_orientation(mlx->spri, mlx->cam->angle); //orientation of sprite's plan
 	while (++i < (int)mlx->par->reso[0]) //filling each rows of pixel of the screen (= i)
 	{
-		x = -1;
 		reset_ray_len_sprites(mlx->spri); //put all rays len, nb_pix and row_percent to -1.0
 		pix_wall = nb_pixel_wall(mlx, mlx->cam, &textu,
 				positive_angle(mlx->cam->angle + (FOV / 2.0) - mlx->cam->freq_ray * (double)i));
 		texture_resizing(mlx, &textu, &pix_wall);
-		pix_sky_floor = (mlx->par->reso[1] - pix_wall) / 2.0;
-		while (++x < (unsigned int)pix_sky_floor)				//filling the sky
-			mlx->addr->screen[i + x * mlx->info->screen[SIZE_LINE]] = 
-				draw_skybox(mlx, mlx->par->reso[1] - (double)x, 
-				positive_angle(mlx->cam->angle + (FOV / 2.0) - mlx->cam->freq_ray * (double)i));
-		while (++x < (unsigned int)(pix_sky_floor + pix_wall))	//filling the walls with textures
-			mlx->addr->screen[i + x * mlx->info->screen[SIZE_LINE]] = draw_texture(mlx, &textu, x - pix_sky_floor);
-		while (++x < (unsigned int)mlx->par->reso[1])		//filling the floor
-			mlx->addr->screen[i + x * mlx->info->screen[SIZE_LINE]] = 
-				floor_raycasting(mlx, (double)x - mlx->par->reso[1] / 2.0, 
-				positive_angle(mlx->cam->angle + (FOV / 2.0) - mlx->cam->freq_ray * (double)i));
+		drawing_sky_wall_floor(mlx, &textu, i, (unsigned int)pix_wall);
 		draw_sprites(mlx, mlx->spri, i);	//sort tab of struct sprites and draw them in the correct order
 	}
 }
@@ -169,9 +193,11 @@ int		drawing(t_pars *par) //l'appeler drawing ?
 	t_addr addr;
 	t_info info;
 	t_rcast cam;
+	t_event eve;
 	
 	print_map(par->map);
 	mlx.par = par; //allow to carry only t_mlx struct
+	mlx.eve = &eve;
 	mlx.cam = &cam; //allow to carry only t_mlx struct
 	struct_init_mlx(&mlx, &img, &addr, &info); //all *ptr == NULL, all int == -1, link img info and addr to mlx
 	struct_init_camera(&mlx, &cam, par); //create a tab of **int for the map, from the prev map in **char. Link par to cam

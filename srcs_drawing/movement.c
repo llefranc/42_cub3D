@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/04 15:04:03 by llefranc          #+#    #+#             */
-/*   Updated: 2020/03/19 17:40:08 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/03/23 14:19:34 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -156,18 +156,19 @@ void	move_right_in_map(t_mlx *mlx, double move_size)
 */
 void	move_accords_framerate(t_mlx *mlx, double move)
 {
-	clock_t		end;
-	double		time;
+	double			time;
+	struct timeval	end;
 
-	end = clock();
-	time = (double)(end - mlx->start_move) / CLOCKS_PER_SEC;
-	if (mlx->start_move != 0.0) //if the key wasn't just pressed
-		move = move * (time / TIME_MOVE);
+	gettimeofday(&end, NULL);
+	time = (double)(end.tv_usec - mlx->start_move.tv_usec) / 1000000.0 +
+         (double)(end.tv_sec - mlx->start_move.tv_sec);
+	if (mlx->start_move.tv_sec != 0.0) //if the key wasn't just pressed
+		move *= time / TIME_MOVE;
 	mlx->cam->m_up ? move_up_in_map(mlx, move) : 0;
 	mlx->cam->m_down ? move_down_in_map(mlx, move) : 0;
 	mlx->cam->m_left ? move_left_in_map(mlx, move) : 0;
 	mlx->cam->m_right ? move_right_in_map(mlx, move) : 0;
-	mlx->start_move = clock(); //setting start here for the next move
+	gettimeofday(&mlx->start_move, NULL); //setting start here for the next rotation
 }
 
 /*
@@ -177,14 +178,15 @@ void	move_accords_framerate(t_mlx *mlx, double move)
 */
 void	rota_accords_framerate(t_mlx *mlx, double rota)
 {
-	clock_t		end;
-	double		time;
+	double			time;
+	struct timeval	end;
 
-	end = clock();
-	time = (double)(end - mlx->start_rota) / CLOCKS_PER_SEC;
-	if (mlx->start_rota != 0.0) //if the key wasn't just pressed
-		rota = rota * (time / TIME_MOVE);
+	gettimeofday(&end, NULL);
+	time = (double)(end.tv_usec - mlx->start_rota.tv_usec) / 1000000.0 +
+         (double)(end.tv_sec - mlx->start_rota.tv_sec);
+	if (mlx->start_rota.tv_sec != 0.0) //if the key wasn't just pressed
+		rota *= time / TIME_MOVE;
 	mlx->cam->r_left ? mlx->cam->angle = positive_angle(mlx->cam->angle + rota) : 0; //rotation
 	mlx->cam->r_right ? mlx->cam->angle = positive_angle(mlx->cam->angle - rota) : 0;
-	mlx->start_rota = clock(); //setting start here for the next rotation
+	gettimeofday(&mlx->start_rota, NULL); //setting start here for the next rotation
 }

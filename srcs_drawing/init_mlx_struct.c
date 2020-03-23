@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/12 16:23:29 by lucaslefran       #+#    #+#             */
-/*   Updated: 2020/03/23 11:34:00 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/03/23 14:15:13 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,6 +138,14 @@ void	struct_init_paths(t_mlx *mlx, t_pars *par)
 }
 
 /*
+** initiates all booleans values.
+*/
+void	struct_init_events_bool(t_event *eve)
+{
+	eve->print_texture = 1;
+}
+
+/*
 ** Init a mlx struct. Create a mlx->ptr with mlx_init() and a new window for
 ** mlx->win, links addr, img, info structures to mlx. Loads the differents
 ** images on mlx->img, and filled the addresses and informations of those
@@ -145,8 +153,8 @@ void	struct_init_paths(t_mlx *mlx, t_pars *par)
 */
 void	struct_init_mlx(t_mlx *mlx, t_img *img, t_addr *addr, t_info *info)
 {
-	mlx->start_move = 0; //booleans for movement and rotation
-	mlx->start_rota = 0;
+	mlx->start_move.tv_sec = 0.0; //booleans for movement and rotation
+	mlx->start_rota.tv_sec = 0.0;
 	mlx->ptr = mlx_init();
 	mlx->win = mlx_new_window(mlx->ptr, (int)mlx->par->reso[0], (int)mlx->par->reso[1], "cub3d");
 	mlx->img = img;
@@ -155,5 +163,6 @@ void	struct_init_mlx(t_mlx *mlx, t_img *img, t_addr *addr, t_info *info)
 	struct_init_paths(mlx, mlx->par);
 	struct_init_img(mlx, info);
 	struct_init_addr_info(mlx, addr, info);
+	struct_init_events_bool(mlx->eve);
 	mlx->spri = NULL;
 }

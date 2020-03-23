@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/04 17:44:38 by llefranc          #+#    #+#             */
-/*   Updated: 2020/03/23 11:33:49 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/03/23 14:15:36 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,19 +48,21 @@ int		key_press(int keycode, t_mlx *mlx)
 {
 	if (keycode == W_KEY) //movements
 		mlx->cam->m_up = 1;
-	if (keycode == S_KEY)
+	else if (keycode == S_KEY)
 		mlx->cam->m_down = 1;
-	if (keycode == A_KEY)
+	else if (keycode == A_KEY)
 		mlx->cam->m_left = 1;
-	if (keycode == D_KEY)
+	else if (keycode == D_KEY)
 		mlx->cam->m_right = 1;
-	if (keycode == LEFT_KEY) //rotation
+	else if (keycode == LEFT_KEY) //rotation
 		mlx->cam->r_left = 1;
-	if (keycode == RIGHT_KEY)
+	else if (keycode == RIGHT_KEY)
 		mlx->cam->r_right = 1;
-	if (keycode == M_KEY) 	//activating or desactivating the rotation with the mouse
+	else if (keycode == M_KEY) 	//activating or desactivating the rotation with the mouse
 		mlx->cam->mouse_bool = (mlx->cam->mouse_bool == 0) ? 1 : 0;
-	if (keycode == ESC_KEY)	//free and exit
+	else if (keycode == T_KEY)	//activating or desactivating texture printing for sky and floor
+		mlx->eve->print_texture = (mlx->eve->print_texture == 0) ? 1 : 0;
+	else if (keycode == ESC_KEY)	//free and exit
 	{
 		struct_free(mlx->par);
 		exit(EXIT_SUCCESS);
@@ -109,25 +111,24 @@ int		no_event(t_mlx *mlx)
 	//update player position
 	if (((mlx->cam->m_up || mlx->cam->m_down) && (mlx->cam->m_left || mlx->cam->m_right))
 			&& (!(mlx->cam->m_up && mlx->cam->m_down) && !(mlx->cam->m_left && mlx->cam->m_right)))
+	{
 		move_accords_framerate(mlx, MOVE_SIZE / 2.0); //so player doesn't move 2x faster when 2 keys are pressed
+		printf("salut\n");
+	}
 	else if (mlx->cam->m_up || mlx->cam->m_down || mlx->cam->m_left || mlx->cam->m_right)
 		move_accords_framerate(mlx, MOVE_SIZE);
 	else
-		mlx->start_move = 0.0;
+		mlx->start_move.tv_sec = 0.0;
 	//update camera rotation
 	if (mlx->cam->r_left || mlx->cam->r_right)
 		rota_accords_framerate(mlx, ROTA_SIZE);
 	else
-		mlx->start_rota = 0.0;
+		mlx->start_rota.tv_sec = 0.0;
 	mlx->cam->rm_left ? mlx->cam->angle = positive_angle(mlx->cam->angle + mlx->cam->rm_left) : 0;
 	mlx->cam->rm_right ? mlx->cam->angle = positive_angle(mlx->cam->angle - mlx->cam->rm_right) : 0;
-	//to prevent using ressources when the player isn't moving
-	if (mlx->cam->m_up || mlx->cam->m_down || mlx->cam->m_left || mlx->cam->m_right ||
-			mlx->cam->r_right || mlx->cam->r_left || mlx->cam->rm_right || mlx->cam->rm_left)
-	{
-		raycasting(mlx);
-		mlx_put_image_to_window(mlx->ptr, mlx->win, mlx->img->screen, 0, 0);
-	}
+	raycasting(mlx);
+	// draw_hud_messages(mlx, mlx->par); A VOIR SI ON Y REVIENT APRES
+	mlx_put_image_to_window(mlx->ptr, mlx->win, mlx->img->screen, 0, 0);
 	mlx->cam->rm_left = 0.0;
 	mlx->cam->rm_right = 0.0;
 	return (1);
