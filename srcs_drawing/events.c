@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/04 17:44:38 by llefranc          #+#    #+#             */
-/*   Updated: 2020/03/23 14:15:36 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/03/24 10:41:37 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,10 +111,7 @@ int		no_event(t_mlx *mlx)
 	//update player position
 	if (((mlx->cam->m_up || mlx->cam->m_down) && (mlx->cam->m_left || mlx->cam->m_right))
 			&& (!(mlx->cam->m_up && mlx->cam->m_down) && !(mlx->cam->m_left && mlx->cam->m_right)))
-	{
 		move_accords_framerate(mlx, MOVE_SIZE / 2.0); //so player doesn't move 2x faster when 2 keys are pressed
-		printf("salut\n");
-	}
 	else if (mlx->cam->m_up || mlx->cam->m_down || mlx->cam->m_left || mlx->cam->m_right)
 		move_accords_framerate(mlx, MOVE_SIZE);
 	else

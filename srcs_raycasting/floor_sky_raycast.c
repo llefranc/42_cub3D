@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   floor_raycast.c                                    :+:      :+:    :+:   */
+/*   floor_sky_raycast.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/19 17:54:56 by lucaslefran       #+#    #+#             */
-/*   Updated: 2020/03/20 22:27:44 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/03/24 11:22:35 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ int		draw_skybox(t_mlx *mlx, double height, double rcast_angle)
 ** floor texture we have to print. Looking for the pixel at the line y and
 ** row x.
 */
-int		find_color_case_floor(t_mlx *mlx, t_point i)
+int		find_color_square_floor(t_mlx *mlx, t_point i)
 {
 	int		color;
 	int		line;
@@ -79,5 +79,5 @@ int		floor_raycasting(t_mlx *mlx, double height, double rcast_angle)
 		i.x *= -1.0;
 	i.x += mlx->cam->x; //finding intersection point from player position
 	i.y += mlx->cam->y;
-	return (find_color_case_floor(mlx, i));
+	return (find_color_square_floor(mlx, i));
 }

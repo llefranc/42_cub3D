@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   init_cam_struct.c                                  :+:      :+:    :+:   */
+/*   init_cam_spri_structs.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/25 14:34:54 by llefranc          #+#    #+#             */
-/*   Updated: 2020/03/23 12:23:12 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/03/24 11:21:36 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ void	add_sprite_struct(t_mlx *mlx, t_sprites *new)
 */
 int		sprites_background_color(int type)
 {
-	if (type == 2)
+	if (type == TREE)
 		return (9961608);
 	return (1);
 }
@@ -74,11 +74,25 @@ int		sprites_background_color(int type)
 /*
 ** Return the memory address of sprite image depending on spri_num.
 */
-int		*add_sprite_img_addr(t_mlx *mlx, int spri_num)
+int		*add_sprite_img_addr(t_mlx *mlx, int type)
 {
-	if (spri_num == 2)
+	if (type == TREE)
 		return (mlx->addr->s_2);
 	return (NULL);
+}
+
+/*
+** Return the width of one sprite on screen in pixel. Ex : tree sprite is
+** taking half of the xpm img (with a witdh of 64 pixels), so tree size is 32
+** pixels.
+*/
+int		sprite_size(int type)
+{
+	int		size;
+
+	size = 0;
+	type == TREE ? size = TREE_SIZE : 0;
+	return (size);
 }
 
 /*
@@ -95,6 +109,7 @@ void	add_sprite_info(t_mlx *mlx, t_rcast *cam, int line, int row)
 		error_msg_destroy_img("Malloc failed\n", mlx);
 	}
 	new->type = cam->map[line][row];
+	new->size = sprite_size(new->type);
 	new->addr_img = add_sprite_img_addr(mlx, new->type);
 	new->inv_color = sprites_background_color(new->type);
 	new->x = row;
@@ -130,7 +145,7 @@ void	init_player_pos(t_mlx *mlx, t_rcast *cam)
 			if (cam->map[line][row] >= 10) //player position
 			{
 				cam->x = (double)row + 0.5;		//adding 0.5 so the player will start
-				cam->y = (double)line + 0.5;	//in the middle of the case
+				cam->y = (double)line + 0.5;	//in the middle of the square
 				cam->map[line][row] == EAST ? cam->angle = V_EAST : 0; //0 degees
 				cam->map[line][row] == NORTH ? cam->angle = V_NORTH : 0; //90 degrees
 				cam->map[line][row] == WEST ? cam->angle = V_WEST : 0; //180 degrees

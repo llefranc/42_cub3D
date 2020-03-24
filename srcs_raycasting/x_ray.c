@@ -6,15 +6,15 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/26 14:56:38 by llefranc          #+#    #+#             */
-/*   Updated: 2020/03/19 10:51:34 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/03/24 11:23:38 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/cube3d.h"
 
 /*
-** Return the distance on 'y axe' before it meets the border of the actual case,
-** depending on ray angle value.
+** Return the distance on 'y axe' before it meets the border of the actual
+** square, depending on ray angle value.
 */
 double	x_ray_y1_value(t_rcast *cam, double angle)
 {
@@ -136,13 +136,13 @@ double	x_ray_len(t_mlx *mlx, t_rcast *cam, double angle, t_texture *textu)
 	
 	if (angle <= 0.0 || angle >= 360.0 || angle == 180.0) //we will never cross 'y axe'
 		return (NAN);
-	y1 = x_ray_y1_value(cam, angle); //cam->y + y1 => border of the actual case (y axe)
+	y1 = x_ray_y1_value(cam, angle); //cam->y + y1 => border of the actual square (y axe)
 	ya = x_ray_ya_value(angle); 
-	x1 = x_ray_x1_value(angle, y1); //cam->x + x1 => border of the actual case (x axe)
+	x1 = x_ray_x1_value(angle, y1); //cam->x + x1 => border of the actual square (x axe)
 	xa = x_ray_xa_value(angle, y1, ya) - x1;
 	while ((ret = x_ray_find_wall(cam, angle, x1, y1)) > 0) //until we find a wall or exit map
 	{
-		if (ret == 2) //we're adding again xa and ya to be sure the line will be over the sprite case and cross sprite plan
+		if (ret == 2) //we're adding again xa and ya to be sure the line will be over the sprite square and cross sprite plan
 			find_sprites(mlx, sprites_ptr_x_ray(mlx, angle, x1,
 					y1), cam->x + x1 + xa, cam->y + y1 + ya, angle);
 		x1 += xa; //next cross with y axe 

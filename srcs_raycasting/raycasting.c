@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/21 13:40:24 by llefranc          #+#    #+#             */
-/*   Updated: 2020/03/19 18:22:25 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/03/24 11:55:51 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ double	height_object(t_rcast *cam, double ray_len)
 	double	h_object;
 	double	dist_cam_obj_ing;
 
-	dist_cam_obj_ing = ray_len * (double)WALL_SIZE; //one case of the map (x = 1 or y = 1) == WALL_SIZE
+	dist_cam_obj_ing = ray_len * (double)WALL_SIZE; //one square of the map (x = 1 or y = 1) == WALL_SIZE
 	h_object = ((double)WALL_SIZE / dist_cam_obj_ing) * (cam->dist_screen);
 	return (h_object);
 }
@@ -117,6 +117,8 @@ void		erase_sprites_behing_walls(t_sprites **spri, double ray_len)
 	int		i;
 
 	i = -1;
+	if (!spri) //if no sprites in the map
+		return ;
 	while (spri[++i])
 		if (ray_len < spri[i]->ray_len)
 			spri[i]->ray_len = -1.0;

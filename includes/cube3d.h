@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/12 16:17:24 by lucaslefran       #+#    #+#             */
-/*   Updated: 2020/03/23 14:23:45 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/03/24 11:42:01 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,12 @@
 # define WIDTH			3
 # define HEIGHT			4
 
+//types of sprite
+# define TREE			2
+
+//width (in pixel) of sprites on screen
+# define TREE_SIZE		32
+
 //contains all the information from the config file
 typedef struct		s_pars
 {
@@ -117,6 +123,7 @@ typedef struct		s_point
 typedef struct		s_sprites
 {
 	int				type;				//value of the sprite on the map (2, 3, 4..)
+	int				size;				//width (in pixel) of sprite on screen
 	int				*addr_img;			//memory adress of the sprite image
 	int				inv_color;			//color that we're not printing for the sprite's background
 	int				x;					//sprite's coordinates
@@ -128,6 +135,8 @@ typedef struct		s_sprites
 	double			row_percent;		//portion of the sprite image touched by the ray
 	t_point			a;					//segment AB is the plan of the sprite, always facing and perpendicular
 	t_point			b;					//to the angle of the camere
+	t_point			a_sized;			//segment AB_sized is the same than AB, except is also including sprite' size
+	t_point			b_sized;			//when printing on screen (if tree has a width of 32 pix, AB_sized is half of AB)
 }					t_sprites;
 
 //handle raycasting + player's movements events
@@ -260,6 +269,12 @@ double		ray_len(double xa, double ya, double xb, double yb);
 double		height_object(t_rcast *cam, double ray_len);
 double		nb_pixel_wall(t_mlx *mlx, t_rcast *cam, t_texture *textu, double angle);
 
+//x_ray.c
+double		x_ray_len(t_mlx *mlx, t_rcast *cam, double angle, t_texture *textu);
+
+//y_ray.c
+double		y_ray_len(t_mlx *mlx, t_rcast *cam, double angle, t_texture *textu);
+
 //sprites_raycast.c
 void		reset_ray_len_sprites(t_sprites **spri);
 void		calc_sprites_orientation(t_sprites **spri, double angle);
@@ -267,17 +282,15 @@ t_sprites	*sprites_ptr_x_ray(t_mlx *mlx, double angle, double x1, double y1);
 t_sprites	*sprites_ptr_y_ray(t_mlx *mlx, double angle, double x1, double y1);
 void		find_sprites(t_mlx *mlx, t_sprites *spri, double xd, double yd, double angle);
 
-//x_ray.c
-double		x_ray_len(t_mlx *mlx, t_rcast *cam, double angle, t_texture *textu);
-
-//y_ray.c
-double		y_ray_len(t_mlx *mlx, t_rcast *cam, double angle, t_texture *textu);
+//floor_sky_raycast.c
+int			floor_raycasting(t_mlx *mlx, double height, double rcast_angle);
+int			draw_skybox(t_mlx *mlx, double height, double rcast_angle);
 
 /*
 ** ----- srcs_drawing -----
 */
 
-//init_cam_struct.c
+//init_cam_spri_structs.c
 void		free_sprite_struct(t_sprites **spri);
 void		struct_init_camera(t_mlx *mlx, t_rcast *cam, t_pars *par);
 
@@ -303,9 +316,8 @@ void		draw_sprites(t_mlx *mlx, t_sprites **spri, int screen_row);
 //draw_hud_messages.c
 void		draw_hud_messages(t_mlx *mlx, t_pars *par);
 
-
 //BONUS
-int		floor_raycasting(t_mlx *mlx, double height, double rcast_angle);
-int		draw_skybox(t_mlx *mlx, double height, double rcast_angle);
+int			sprite_collision(t_mlx *mlx, t_rcast *cam, double xd, double yd);
+
 
 #endif

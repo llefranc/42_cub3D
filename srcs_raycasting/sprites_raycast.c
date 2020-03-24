@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   sprites.c                                          :+:      :+:    :+:   */
+/*   sprites_raycast.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/11 14:10:26 by llefranc          #+#    #+#             */
-/*   Updated: 2020/03/18 19:08:14 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/03/24 11:21:04 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,17 +14,19 @@
 
 /*
 ** Calculates the two coordinates of one point depending of an angle by using
-** trigonometry, and by starting the calculs from the middle of the case.
+** trigonometry, and by starting the calculs from the middle of the square.
 */
 void	calc_coordinates(double angle, t_sprites *spri, char c)
 {
 	double	x_len;
 	double	y_len;
+	double	ratio;		//ratio between sprite's width on screen and full width of sprite img
 	double	tmp_angle;
 
 	tmp_angle = angle_tri_rect(angle);
 	x_len = 0.5 * cos(tmp_angle * TO_RAD);	//we're evolving in a trigo environnement
 	y_len = 0.5 * sin(tmp_angle * TO_RAD);	//and we know that its ray is 0.5
+	ratio = (double)spri->size / (double)WALL_SIZE;
 	if (angle > 0.0 && angle < 180.0)
 		y_len *= -1.0;
 	if (angle > 90.0 && angle < 270.0)
@@ -33,11 +35,15 @@ void	calc_coordinates(double angle, t_sprites *spri, char c)
 	{
 		spri->a.x = (double)spri->x + 0.5 + x_len;
 		spri->a.y = (double)spri->y + 0.5 + y_len;
+		spri->a_sized.x = (double)spri->x + 0.5 + x_len * ratio; //for sprite collision
+		spri->a_sized.y = (double)spri->y + 0.5 + y_len * ratio;
 	}
 	else			//second point, filling xb and yb
 	{
 		spri->b.x = (double)spri->x + 0.5 + x_len;
 		spri->b.y = (double)spri->y + 0.5 + y_len;
+		spri->b_sized.x = (double)spri->x + 0.5 + x_len * ratio; //for sprite collision
+		spri->b_sized.y = (double)spri->y + 0.5 + y_len * ratio;
 	}
 }
 
@@ -99,8 +105,10 @@ t_sprites	*sprites_ptr_x_ray(t_mlx *mlx, double angle, double x1, double y1)
 		y1 = (double)((int)(y1)) + 1.0; //for an exception due to round error
 	x = (int)(mlx->cam->x + x1);
 	y = (int)(mlx->cam->y + y1);
-	while (mlx->spri[i] && (mlx->spri[i]->y != y || mlx->spri[i]->x != x))
+	while (mlx->spri && mlx->spri[i] && (mlx->spri[i]->y != y || mlx->spri[i]->x != x))
 		i++;									//looking for sprite of x and y coordinates
+	if (!mlx->spri)	//in case of no sprites in the map
+		return (NULL);
 	return (mlx->spri[i]);
 }
 
@@ -123,8 +131,10 @@ t_sprites	*sprites_ptr_y_ray(t_mlx *mlx, double angle, double x1, double y1)
 		x1 = (double)((int)(x1)) + 1.0; //for an exception due to round error
 	x = (int)(mlx->cam->x + x1);
 	y = (int)(mlx->cam->y + y1);
-	while (mlx->spri[i] && (mlx->spri[i]->y != y || mlx->spri[i]->x != x))
+	while (mlx->spri && mlx->spri[i] && (mlx->spri[i]->y != y || mlx->spri[i]->x != x))
 		i++;									//looking for sprite of x and y coordinates
+	if (!mlx->spri)	//in case of no sprites in the map
+		return (NULL);
 	return (mlx->spri[i]);
 }
 
@@ -143,8 +153,8 @@ void	find_sprites(t_mlx *mlx, t_sprites *spri, double xd, double yd, double angl
 	double	k;		//len of AB line when it's crossing CD, should be < 1.0 if it occurs on segment AB
 	double	m;		//len of CD line when it's crossing AB, same
 
-	if (spri->ray_len != -1.0)	//in y_ray algo, meeting a sprite that was already treated
-		return ;				//in x_ray algo
+	if (!spri || spri->ray_len != -1.0)	//in y_ray algo, meeting a sprite that was already treated
+		return ;						//in x_ray algo, or in the case there isn't any sprite in the map
 	c.x = mlx->cam->x;
 	c.y = mlx->cam->y;
 	vec_i.x = spri->b.x - spri->a.x;	//coordinates of i vector
