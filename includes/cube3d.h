@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/12 16:17:24 by lucaslefran       #+#    #+#             */
-/*   Updated: 2020/03/24 11:42:01 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/03/24 13:30:13 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,7 +78,7 @@
 # define TREE			2
 
 //width (in pixel) of sprites on screen
-# define TREE_SIZE		32
+# define TREE_SIZE		18
 
 //contains all the information from the config file
 typedef struct		s_pars

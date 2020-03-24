@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/04 15:04:03 by llefranc          #+#    #+#             */
-/*   Updated: 2020/03/24 12:10:51 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/03/24 13:20:20 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,8 +32,8 @@ void	move(t_mlx *mlx, t_rcast *cam, double len, char coordinate)
 			return ;
 		if (cam->map[(int)(cam->y)][(int)(cam->x + tmp_len)] == 1) //if a wall
 			return ;
-		if (sprite_collision(mlx, cam, cam->x + tmp_sprite_len, cam->y)) //if passing through a sprite
-			return ;
+		// if (sprite_collision(mlx, cam, cam->x + tmp_sprite_len, cam->y)) //if passing through a sprite
+		// 	return ;
 		cam->x += len;
 	}
 	else if (coordinate == 'y')
@@ -42,8 +42,8 @@ void	move(t_mlx *mlx, t_rcast *cam, double len, char coordinate)
 			return ;
 		if (cam->map[(int)(cam->y + tmp_len)][(int)(cam->x)] == 1) //if a wall
 			return ;
-		if (sprite_collision(mlx, cam, cam->x, cam->y + tmp_sprite_len)) //if passing through a sprite
-			return ;
+		// if (sprite_collision(mlx, cam, cam->x, cam->y + tmp_sprite_len)) //if passing through a sprite
+		// 	return ;
 		cam->y += len;
 	}
 }
@@ -167,17 +167,37 @@ void	move_accords_framerate(t_mlx *mlx, double move)
 	struct timeval	end;
 	t_point			player_pos;
 	
-	player_pos.x = mlx->cam->x;
-	player_pos.y = mlx->cam->y;
+	player_pos.x = mlx->cam->x; //to save previous player position and
+	player_pos.y = mlx->cam->y; //rollback to it if passing through a sprite
 	gettimeofday(&end, NULL);
 	time = (double)(end.tv_usec - mlx->start_move.tv_usec) / 1000000.0 +
          (double)(end.tv_sec - mlx->start_move.tv_sec);
 	if (mlx->start_move.tv_sec != 0.0) //if the key wasn't just pressed
 		move *= time / TIME_MOVE;
 	mlx->cam->m_up ? move_up_in_map(mlx, move) : 0;
+	if (sprite_collision(mlx, mlx->cam, player_pos.x, player_pos.y))
+	{
+		mlx->cam->x = player_pos.x; //passing through a sprite, rollback to previous position
+		mlx->cam->y = player_pos.y;
+	}
 	mlx->cam->m_down ? move_down_in_map(mlx, move) : 0;
+	if (sprite_collision(mlx, mlx->cam, player_pos.x, player_pos.y))
+	{
+		mlx->cam->x = player_pos.x; //passing through a sprite, rollback to previous position
+		mlx->cam->y = player_pos.y;
+	}
 	mlx->cam->m_left ? move_left_in_map(mlx, move) : 0;
+	if (sprite_collision(mlx, mlx->cam, player_pos.x, player_pos.y))
+	{
+		mlx->cam->x = player_pos.x; //passing through a sprite, rollback to previous position
+		mlx->cam->y = player_pos.y;
+	}
 	mlx->cam->m_right ? move_right_in_map(mlx, move) : 0;
+	if (sprite_collision(mlx, mlx->cam, player_pos.x, player_pos.y))
+	{
+		mlx->cam->x = player_pos.x; //passing through a sprite, rollback to previous position
+		mlx->cam->y = player_pos.y;
+	}
 	gettimeofday(&mlx->start_move, NULL); //setting start here for the next rotation
 }
 
