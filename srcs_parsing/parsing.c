@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/12 20:57:54 by lucaslefran       #+#    #+#             */
-/*   Updated: 2020/03/20 13:42:12 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/03/25 11:24:49 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,8 @@ void	check_spaces_end_of_line(t_pars *par, char *line, int key)
 						" at the end of 'FB' line are not allowed\n", par, line) : 0;
 		key == P_B_SKY ? error_msg("File .cub, path : Spaces"
 						" at the end of 'CB' line are not allowed\n", par, line) : 0;
+		key == P_B_DOOR ? error_msg("File .cub, path : Spaces"
+						" at the end of 'DB' line are not allowed\n", par, line) : 0;
 		key == FLO_RGB ? error_msg("File .cub, colors : Spaces"
 						" at the end of 'F' line are not allowed\n", par, line) : 0;
 		key == SKY_RGB ? error_msg("File .cub, colors : Spaces"
@@ -72,6 +74,8 @@ int		parse_func(t_pars *par, char *line, int key)
 		ret = parse_path(par, &(par->path_b_fl), line);
 	else if (key == P_B_SKY)
 		ret = parse_path(par, &(par->path_b_sk), line);
+	else if (key == P_B_DOOR)
+		ret = parse_path(par, &(par->path_b_do), line);
 	else if (key == FLO_RGB)
 		ret = parse_flo_rgb(par, line);
 	else if (key == SKY_RGB)
@@ -82,7 +86,7 @@ int		parse_func(t_pars *par, char *line, int key)
 
 /*
 ** Parse the map file and fill the *par structure with : 
-** resolution, NO/SO/EA/WE/S paths, floor and sky RGB colors, the map.
+** resolution, NO/SO/EA/WE/S/B_FL/B_SK/B_DO paths, floor and sky RGB colors, the map.
 */
 int		parsing(t_pars *par)
 {
@@ -113,7 +117,7 @@ int		parsing(t_pars *par)
 	if (!key) //no empty lines authorized after map
 		error_msg("File .cub, map : must end the file and be followed by nothing\n", par, NULL);
 	else if (key && key != MAP_LINE) //if line isn't empty and isn't a map line
-		error_msg("File .cub, map : must only contains ' 012NSWE' characters\n", par, NULL);
+		error_msg("File .cub, map : must only contains ' 0123456789NSWE' characters\n", par, NULL);
 	key_check(par); //check if keys are missing in the file
 	map_check(par); //check if the map is correct
 	return (1);

@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/05 14:08:50 by llefranc          #+#    #+#             */
-/*   Updated: 2020/03/19 11:29:25 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/03/25 15:18:21 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,7 +132,8 @@ void	check_spaces_actual(t_pars *par, int i, int *actual, int *previous)
 	if (i + 1 <= j)
 		bad_charac += (previous[i + 1] != -1 && previous[i + 1] != 1) ? 1 : 0;
 	if (bad_charac)
-		error_msg_map("File .cub, map : walls are not continuous\n", par, actual);
+		error_msg_map("File .cub, map : must only be surrunded"
+				" by walls ('1)\n", par, previous);
 }
 
 /*
@@ -157,7 +158,8 @@ void	check_spaces_previous(t_pars *par, int i, int *actual, int *previous)
 	if (i + 1 <= j)
 		bad_charac += (actual[i + 1] != -1 && actual[i + 1] != 1) ? 1 : 0;
 	if (bad_charac)
-		error_msg_map("File .cub, map : walls are not continuous\n", par, previous);
+		error_msg_map("File .cub, map : must only be surrunded"
+				" by walls ('1)\n", par, previous);
 }
 
 /*
@@ -166,9 +168,12 @@ void	check_spaces_previous(t_pars *par, int i, int *actual, int *previous)
 */
 void	walls_check(t_pars *par, int *actual, int *previous)
 {
-	long i;
+	long	i;
 
 	i = 0;
+	if (actual[0] != 1 && actual[0] != -1)
+		error_msg_map("File .cub, map : must only be surrunded"
+				" by walls ('1)\n", par, previous);
 	line_is_ended_by_wall(par, previous); //line must be terminated by a wall
 	line_is_ended_by_wall(par, actual);
 	i = len_line_map(actual) - len_line_map(previous);
@@ -184,6 +189,25 @@ void	walls_check(t_pars *par, int *actual, int *previous)
 	while (previous[++i] != -2)	//check for each space in previous line if they're
 		if (previous[i] == -1)	//surrunded by space or walls on actual and previous
 			check_spaces_previous(par, i, actual, previous);
+}
+
+/*
+** Check if each door / secret door is surrunded by 2 walls (left and right,
+** or above and below).
+*/
+void	doors_check(t_pars *par, int *next, int *actual, int *previous)
+{
+	int		i;
+
+	i = -1;
+	while (actual[++i] != -2)
+	{
+		if ((actual[i] == 2 || actual[i] == 3) && !((actual[i - 1] == 1 &&
+				actual[i + 1] == 1 && previous[i] != 1 && next[i] != 1) ||
+				(actual[i - 1] != 1 && actual[i + 1] != 1 && previous[i]
+				== 1 && next[i] == 1)))
+			error_msg_map("File .cub, map : doors must be surrunded by 2 walls\n", par, actual);
+	}
 }
 
 /*
@@ -209,5 +233,7 @@ int		map_check(t_pars *par)
 		error_msg_map("File .cub, map : last line must be only '1' and/or spaces\n", par, par->map[i - 1]);
 	while (--i > 0) 	//checking all the map from the end to the beginning
 		walls_check(par, par->map[i], par->map[i - 1]); //check if map surrunded by walls
+	while (par->map[++i + 1])
+		doors_check(par, par->map[i + 1], par->map[i], par->map[i - 1]);
 	return (1);
 }

@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/17 12:41:56 by lucaslefran       #+#    #+#             */
-/*   Updated: 2020/03/12 16:28:24 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/03/24 16:32:56 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,9 +51,9 @@ int		**add_map_line(t_pars *par, int *line)
 
 /*
 ** Take a *char line of the map and return a new int_line who was mallocated.
-** The new line can contain : 0, 1, 2, 30 (= N), 35 (= S), 21 (= E), 39 (= W),
-** and -1 for spaces and one and only -2 at the end of the int_line for
-** terminating it like a '\0' for a *char.
+** The new line can contain : 0, 1, 2, 3, 4, 5, 6, 7, 30 (= N), 35 (= S),
+** 21 (= E), 39 (= W), and -1 for spaces and one and only -2 at the end of the
+** int_line for terminating it like a '\0' for a *char.
 */
 int		*convert_int_line(char *line)
 {

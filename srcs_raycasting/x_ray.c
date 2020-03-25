@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/26 14:56:38 by llefranc          #+#    #+#             */
-/*   Updated: 2020/03/24 11:23:38 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/03/25 16:12:51 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,26 +95,29 @@ double	x_ray_xa_value(double angle, double y1, double ya)
 }
 
 /*
-** Return 1 if it finds a wall for a certain position in the map, 0 otherwise.
-** Return -1 if it's out of the map. Corrects the position in the map because
-** we're evolving in a tab[y][x]:
+** Return 0 if it finds a wall/door for a certain position in the map.
+** Return -1 if it's out of the map. Return 2 if a sprite.
+** Corrects the position in the map because we're evolving in a tab[y][x]:
 ** if angle > 0 && < 180 : tab[y - 1][x] (checking if there's a wall above us)
 */
-int		x_ray_find_wall(t_rcast *cam, double angle, double x_len, double y_len)
+int		x_ray_find_wall(t_mlx *mlx, double angle, double x_len, double y_len)
 {
 	if (angle > 0.0 && angle < 180.0)
 		y_len = (double)((int)(y_len)) - 1.0; //at the intersection with y axe, checking if wall above us
-	else if (cam->y + y_len - (double)((int)(cam->y + y_len)) > 0.99)
+	else if (mlx->cam->y + y_len - (double)((int)(mlx->cam->y + y_len)) > 0.99)
 		y_len = (double)((int)(y_len)) + 1.0;
-	if ((int)(cam->y + y_len) < 0 || (int)(cam->y + y_len) >= cam->nb_lines) //if we're out of the map (lines)
+	if ((int)(mlx->cam->y + y_len) < 0 || (int)(mlx->cam->y + y_len) >= mlx->cam->nb_lines) //if we're out of the map (lines)
 		return (-1);
-	if ((int)(cam->x + x_len) < 0 || (int)(cam->x + x_len) >= cam->nb_rows[(int)(cam->y + y_len)]) //same for rows
+	if ((int)(mlx->cam->x + x_len) < 0 || (int)(mlx->cam->x + x_len) >= 
+			mlx->cam->nb_rows[(int)(mlx->cam->y + y_len)]) //same for rows
 		return (-1);
-	if (cam->map[(int)(cam->y + y_len)][(int)(cam->x + x_len)] > 1) //if a sprite
+	if (mlx->cam->map[(int)(mlx->cam->y + y_len)][(int)(mlx->cam->x + x_len)] > 3) //if a sprite
 		return (2);
-	else if (cam->map[(int)(cam->y + y_len)][(int)(cam->x + x_len)] == 0) //if empty
+	else if (mlx->cam->map[(int)(mlx->cam->y + y_len)][(int)(mlx->cam->x + x_len)] == 0) //if empty
 		return (1);
-	return (0); //only if we find a wall
+	if (mlx->cam->map[(int)(mlx->cam->y + y_len)][(int)(mlx->cam->x + x_len)] == 2) //if a door
+		mlx->textu->doors_x = DOOR;
+	return (0); //only if we find a wall or doors
 }
 
 /*
@@ -140,7 +143,7 @@ double	x_ray_len(t_mlx *mlx, t_rcast *cam, double angle, t_texture *textu)
 	ya = x_ray_ya_value(angle); 
 	x1 = x_ray_x1_value(angle, y1); //cam->x + x1 => border of the actual square (x axe)
 	xa = x_ray_xa_value(angle, y1, ya) - x1;
-	while ((ret = x_ray_find_wall(cam, angle, x1, y1)) > 0) //until we find a wall or exit map
+	while ((ret = x_ray_find_wall(mlx, angle, x1, y1)) > 0) //until we find a wall/door or exit map
 	{
 		if (ret == 2) //we're adding again xa and ya to be sure the line will be over the sprite square and cross sprite plan
 			find_sprites(mlx, sprites_ptr_x_ray(mlx, angle, x1,

@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/12 16:17:24 by lucaslefran       #+#    #+#             */
-/*   Updated: 2020/03/24 13:30:13 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/03/25 16:14:36 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,10 +39,12 @@
 # define P_SPRIT		6
 # define P_B_FLOOR		7
 # define P_B_SKY		8
-# define FLO_RGB		9
-# define SKY_RGB		10
-# define MAP_LINE		11
+# define P_B_DOOR		9
+# define FLO_RGB		10
+# define SKY_RGB		11
+# define MAP_LINE		12
 
+//values for N/W/E/S - 48 (ASCII values)
 # define NORTH			30
 # define SOUTH			35
 # define EAST			21
@@ -74,11 +76,26 @@
 # define WIDTH			3
 # define HEIGHT			4
 
-//types of sprite
-# define TREE			2
+//types of doors
+# define DOOR			2
+# define SECRETDOOR		3
 
-//width (in pixel) of sprites on screen
-# define TREE_SIZE		18
+
+//types of sprite
+# define SP_TREE		4
+# define SP_ARMOR		5
+# define SP_HEALTH		6
+# define SP_LAMP		7
+# define SP_SPEARS		8
+# define SP_FLAG		9
+
+//width (in pixel) of sprites on screen for sprite collision
+# define TREE_SIZE		20
+# define ARMOR_SIZE		30
+# define HEALTH_SIZE	40
+# define LAMP_SIZE		0
+# define SPEARS_SIZE	50
+# define FLAG_SIZE		16
 
 //contains all the information from the config file
 typedef struct		s_pars
@@ -92,6 +109,8 @@ typedef struct		s_pars
 	char			*path_sp;			//path for finding sprites
 	char			*path_b_fl;			//path for bonus floor texture 
 	char			*path_b_sk;			//path for bonus sky texture 
+	char			*path_b_do;			//path for bonus door
+	char			*path_b_sd;			//path for bonus secret door
 	int				flo_rgb;			//floor color contained in an int
 	int				sky_rgb;			//sky color contained in a int
 	int				**map;
@@ -106,6 +125,8 @@ typedef struct		s_texture
 	double			y_ya;
 	double			angle_raycast;		//for determinate side_wall
 	int				side_wall;			//NORTH, SOUTH... for printing different textures on walls
+	int				doors_x;			//if x_ray touch a door / secret door
+	int				doors_y;
 	int				no_limit_pix_wall;	//can be larger then reso y >> if the texture is taller than the reso
 	int				start_line_img;		//when huge texture, for starting to print from a certain height
 	double			freq_pixel;			//for printing several times or not some pixels (allow to resize texture)
@@ -173,13 +194,19 @@ typedef struct		s_event
 typedef struct		s_img
 {
 	void			*screen;
-	void			*t_no;
+	void			*t_no;				//north
 	void			*t_so;
 	void			*t_ea;
 	void			*t_we;
-	void			*t_fl;
-	void			*t_sk;
-	void			*s_2;
+	void			*t_fl;				//floor
+	void			*t_sk;				//sky (skybox)
+	void			*t_do;				//door
+	void			*s_4;				//sprite number 4
+	void			*s_5;
+	void			*s_6;
+	void			*s_7;
+	void			*s_8;
+	void			*s_9;
 }					t_img;
 
 typedef struct		s_addr
@@ -191,7 +218,13 @@ typedef struct		s_addr
 	int				*t_we;
 	int				*t_fl;
 	int				*t_sk;
-	int				*s_2;
+	int				*t_do;
+	int				*s_4;
+	int				*s_5;
+	int				*s_6;
+	int				*s_7;
+	int				*s_8;
+	int				*s_9;
 }					t_addr;
 
 typedef struct		s_info
@@ -203,7 +236,13 @@ typedef struct		s_info
 	int				t_we[5];			//[4] = HEIGHT (only for xpm images)
 	int				t_fl[5];
 	int				t_sk[5];
-	int				s_2[5];
+	int				t_do[5];
+	int				s_4[5];
+	int				s_5[5];
+	int				s_6[5];
+	int				s_7[5];
+	int				s_8[5];
+	int				s_9[5];
 }					t_info;
 
 typedef struct		s_mlx
@@ -218,6 +257,7 @@ typedef struct		s_mlx
 	t_pars			*par;
 	t_rcast			*cam;
 	t_event			*eve;
+	t_texture		*textu;
 	t_sprites		**spri;
 }					t_mlx;
 
@@ -290,14 +330,17 @@ int			draw_skybox(t_mlx *mlx, double height, double rcast_angle);
 ** ----- srcs_drawing -----
 */
 
-//init_cam_spri_structs.c
-void		free_sprite_struct(t_sprites **spri);
-void		struct_init_camera(t_mlx *mlx, t_rcast *cam, t_pars *par);
-
 //init_mlx_struct.c
 void		destroy_all_images(t_mlx *mlx, t_img *img);
 void		error_msg_destroy_img(const char *str, t_mlx *mlx);
 void		struct_init_mlx(t_mlx *mlx, t_img *img, t_addr *addr, t_info *info);
+
+//init_sprite_struct.c
+void		free_sprite_struct(t_sprites **spri);
+void	add_sprite_info(t_mlx *mlx, t_rcast *cam, int line, int row);
+
+//init_cam__struct.c
+void		struct_init_camera(t_mlx *mlx, t_rcast *cam, t_pars *par);
 
 //movement.c
 void		move_accords_framerate(t_mlx *mlx, double move);
@@ -310,13 +353,16 @@ int			key_release(int keycode, t_mlx *mlx);
 int			destroy_notify(t_mlx *mlx);
 int			no_event(t_mlx *mlx);
 
+//interactions.c
+void		open_door(t_mlx *mlx);
+
 //draw_sprites.c
 void		draw_sprites(t_mlx *mlx, t_sprites **spri, int screen_row);
 
 //draw_hud_messages.c
 void		draw_hud_messages(t_mlx *mlx, t_pars *par);
 
-//BONUS
+//sprite_collision.c
 int			sprite_collision(t_mlx *mlx, t_rcast *cam, double xd, double yd);
 
 

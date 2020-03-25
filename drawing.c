@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/25 11:07:23 by llefranc          #+#    #+#             */
-/*   Updated: 2020/03/24 11:32:32 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/03/25 16:18:05 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@
 //EN PLUS
 //rajouter plusieurs sprites
 //rajouter meesage souris active/desactive, choix texture
+//regarder pourquoi les sprites disparaissent quand on est tres pres
 
 /*
 BONUS PART : 
@@ -33,8 +34,8 @@ GOOD : Floor and/or ceiling texture.
 • Jump or crouch.
 • A distance related shadow effect.
 ->• Life bar.
-->• More items in the maze.
-->• Object collisions.
+GOOD : More items in the maze.
+GOOD : Object collisions.
 ->• Earning points and/or losing life by picking up objects/traps.
 ->• Doors which can open and close.
 ->• Secret doors.
@@ -51,10 +52,10 @@ GOOD : A skybox.
 GOOD : Floor and/or ceiling texture.
 
 PLUSIEURS SPRITES :
-->• Doors which can open and close.
+->• Doors which can open and close. (2)
 ->• Earning points and/or losing life by picking up objects/traps.
-->• More items in the maze.
-->• Secret doors.
+GOOD : More items in the maze.
+->• Secret doors. (3)
 
 HUD / ANIMATIONS AVEC TIMER :
 ->• Animations of a gun shot or animated sprite.
@@ -64,7 +65,7 @@ HUD / ANIMATIONS AVEC TIMER :
 AUTRES :
 ->• Several levels. (on peut mettre un ptit ecran de transition, et genre on passe d'un level a un autre)
 ->• Sounds and music.
-->• Object collisions. (calculer size sprite, redefinir le plan ab, faire algo si droites mvt se croisent ou rayons lances par sprite)
+GOOD : Object collisions. (calculer size sprite, redefinir le plan ab, faire algo si droites mvt se croisent ou rayons lances par sprite)
 
 */
 
@@ -73,9 +74,10 @@ AUTRES :
 /*
 ** Moving in texture's adress and returning the color of one pixel of the
 ** texture, depending of which side of the wall is touched by the ray.
-** We start from a certain row (depending where the ray touch the wall, if the
-** ray touch at 33% of the wall we will start at row WALL_SIZE / 3), then we
-** choose the line with start_line + freq_pixel.
+** If it's a door the side doesn't matter. We start from a certain row
+** (depending where the ray touch the wall, if the ray touch at 33% of the wall
+** we will start at row WALL_SIZE / 3), then we choose the line with start_line
+** + freq_pixel.
 */
 int		draw_texture(t_mlx *mlx, t_texture *textu, int x)
 {
@@ -95,6 +97,9 @@ int		draw_texture(t_mlx *mlx, t_texture *textu, int x)
 	if (textu->side_wall == WEST)
 		color = mlx->addr->t_we[textu->row_img + textu->start_line_img * mlx->info->t_we[SIZE_LINE]
 					+ x * mlx->info->t_we[SIZE_LINE]];
+	if (textu->side_wall == DOOR)
+		color = mlx->addr->t_do[textu->row_img + textu->start_line_img * mlx->info->t_do[SIZE_LINE]
+					+ x * mlx->info->t_do[SIZE_LINE]];
 	return (color);
 }
 
@@ -174,6 +179,7 @@ void	raycasting(t_mlx *mlx)
 	t_texture		textu;
 
 	i = -1;
+	mlx->textu = &textu;
 	calc_sprites_orientation(mlx->spri, mlx->cam->angle); //orientation of sprite's plan
 	while (++i < (int)mlx->par->reso[0]) //filling each rows of pixel of the screen (= i)
 	{

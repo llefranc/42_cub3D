@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/21 13:40:24 by llefranc          #+#    #+#             */
-/*   Updated: 2020/03/24 11:55:51 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/03/25 16:13:04 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,8 +80,9 @@ double	height_object(t_rcast *cam, double ray_len)
 /*
 ** Return the row of img texture that will be needed later to fill the wall on
 ** screen, by determinating which row of the wall is touched (with a size of 64)
-** is touched by the ray. Also determinate which side of the wall is touched by
-** the row (NORTH, SOUTH, EAST, WEST).
+** is touched by the ray. Also determinate if it's a wall, which side of the
+** wall is touched by the row (NORTH, SOUTH, EAST, WEST). If it's a door this
+** operation is skipped.
 */
 int		nb_image_row(t_rcast *cam, t_texture *textu, double xa, double ya)
 {
@@ -94,11 +95,15 @@ int		nb_image_row(t_rcast *cam, t_texture *textu, double xa, double ya)
 	if ((x_len > y_len && x_len < 0.9999999) || y_len > 0.99) //y_len > 0.99 handle a strange case where y_len should value 0 but
 	{													 	  //it's taking 0.9999999... value due to round errors
 		row_img = (int)(x_len * (double)WALL_SIZE);
+		if (textu->side_wall == DOOR) //if door, no need to determinates which side is touched
+			return (row_img);
 		textu->side_wall = (textu->angle_raycast >= 0.0 && textu->angle_raycast < 180.0) ? NORTH : SOUTH;
 	}
 	else
 	{
 		row_img = (int)(y_len * (double)WALL_SIZE); //if y_len == 0.33 >> we will print the row number (WALL_SIZE / 3)
+		if (textu->side_wall == DOOR)
+			return (row_img);
 		textu->side_wall = (textu->angle_raycast >= 90.0 && textu->angle_raycast < 270.0) ? EAST : WEST;
 	}
 	return (row_img);
@@ -139,17 +144,22 @@ double		nb_pixel_wall(t_mlx *mlx, t_rcast *cam, t_texture *textu, double angle)
 	double	y_ray;
 
 	textu->angle_raycast = angle; //needed in nb_image_row func
+	textu->side_wall = 0;
+	textu->doors_x = 0;
+	textu->doors_y = 0;
 	x_ray = x_ray_len(mlx, cam, angle, textu) * cos(fabs(cam->angle - angle) * TO_RAD); //correcting fisheye with pythagore
 	y_ray = y_ray_len(mlx, cam, angle, textu) * cos(fabs(cam->angle - angle) * TO_RAD);
 	if (y_ray != y_ray || x_ray <= y_ray)	//y_ray != y_ray handle the case of y_ray = NAN, can be true only if y_ray is NAN
 	{										//Compare something with NAN will always be false.
 		erase_sprites_behing_walls(mlx->spri, x_ray);
+		textu->doors_x ? textu->side_wall = textu->doors_x : 0; //checking if we stopped because of a wall or a door
 		textu->row_img = nb_image_row(cam, textu, textu->x_xa, textu->x_ya);
 		h_wall = height_object(cam, x_ray);
 	}
 	else									//If x_ray is NAN, x_ray <= y_ray will be false
 	{										
 		erase_sprites_behing_walls(mlx->spri, y_ray);
+		textu->doors_y ? textu->side_wall = textu->doors_y : 0; //checking if we stopped because of a wall or a door
 		textu->row_img = nb_image_row(cam, textu, textu->y_xa, textu->y_ya);
 		h_wall = height_object(cam, y_ray);
 	}

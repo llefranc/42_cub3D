@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/18 19:08:04 by lucaslefran       #+#    #+#             */
-/*   Updated: 2020/03/18 19:09:01 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/03/25 10:59:39 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,18 +70,33 @@ void	sprite_resizing(t_mlx *mlx, t_sprites *spri, double *pix_spri)
 	}
 }
 
+int		*sprite_addr(t_mlx *mlx, int type)
+{
+	int		*address;
+
+	address = NULL;
+	type == SP_TREE ? address = mlx->addr->s_4 : 0;
+	type == SP_ARMOR ? address = mlx->addr->s_5 : 0;
+	type == SP_HEALTH ? address = mlx->addr->s_6 : 0;
+	type == SP_LAMP ? address = mlx->addr->s_7 : 0;
+	type == SP_SPEARS ? address = mlx->addr->s_8 : 0;
+	type == SP_FLAG ? address = mlx->addr->s_9 : 0;
+	return (address);
+}
+
 /*
 ** Set info *ptr on the correct sprite's informations and return int *ptr for
 ** addr *ptr of the correct sprite's address depending on type.
 */
 int		*sprite_info_addr(t_mlx *mlx, int **info, int type)
 {
-	if (type == 2)
-	{
-		*info = mlx->info->s_2;
-		return (mlx->addr->s_2);
-	}
-	return (NULL);
+	type == SP_TREE ? *info = mlx->info->s_4 : 0;
+	type == SP_ARMOR ? *info = mlx->info->s_5 : 0;
+	type == SP_HEALTH ? *info = mlx->info->s_6 : 0;
+	type == SP_LAMP ? *info = mlx->info->s_7 : 0;
+	type == SP_SPEARS ? *info = mlx->info->s_8 : 0;
+	type == SP_FLAG ? *info = mlx->info->s_9 : 0;
+	return (sprite_addr(mlx, type));
 }
 
 /*

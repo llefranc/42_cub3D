@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   init_cam_spri_structs.c                            :+:      :+:    :+:   */
+/*   init_sprite_struct.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/02/25 14:34:54 by llefranc          #+#    #+#             */
-/*   Updated: 2020/03/24 11:21:36 by lucaslefran      ###   ########.fr       */
+/*   Created: 2020/03/24 16:40:35 by lucaslefran       #+#    #+#             */
+/*   Updated: 2020/03/25 10:58:44 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,9 +66,16 @@ void	add_sprite_struct(t_mlx *mlx, t_sprites *new)
 */
 int		sprites_background_color(int type)
 {
-	if (type == TREE)
-		return (9961608);
-	return (1);
+	int		inv_color;
+
+	inv_color = 0;
+	type == SP_TREE ? inv_color = 9961608 : 0;
+	type == SP_ARMOR ? inv_color = 9961608 : 0;
+	type == SP_HEALTH ? inv_color = 9961608 : 0;
+	type == SP_LAMP ? inv_color = 9961608 : 0;
+	type == SP_SPEARS ? inv_color = 9961608 : 0;
+	type == SP_FLAG ? inv_color = 9961608 : 0;
+	return (inv_color);
 }
 
 /*
@@ -76,9 +83,16 @@ int		sprites_background_color(int type)
 */
 int		*add_sprite_img_addr(t_mlx *mlx, int type)
 {
-	if (type == TREE)
-		return (mlx->addr->s_2);
-	return (NULL);
+	int		*addr_sprite;
+
+	addr_sprite = NULL;
+	type == SP_TREE ? addr_sprite = mlx->addr->s_4 : 0;
+	type == SP_ARMOR ? addr_sprite = mlx->addr->s_5 : 0;
+	type == SP_HEALTH ? addr_sprite = mlx->addr->s_6 : 0;
+	type == SP_LAMP ? addr_sprite = mlx->addr->s_7 : 0;
+	type == SP_SPEARS ? addr_sprite = mlx->addr->s_8 : 0;
+	type == SP_FLAG ? addr_sprite = mlx->addr->s_9 : 0;
+	return (addr_sprite);
 }
 
 /*
@@ -91,7 +105,12 @@ int		sprite_size(int type)
 	int		size;
 
 	size = 0;
-	type == TREE ? size = TREE_SIZE : 0;
+	type == SP_TREE ? size = TREE_SIZE : 0;
+	type == SP_ARMOR ? size = ARMOR_SIZE : 0;
+	type == SP_HEALTH ? size = HEALTH_SIZE : 0;
+	type == SP_LAMP ? size = LAMP_SIZE : 0;
+	type == SP_SPEARS ? size = SPEARS_SIZE : 0;
+	type == SP_FLAG ? size = FLAG_SIZE : 0;
 	return (size);
 }
 
@@ -124,76 +143,4 @@ void	add_sprite_info(t_mlx *mlx, t_rcast *cam, int line, int row)
 	new->b.x = -1.0;
 	new->b.y = -1.0;
 	add_sprite_struct(mlx, new);
-}
-
-/*
-** Read the map and search for the player position in order to initiate his
-** starting position and angle of view. Also save number of max rows for each
-** line.
-*/
-void	init_player_pos(t_mlx *mlx, t_rcast *cam)
-{
-	int		line;
-	int		row;
-
-	line = 0;
-	while (cam->map[line]) //map is terminated by a NULL *ptr
-	{
-		row = 0;
-		while (cam->map[line][row] != -2)
-		{
-			if (cam->map[line][row] >= 10) //player position
-			{
-				cam->x = (double)row + 0.5;		//adding 0.5 so the player will start
-				cam->y = (double)line + 0.5;	//in the middle of the square
-				cam->map[line][row] == EAST ? cam->angle = V_EAST : 0; //0 degees
-				cam->map[line][row] == NORTH ? cam->angle = V_NORTH : 0; //90 degrees
-				cam->map[line][row] == WEST ? cam->angle = V_WEST : 0; //180 degrees
-				cam->map[line][row] == SOUTH ? cam->angle = V_SOUTH : 0; //270 degrees
-				cam->map[line][row] = 0;
-			}
-			else if (cam->map[line][row] > 1) //if it's a sprite
-				add_sprite_info(mlx, cam, line, row); //creating and filling new sprite struct
-			row++;
-		}
-		cam->nb_rows[line] = row; //save number max of rows for each line
-		line++;
-	}
-}
-
-void	struct_init_cam_bool(t_rcast *cam)
-{
-	cam->m_up = 0;		//booleans for movements
-	cam->m_down = 0;
-	cam->m_left = 0;
-	cam->m_right = 0;
-	cam->r_left = 0;	//booleans for rotations
-	cam->r_right = 0;
-	cam->rm_left = 0;
-	cam->rm_right = 0;
-	cam->mouse_bool = 0; //first use of the mouse
-	cam->mouse_x = 0;	 //x position of the mouse
-}
-
-/*
-** Fill structure cam with the following parameters :
-** Number of lines / rows in the map, player position (x, y), angle of view for
-** the camera. Also saves all the information about sprites.
-*/
-void	struct_init_camera(t_mlx *mlx, t_rcast *cam, t_pars *par)
-{
-	int		line;
-
-	line = 0;
-	struct_init_cam_bool(cam);
-	while (par->map[line]) //counting number of lines
-		line++;
-	cam->nb_lines = line;
-	if (!(cam->nb_rows = malloc(line * sizeof(int)))) //for nb rows max for each line
-		error_msg_destroy_img("Malloc failed\n", mlx);
-	cam->map = par->map;
-	init_player_pos(mlx, cam); //save player position + number of max rows for each line + sprites info
-	cam->dist_screen = (par->reso[0] / 2.0) / tan(((double)FOV / 2.0) * (TO_RAD)); //pythagore, 
-	cam->freq_ray = (double)FOV / par->reso[0];
-	cam->par = par;	//allow to only carry t_rcast struct
 }

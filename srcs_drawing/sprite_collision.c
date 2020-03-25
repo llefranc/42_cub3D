@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/24 10:45:30 by lucaslefran       #+#    #+#             */
-/*   Updated: 2020/03/24 13:26:51 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/03/24 13:35:12 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,10 +51,6 @@ int		find_inter_rays(t_mlx *mlx, t_sprites *spri, double xc, double yc)
 	seg_len = 0.7 / seg_len;
 	d.x += vec_j.x * seg_len; //new d point coordinates, we add 0.7 len to CD segment
 	d.y += vec_j.y * seg_len; //in order to not be to close to sprites
-	// seg_len = ray_len(d.x, d.y, xc, yc);
-	// seg_len = 0.3 / seg_len;
-	// xc -= vec_j.x * seg_len; //new d point coordinates, we add 0.7 len to CD segment
-	// yc -= vec_j.y * seg_len; //in order to not be to close to sprites
 	vec_i.x = spri->b_sized.x - spri->a_sized.x;	//coordinates of i vector
 	vec_i.y = spri->b_sized.y - spri->a_sized.y;
 	vec_j.x = d.x - xc;					//coordinates of j vector with new d point (len of j extended by 0.7)

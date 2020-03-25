@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/04 17:44:38 by llefranc          #+#    #+#             */
-/*   Updated: 2020/03/24 10:41:37 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/03/25 16:16:09 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ int		motion_notify(int x, int y, t_mlx *mlx)
 	if (mlx->cam->mouse_bool) 
 	{
 		x_tmp = abs(x - mlx->cam->mouse_x); //usefull for acceleration
-		if (x_tmp > 9)		//to lower to huge acceleration
+		if (x_tmp > 9)		//to lower too huge acceleration
 			x_tmp = (int)sqrt((double)x_tmp) * 3;
 		if (x < mlx->cam->mouse_x) //allow to know if the mouse is moving left or right
 			mlx->cam->rm_left = M_ROTA_SIZE * x_tmp;
@@ -62,6 +62,8 @@ int		key_press(int keycode, t_mlx *mlx)
 		mlx->cam->mouse_bool = (mlx->cam->mouse_bool == 0) ? 1 : 0;
 	else if (keycode == T_KEY)	//activating or desactivating texture printing for sky and floor
 		mlx->eve->print_texture = (mlx->eve->print_texture == 0) ? 1 : 0;
+	else if (keycode == E_KEY) //open a door if close to one
+		open_door(mlx);
 	else if (keycode == ESC_KEY)	//free and exit
 	{
 		struct_free(mlx->par);

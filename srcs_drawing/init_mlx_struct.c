@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/12 16:23:29 by lucaslefran       #+#    #+#             */
-/*   Updated: 2020/03/23 14:15:13 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/03/25 16:14:06 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,13 @@ void	destroy_all_images(t_mlx *mlx, t_img *img)
 	img->t_we ? mlx_destroy_image(mlx->ptr, img->t_we) : 0;
 	img->t_fl ? mlx_destroy_image(mlx->ptr, img->t_fl) : 0;
 	img->t_sk ? mlx_destroy_image(mlx->ptr, img->t_sk) : 0;
-	img->s_2 ? mlx_destroy_image(mlx->ptr, img->s_2) : 0;
+	img->t_do ? mlx_destroy_image(mlx->ptr, img->t_do) : 0;
+	img->s_4 ? mlx_destroy_image(mlx->ptr, img->s_4) : 0;
+	img->s_5 ? mlx_destroy_image(mlx->ptr, img->s_5) : 0;
+	img->s_6 ? mlx_destroy_image(mlx->ptr, img->s_6) : 0;
+	img->s_7 ? mlx_destroy_image(mlx->ptr, img->s_7) : 0;
+	img->s_8 ? mlx_destroy_image(mlx->ptr, img->s_8) : 0;
+	img->s_9 ? mlx_destroy_image(mlx->ptr, img->s_9) : 0;
 	img->screen ? mlx_destroy_image(mlx->ptr, img->screen) : 0;
 }
 
@@ -42,36 +48,32 @@ void	error_msg_destroy_img(const char *str, t_mlx *mlx)
 	exit(EXIT_FAILURE);
 }
 
+void	init_addr_info(int **addr, void *img, int info[5])
+{
+	*addr = (int *)mlx_get_data_addr(img, &(info[BITS_PER_PIX]), 
+			&(info[SIZE_LINE]), &(info[ENDIAN]));
+	info[SIZE_LINE] /= (info[BITS_PER_PIX] / 8); //to fill the colors with 1 int value and not 3 bytes RGB
+}
+
 /*
 ** Getting addresses and informations of each images loaded.
 */
 void	struct_init_addr_info(t_mlx *mlx, t_addr *addr, t_info *info)
 {
-	addr->screen = (int *)mlx_get_data_addr(mlx->img->screen, &(info->screen[BITS_PER_PIX]), 
-			&(info->screen[SIZE_LINE]), &(info->screen[ENDIAN]));
-	info->screen[SIZE_LINE] /= (info->screen[BITS_PER_PIX] / 8); //to fill the colors with 1 int value and not 3 bytes RGB
-	addr->t_no = (int *)mlx_get_data_addr(mlx->img->t_no, &(info->t_no[BITS_PER_PIX]), 
-			&(info->t_no[SIZE_LINE]), &(info->t_no[ENDIAN]));
-	info->t_no[SIZE_LINE] /= (info->t_no[BITS_PER_PIX] / 8);
-	addr->t_so = (int *)mlx_get_data_addr(mlx->img->t_so, &(info->t_so[BITS_PER_PIX]), 
-			&(info->t_so[SIZE_LINE]), &(info->t_so[ENDIAN]));
-	info->t_so[SIZE_LINE] /= (info->t_so[BITS_PER_PIX] / 8);
-	addr->t_ea = (int *)mlx_get_data_addr(mlx->img->t_ea, &(info->t_ea[BITS_PER_PIX]), 
-			&(info->t_ea[SIZE_LINE]), &(info->t_ea[ENDIAN]));
-	info->t_ea[SIZE_LINE] /= (info->t_ea[BITS_PER_PIX] / 8);
-	addr->t_we = (int *)mlx_get_data_addr(mlx->img->t_we, &(info->t_we[BITS_PER_PIX]), 
-			&(info->t_we[SIZE_LINE]), &(info->t_we[ENDIAN]));
-	info->t_we[SIZE_LINE] /= (info->t_we[BITS_PER_PIX] / 8);
-	addr->t_fl = (int *)mlx_get_data_addr(mlx->img->t_fl, &(info->t_fl[BITS_PER_PIX]), 
-			&(info->t_fl[SIZE_LINE]), &(info->t_fl[ENDIAN]));
-	info->t_fl[SIZE_LINE] /= (info->t_fl[BITS_PER_PIX] / 8);
-	addr->t_sk = (int *)mlx_get_data_addr(mlx->img->t_sk, &(info->t_sk[BITS_PER_PIX]), 
-			&(info->t_sk[SIZE_LINE]), &(info->t_sk[ENDIAN]));
-	info->t_sk[SIZE_LINE] /= (info->t_sk[BITS_PER_PIX] / 8);
-	addr->s_2 = (int *)mlx_get_data_addr(mlx->img->s_2, &(info->s_2[BITS_PER_PIX]), 
-			&(info->s_2[SIZE_LINE]), &(info->s_2[ENDIAN]));
-	info->s_2[SIZE_LINE] /= (info->s_2[BITS_PER_PIX] / 8);
-
+	init_addr_info(&(addr->screen), mlx->img->screen, info->screen);
+	init_addr_info(&(addr->t_no), mlx->img->t_no, info->t_no);
+	init_addr_info(&(addr->t_so), mlx->img->t_so, info->t_so);
+	init_addr_info(&(addr->t_ea), mlx->img->t_ea, info->t_ea);
+	init_addr_info(&(addr->t_we), mlx->img->t_we, info->t_we);
+	init_addr_info(&(addr->t_fl), mlx->img->t_fl, info->t_fl);
+	init_addr_info(&(addr->t_sk), mlx->img->t_sk, info->t_sk);
+	init_addr_info(&(addr->t_do), mlx->img->t_do, info->t_do);
+	init_addr_info(&(addr->s_4), mlx->img->s_4, info->s_4);
+	init_addr_info(&(addr->s_5), mlx->img->s_5, info->s_5);
+	init_addr_info(&(addr->s_6), mlx->img->s_6, info->s_6);
+	init_addr_info(&(addr->s_7), mlx->img->s_7, info->s_7);
+	init_addr_info(&(addr->s_8), mlx->img->s_8, info->s_8);
+	init_addr_info(&(addr->s_9), mlx->img->s_9, info->s_9);
 }
 
 /*
@@ -83,10 +85,24 @@ void	load_sprites(t_mlx *mlx, char *path, char *name, int num_sprite)
 
 	if (!(tmp = ft_strjoin(path, name)))
 		error_msg_destroy_img("Malloc failed\n", mlx);
-	if (num_sprite == 2)
-		if (!(mlx->img->s_2 = mlx_xpm_file_to_image(mlx->ptr, tmp, 
-				&(mlx->info->s_2[WIDTH]), &(mlx->info->s_2[HEIGHT]))))
-			error_msg_destroy_img("Textures : error loading sprite number 2\n", mlx);
+	if (num_sprite == SP_TREE && !(mlx->img->s_4 = mlx_xpm_file_to_image(mlx->ptr, tmp,
+			&(mlx->info->s_4[WIDTH]), &(mlx->info->s_4[HEIGHT]))))
+			error_msg_destroy_img("Textures : error loading sprite number 4\n", mlx);
+	else if (num_sprite == SP_ARMOR && !(mlx->img->s_5 = mlx_xpm_file_to_image(mlx->ptr, tmp,
+			&(mlx->info->s_5[WIDTH]), &(mlx->info->s_5[HEIGHT]))))
+			error_msg_destroy_img("Textures : error loading sprite number 5\n", mlx);
+	else if (num_sprite == SP_HEALTH && !(mlx->img->s_6 = mlx_xpm_file_to_image(mlx->ptr, tmp,
+			&(mlx->info->s_6[WIDTH]), &(mlx->info->s_6[HEIGHT]))))
+			error_msg_destroy_img("Textures : error loading sprite number 6\n", mlx);
+	else if (num_sprite == SP_LAMP && !(mlx->img->s_7 = mlx_xpm_file_to_image(mlx->ptr, tmp,
+			&(mlx->info->s_7[WIDTH]), &(mlx->info->s_7[HEIGHT]))))
+			error_msg_destroy_img("Textures : error loading sprite number 7\n", mlx);
+	else if (num_sprite == SP_SPEARS && !(mlx->img->s_8 = mlx_xpm_file_to_image(mlx->ptr, tmp,
+			&(mlx->info->s_8[WIDTH]), &(mlx->info->s_8[HEIGHT]))))
+			error_msg_destroy_img("Textures : error loading sprite number 8\n", mlx);
+	else if (num_sprite == SP_FLAG && !(mlx->img->s_9 = mlx_xpm_file_to_image(mlx->ptr, tmp,
+			&(mlx->info->s_9[WIDTH]), &(mlx->info->s_9[HEIGHT]))))
+			error_msg_destroy_img("Textures : error loading sprite number 9\n", mlx);
 	free(tmp);
 }
 
@@ -108,7 +124,14 @@ void	struct_init_img(t_mlx *mlx, t_info *info)
 		error_msg_destroy_img("Textures : error loading floor texture\n", mlx);
 	if (!(mlx->img->t_sk = mlx_xpm_file_to_image(mlx->ptr, mlx->par->path_b_sk, &(info->t_sk[WIDTH]), &(info->t_sk[HEIGHT]))))
 		error_msg_destroy_img("Textures : error loading sky texture\n", mlx);
-	load_sprites(mlx, mlx->par->path_sp, "num_2/tree.xpm", 2);
+	if (!(mlx->img->t_do = mlx_xpm_file_to_image(mlx->ptr, mlx->par->path_b_do, &(info->t_do[WIDTH]), &(info->t_do[HEIGHT]))))
+		error_msg_destroy_img("Textures : error loading door texture\n", mlx);
+	load_sprites(mlx, mlx->par->path_sp, "num_4/tree.xpm", SP_TREE);
+	load_sprites(mlx, mlx->par->path_sp, "num_5/armor.xpm", SP_ARMOR);
+	load_sprites(mlx, mlx->par->path_sp, "num_6/health.xpm", SP_HEALTH);
+	load_sprites(mlx, mlx->par->path_sp, "num_7/lamp.xpm", SP_LAMP);
+	load_sprites(mlx, mlx->par->path_sp, "num_8/spears.xpm", SP_SPEARS);
+	load_sprites(mlx, mlx->par->path_sp, "num_9/flag.xpm", SP_FLAG);
 }
 
 /*
@@ -129,12 +152,13 @@ void	join_path_filename(t_mlx *mlx, char **path, char *name)
 */
 void	struct_init_paths(t_mlx *mlx, t_pars *par)
 {
-	join_path_filename(mlx, &(par->path_no), "t_north.xpm");
-	join_path_filename(mlx, &(par->path_so), "t_south.xpm");
-	join_path_filename(mlx, &(par->path_ea), "t_east.xpm");
-	join_path_filename(mlx, &(par->path_we), "t_west.xpm");
-	join_path_filename(mlx, &(par->path_b_fl), "t_floor.xpm");
-	join_path_filename(mlx, &(par->path_b_sk), "t_skybox.xpm");
+	join_path_filename(mlx, &(par->path_no), "north.xpm");
+	join_path_filename(mlx, &(par->path_so), "south.xpm");
+	join_path_filename(mlx, &(par->path_ea), "east.xpm");
+	join_path_filename(mlx, &(par->path_we), "west.xpm");
+	join_path_filename(mlx, &(par->path_b_fl), "floor.xpm");
+	join_path_filename(mlx, &(par->path_b_sk), "skybox.xpm");
+	join_path_filename(mlx, &(par->path_b_do), "door.xpm");
 }
 
 /*

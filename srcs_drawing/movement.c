@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/04 15:04:03 by llefranc          #+#    #+#             */
-/*   Updated: 2020/03/24 13:20:20 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/03/25 16:16:17 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,15 +14,13 @@
 
 /*
 ** Check if by adding len to one of the player's coordinates, the movement is ok
-** (means the player is neither out of the map, neither in a wall). If it's good,
-** add len to the player's coordinate ('x' or 'y'). Handling collisions just
-** with walls. Otherwise do nothing (for example with sprites). 
+** (means the player is neither out of the map, neither in a wall / door). If
+** it's good, add len to the player's coordinate ('x' or 'y').
 */
-void	move(t_mlx *mlx, t_rcast *cam, double len, char coordinate)
+void	move(t_rcast *cam, double len, char coordinate)
 {
 	double	tmp_len;
 	double	tmp_sprite_len;
-	(void)mlx;
 
 	tmp_len = (len > 0.0) ? len + 0.1 : len - 0.1; //to prevent player to be to close to walls
 	tmp_sprite_len = (len > 0.0) ? len + 0.5 : len - 0.5; //to prevent player to be to close to sprites
@@ -30,20 +28,18 @@ void	move(t_mlx *mlx, t_rcast *cam, double len, char coordinate)
 	{
 		if ((int)(cam->x + tmp_len) < 0 || (int)(cam->x + tmp_len) >= cam->nb_rows[(int)cam->y]) //if we're out of the map 
 			return ;
-		if (cam->map[(int)(cam->y)][(int)(cam->x + tmp_len)] == 1) //if a wall
+		if (cam->map[(int)(cam->y)][(int)(cam->x + tmp_len)] >= 1 &&	//if a wall or door / secret door
+				cam->map[(int)(cam->y)][(int)(cam->x + tmp_len)] <= 3)
 			return ;
-		// if (sprite_collision(mlx, cam, cam->x + tmp_sprite_len, cam->y)) //if passing through a sprite
-		// 	return ;
 		cam->x += len;
 	}
 	else if (coordinate == 'y')
 	{
 		if ((int)(cam->y + tmp_len) < 0 || (int)(cam->y + tmp_len) >= cam->nb_lines) //if we're out of the map
 			return ;
-		if (cam->map[(int)(cam->y + tmp_len)][(int)(cam->x)] == 1) //if a wall
+		if (cam->map[(int)(cam->y + tmp_len)][(int)(cam->x)] >= 1 &&	//if a wall or door / secret door
+				cam->map[(int)(cam->y + tmp_len)][(int)(cam->x)] <= 3)
 			return ;
-		// if (sprite_collision(mlx, cam, cam->x, cam->y + tmp_sprite_len)) //if passing through a sprite
-		// 	return ;
 		cam->y += len;
 	}
 }
@@ -55,23 +51,23 @@ void	move_up_in_map(t_mlx *mlx, double move_size)
 {
 	if (mlx->cam->angle >= 0.0 && mlx->cam->angle < 90.0)
 	{
-		move(mlx, mlx->cam, cos(angle_tri_rect(mlx->cam->angle) * TO_RAD) * move_size, 'x');
-		move(mlx, mlx->cam, -sin(angle_tri_rect(mlx->cam->angle) * TO_RAD) * move_size, 'y');
+		move(mlx->cam, cos(angle_tri_rect(mlx->cam->angle) * TO_RAD) * move_size, 'x');
+		move(mlx->cam, -sin(angle_tri_rect(mlx->cam->angle) * TO_RAD) * move_size, 'y');
 	}
 	else if (mlx->cam->angle >= 90.0 && mlx->cam->angle < 180.0)
 	{
-		move(mlx, mlx->cam, -cos(angle_tri_rect(mlx->cam->angle) * TO_RAD) * move_size, 'x');
-		move(mlx, mlx->cam, -sin(angle_tri_rect(mlx->cam->angle) * TO_RAD) * move_size, 'y');
+		move(mlx->cam, -cos(angle_tri_rect(mlx->cam->angle) * TO_RAD) * move_size, 'x');
+		move(mlx->cam, -sin(angle_tri_rect(mlx->cam->angle) * TO_RAD) * move_size, 'y');
 	}
 	else if (mlx->cam->angle >= 180.0 && mlx->cam->angle < 270.0)
 	{
-		move(mlx, mlx->cam, -cos(angle_tri_rect(mlx->cam->angle) * TO_RAD) * move_size, 'x');
-		move(mlx, mlx->cam, sin(angle_tri_rect(mlx->cam->angle) * TO_RAD) * move_size, 'y');
+		move(mlx->cam, -cos(angle_tri_rect(mlx->cam->angle) * TO_RAD) * move_size, 'x');
+		move(mlx->cam, sin(angle_tri_rect(mlx->cam->angle) * TO_RAD) * move_size, 'y');
 	}
 	else
 	{
-		move(mlx, mlx->cam, cos(angle_tri_rect(mlx->cam->angle) * TO_RAD) * move_size, 'x');
-		move(mlx, mlx->cam, sin(angle_tri_rect(mlx->cam->angle) * TO_RAD) * move_size, 'y');
+		move(mlx->cam, cos(angle_tri_rect(mlx->cam->angle) * TO_RAD) * move_size, 'x');
+		move(mlx->cam, sin(angle_tri_rect(mlx->cam->angle) * TO_RAD) * move_size, 'y');
 	}
 }
 
@@ -82,23 +78,23 @@ void	move_down_in_map(t_mlx *mlx, double move_size)
 {
 	if (mlx->cam->angle >= 0.0 && mlx->cam->angle < 90.0)
 	{
-		move(mlx, mlx->cam, -cos(angle_tri_rect(mlx->cam->angle) * TO_RAD) * move_size, 'x');
-		move(mlx, mlx->cam, sin(angle_tri_rect(mlx->cam->angle) * TO_RAD) * move_size, 'y');
+		move(mlx->cam, -cos(angle_tri_rect(mlx->cam->angle) * TO_RAD) * move_size, 'x');
+		move(mlx->cam, sin(angle_tri_rect(mlx->cam->angle) * TO_RAD) * move_size, 'y');
 	}
 	else if (mlx->cam->angle >= 90.0 && mlx->cam->angle < 180.0)
 	{
-		move(mlx, mlx->cam, cos(angle_tri_rect(mlx->cam->angle) * TO_RAD) * move_size, 'x');
-		move(mlx, mlx->cam, sin(angle_tri_rect(mlx->cam->angle) * TO_RAD) * move_size, 'y');
+		move(mlx->cam, cos(angle_tri_rect(mlx->cam->angle) * TO_RAD) * move_size, 'x');
+		move(mlx->cam, sin(angle_tri_rect(mlx->cam->angle) * TO_RAD) * move_size, 'y');
 	}
 	else if (mlx->cam->angle >= 180.0 && mlx->cam->angle < 270.0)
 	{
-		move(mlx, mlx->cam, cos(angle_tri_rect(mlx->cam->angle) * TO_RAD) * move_size, 'x');
-		move(mlx, mlx->cam, -sin(angle_tri_rect(mlx->cam->angle) * TO_RAD) * move_size, 'y');
+		move(mlx->cam, cos(angle_tri_rect(mlx->cam->angle) * TO_RAD) * move_size, 'x');
+		move(mlx->cam, -sin(angle_tri_rect(mlx->cam->angle) * TO_RAD) * move_size, 'y');
 	}
 	else
 	{
-		move(mlx, mlx->cam, -cos(angle_tri_rect(mlx->cam->angle) * TO_RAD) * move_size, 'x');
-		move(mlx, mlx->cam, -sin(angle_tri_rect(mlx->cam->angle) * TO_RAD) * move_size, 'y');
+		move(mlx->cam, -cos(angle_tri_rect(mlx->cam->angle) * TO_RAD) * move_size, 'x');
+		move(mlx->cam, -sin(angle_tri_rect(mlx->cam->angle) * TO_RAD) * move_size, 'y');
 	}
 }
 
@@ -109,23 +105,23 @@ void	move_left_in_map(t_mlx *mlx, double move_size)
 {
 	if (mlx->cam->angle >= 0.0 && mlx->cam->angle < 90.0)
 	{
-		move(mlx, mlx->cam, -sin(angle_tri_rect(mlx->cam->angle) * TO_RAD) * move_size, 'x');
-		move(mlx, mlx->cam, -cos(angle_tri_rect(mlx->cam->angle) * TO_RAD) * move_size, 'y');
+		move(mlx->cam, -sin(angle_tri_rect(mlx->cam->angle) * TO_RAD) * move_size, 'x');
+		move(mlx->cam, -cos(angle_tri_rect(mlx->cam->angle) * TO_RAD) * move_size, 'y');
 	}
 	else if (mlx->cam->angle >= 90.0 && mlx->cam->angle < 180.0)
 	{
-		move(mlx, mlx->cam, -sin(angle_tri_rect(mlx->cam->angle) * TO_RAD) * move_size, 'x');
-		move(mlx, mlx->cam, cos(angle_tri_rect(mlx->cam->angle) * TO_RAD) * move_size, 'y');
+		move(mlx->cam, -sin(angle_tri_rect(mlx->cam->angle) * TO_RAD) * move_size, 'x');
+		move(mlx->cam, cos(angle_tri_rect(mlx->cam->angle) * TO_RAD) * move_size, 'y');
 	}
 	else if (mlx->cam->angle >= 180.0 && mlx->cam->angle < 270.0)
 	{
-		move(mlx, mlx->cam, +sin(angle_tri_rect(mlx->cam->angle) * TO_RAD) * move_size, 'x');
-		move(mlx, mlx->cam, +cos(angle_tri_rect(mlx->cam->angle) * TO_RAD) * move_size, 'y');
+		move(mlx->cam, +sin(angle_tri_rect(mlx->cam->angle) * TO_RAD) * move_size, 'x');
+		move(mlx->cam, +cos(angle_tri_rect(mlx->cam->angle) * TO_RAD) * move_size, 'y');
 	}
 	else
 	{
-		move(mlx, mlx->cam, +sin(angle_tri_rect(mlx->cam->angle) * TO_RAD) * move_size, 'x');
-		move(mlx, mlx->cam, -cos(angle_tri_rect(mlx->cam->angle) * TO_RAD) * move_size, 'y');
+		move(mlx->cam, +sin(angle_tri_rect(mlx->cam->angle) * TO_RAD) * move_size, 'x');
+		move(mlx->cam, -cos(angle_tri_rect(mlx->cam->angle) * TO_RAD) * move_size, 'y');
 	}
 }
 
@@ -136,24 +132,30 @@ void	move_right_in_map(t_mlx *mlx, double move_size)
 {
 	if (mlx->cam->angle >= 0.0 && mlx->cam->angle < 90.0)
 	{
-		move(mlx, mlx->cam, sin(angle_tri_rect(mlx->cam->angle) * TO_RAD) * move_size, 'x');
-		move(mlx, mlx->cam, cos(angle_tri_rect(mlx->cam->angle) * TO_RAD) * move_size, 'y');
+		move(mlx->cam, sin(angle_tri_rect(mlx->cam->angle) * TO_RAD) * move_size, 'x');
+		move(mlx->cam, cos(angle_tri_rect(mlx->cam->angle) * TO_RAD) * move_size, 'y');
 	}
 	else if (mlx->cam->angle >= 90.0 && mlx->cam->angle < 180.0)
 	{
-		move(mlx, mlx->cam, sin(angle_tri_rect(mlx->cam->angle) * TO_RAD) * move_size, 'x');
-		move(mlx, mlx->cam, -cos(angle_tri_rect(mlx->cam->angle) * TO_RAD) * move_size, 'y');
+		move(mlx->cam, sin(angle_tri_rect(mlx->cam->angle) * TO_RAD) * move_size, 'x');
+		move(mlx->cam, -cos(angle_tri_rect(mlx->cam->angle) * TO_RAD) * move_size, 'y');
 	}
 	else if (mlx->cam->angle >= 180.0 && mlx->cam->angle < 270.0)
 	{
-		move(mlx, mlx->cam, -sin(angle_tri_rect(mlx->cam->angle) * TO_RAD) * move_size, 'x');
-		move(mlx, mlx->cam, -cos(angle_tri_rect(mlx->cam->angle) * TO_RAD) * move_size, 'y');
+		move(mlx->cam, -sin(angle_tri_rect(mlx->cam->angle) * TO_RAD) * move_size, 'x');
+		move(mlx->cam, -cos(angle_tri_rect(mlx->cam->angle) * TO_RAD) * move_size, 'y');
 	}
 	else
 	{
-		move(mlx, mlx->cam, -sin(angle_tri_rect(mlx->cam->angle) * TO_RAD) * move_size, 'x');
-		move(mlx, mlx->cam, cos(angle_tri_rect(mlx->cam->angle) * TO_RAD) * move_size, 'y');
+		move(mlx->cam, -sin(angle_tri_rect(mlx->cam->angle) * TO_RAD) * move_size, 'x');
+		move(mlx->cam, cos(angle_tri_rect(mlx->cam->angle) * TO_RAD) * move_size, 'y');
 	}
+}
+
+void	reset_player_pos(t_rcast *cam, t_point previous_pos)
+{
+	cam->x = previous_pos.x;
+	cam->y = previous_pos.y;
 }
 
 /*
@@ -175,29 +177,17 @@ void	move_accords_framerate(t_mlx *mlx, double move)
 	if (mlx->start_move.tv_sec != 0.0) //if the key wasn't just pressed
 		move *= time / TIME_MOVE;
 	mlx->cam->m_up ? move_up_in_map(mlx, move) : 0;
-	if (sprite_collision(mlx, mlx->cam, player_pos.x, player_pos.y))
-	{
-		mlx->cam->x = player_pos.x; //passing through a sprite, rollback to previous position
-		mlx->cam->y = player_pos.y;
-	}
+	if (sprite_collision(mlx, mlx->cam, player_pos.x, player_pos.y)) //passing through a sprite, rollback to previous position
+		reset_player_pos(mlx->cam, player_pos);
 	mlx->cam->m_down ? move_down_in_map(mlx, move) : 0;
 	if (sprite_collision(mlx, mlx->cam, player_pos.x, player_pos.y))
-	{
-		mlx->cam->x = player_pos.x; //passing through a sprite, rollback to previous position
-		mlx->cam->y = player_pos.y;
-	}
+		reset_player_pos(mlx->cam, player_pos);
 	mlx->cam->m_left ? move_left_in_map(mlx, move) : 0;
 	if (sprite_collision(mlx, mlx->cam, player_pos.x, player_pos.y))
-	{
-		mlx->cam->x = player_pos.x; //passing through a sprite, rollback to previous position
-		mlx->cam->y = player_pos.y;
-	}
+		reset_player_pos(mlx->cam, player_pos);
 	mlx->cam->m_right ? move_right_in_map(mlx, move) : 0;
 	if (sprite_collision(mlx, mlx->cam, player_pos.x, player_pos.y))
-	{
-		mlx->cam->x = player_pos.x; //passing through a sprite, rollback to previous position
-		mlx->cam->y = player_pos.y;
-	}
+		reset_player_pos(mlx->cam, player_pos);
 	gettimeofday(&mlx->start_move, NULL); //setting start here for the next rotation
 }
 
