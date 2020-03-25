@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/12 16:17:24 by lucaslefran       #+#    #+#             */
-/*   Updated: 2020/03/25 16:14:36 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/03/25 16:49:57 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,6 +88,9 @@
 # define SP_LAMP		7
 # define SP_SPEARS		8
 # define SP_FLAG		9
+# define SP_HUD			10
+# define SP_LIFEBAR		11
+# define SP_GUNS		12
 
 //width (in pixel) of sprites on screen for sprite collision
 # define TREE_SIZE		20
@@ -207,6 +210,7 @@ typedef struct		s_img
 	void			*s_7;
 	void			*s_8;
 	void			*s_9;
+	void			*hud;
 }					t_img;
 
 typedef struct		s_addr
@@ -225,6 +229,7 @@ typedef struct		s_addr
 	int				*s_7;
 	int				*s_8;
 	int				*s_9;
+	int				*hud;
 }					t_addr;
 
 typedef struct		s_info
@@ -243,6 +248,7 @@ typedef struct		s_info
 	int				s_7[5];
 	int				s_8[5];
 	int				s_9[5];
+	int				hud[5];
 }					t_info;
 
 typedef struct		s_mlx
@@ -359,11 +365,14 @@ void		open_door(t_mlx *mlx);
 //draw_sprites.c
 void		draw_sprites(t_mlx *mlx, t_sprites **spri, int screen_row);
 
-//draw_hud_messages.c
-void		draw_hud_messages(t_mlx *mlx, t_pars *par);
 
 //sprite_collision.c
 int			sprite_collision(t_mlx *mlx, t_rcast *cam, double xd, double yd);
+
+//draw_hud_messages.c A ENLEVER ?????
+void		draw_hud_messages(t_mlx *mlx, t_pars *par);
+//draw_hud_anims.c
+void		draw_hud_anims(t_mlx *mlx, t_pars *par, t_info *info);
 
 
 #endif

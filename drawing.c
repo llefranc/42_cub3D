@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/25 11:07:23 by llefranc          #+#    #+#             */
-/*   Updated: 2020/03/25 16:18:05 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/03/25 17:23:06 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ BONUS PART :
 GOOD : Wall collisions.
 GOOD : A skybox.
 GOOD : Floor and/or ceiling texture.
-->• An HUD.
+GOOD : An HUD.
 • Ability to look up and down.
 • Jump or crouch.
 • A distance related shadow effect.
@@ -37,8 +37,8 @@ GOOD : Floor and/or ceiling texture.
 GOOD : More items in the maze.
 GOOD : Object collisions.
 ->• Earning points and/or losing life by picking up objects/traps.
-->• Doors which can open and close.
-->• Secret doors.
+GOOD : Doors which can open and close.
+GOOD : Secret doors.
 ->• Animations of a gun shot or animated sprite.
 ->• Several levels.
 ->• Sounds and music.
@@ -52,15 +52,15 @@ GOOD : A skybox.
 GOOD : Floor and/or ceiling texture.
 
 PLUSIEURS SPRITES :
-->• Doors which can open and close. (2)
+GOOD : Doors which can open and close. (2)
 ->• Earning points and/or losing life by picking up objects/traps.
 GOOD : More items in the maze.
-->• Secret doors. (3)
+GOOD : Secret doors. (3)
 
 HUD / ANIMATIONS AVEC TIMER :
 ->• Animations of a gun shot or animated sprite.
 ->• Life bar.
-->• An HUD.
+GOOD : An HUD.
 
 AUTRES :
 ->• Several levels. (on peut mettre un ptit ecran de transition, et genre on passe d'un level a un autre)

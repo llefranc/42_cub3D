@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/04 17:44:38 by llefranc          #+#    #+#             */
-/*   Updated: 2020/03/25 16:16:09 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/03/25 16:50:07 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,7 +126,7 @@ int		no_event(t_mlx *mlx)
 	mlx->cam->rm_left ? mlx->cam->angle = positive_angle(mlx->cam->angle + mlx->cam->rm_left) : 0;
 	mlx->cam->rm_right ? mlx->cam->angle = positive_angle(mlx->cam->angle - mlx->cam->rm_right) : 0;
 	raycasting(mlx);
-	// draw_hud_messages(mlx, mlx->par); A VOIR SI ON Y REVIENT APRES
+	draw_hud_anims(mlx, mlx->par, mlx->info);
 	mlx_put_image_to_window(mlx->ptr, mlx->win, mlx->img->screen, 0, 0);
 	mlx->cam->rm_left = 0.0;
 	mlx->cam->rm_right = 0.0;

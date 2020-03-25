@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/25 14:52:42 by lucaslefran       #+#    #+#             */
-/*   Updated: 2020/03/25 16:15:49 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/03/25 16:27:01 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,9 @@ void	add_len_to_ray(t_mlx *mlx, t_point *square, double size_len)
 /*
 ** When a certain key is pressed, launch with a len of 1.0 in the direction of
 ** cam->angle and check every 0.1 unity if it encounters a door or a secret
-** door. If it's the case, replace on the map the door value by 0.
+** door. If it's the case, add 10 to the door' square to indicate it's now open
+** (walls raycasting will not print in it now). If interaction with a door
+** opened, it removes 10 to indicate it's closed and door is printed again.
 */
 void	open_door(t_mlx *mlx)
 {
@@ -58,7 +60,12 @@ void	open_door(t_mlx *mlx)
 		if (mlx->cam->map[(int)square.y][(int)square.x] == DOOR || //if door or secret door
 				mlx->cam->map[(int)square.y][(int)square.x] == SECRETDOOR)
 		{
-			mlx->cam->map[(int)square.y][(int)square.x] = 0; //replace the value of the door' square
+			mlx->cam->map[(int)square.y][(int)square.x] +=10; //add 10 to not print in and consider door open
+			return ;
+		}
+		else if (mlx->cam->map[(int)square.y][(int)square.x] == DOOR + 10) //if open door
+		{
+			mlx->cam->map[(int)square.y][(int)square.x] -=10; //door is now closed
 			return ;
 		}
 	}
