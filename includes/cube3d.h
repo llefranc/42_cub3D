@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/12 16:17:24 by lucaslefran       #+#    #+#             */
-/*   Updated: 2020/03/25 16:49:57 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/03/27 12:43:27 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,78 +27,106 @@
 # include "mlx_macro.h"
 
 //resolution values
-# define RESO_MAX_X		2560
-# define RESO_MAX_Y		1440
+# define RESO_MAX_X			2560
+# define RESO_MAX_Y			1440
 
 //keys values
-# define RESO			1
-# define P_NORTH		2
-# define P_SOUTH		3
-# define P_EAST			4
-# define P_WEST			5
-# define P_SPRIT		6
-# define P_B_FLOOR		7
-# define P_B_SKY		8
-# define P_B_DOOR		9
-# define FLO_RGB		10
-# define SKY_RGB		11
-# define MAP_LINE		12
+# define RESO				1
+# define P_NORTH			2
+# define P_SOUTH			3
+# define P_EAST				4
+# define P_WEST				5
+# define P_SPRIT			6
+# define P_B_FLOOR			7
+# define P_B_SKY			8
+# define P_B_DOOR			9
+# define FLO_RGB			10
+# define SKY_RGB			11
+# define MAP_LINE			12
 
 //values for N/W/E/S - 48 (ASCII values)
-# define NORTH			30
-# define SOUTH			35
-# define EAST			21
-# define WEST			39
+# define NORTH				30
+# define SOUTH				35
+# define EAST				21
+# define WEST				39
 
 //raycasting constants
-# define WALL_SIZE		64			//height of wall
-# define MOVE_SIZE		0.065
-# define TIME_MOVE		0.015
-# define ROTA_SIZE		2.5
-# define M_ROTA_SIZE	0.75
-# define FOV			50			//field of view
+# define WALL_SIZE			64			//height of wall
+# define MOVE_SIZE			0.065
+# define TIME_MOVE			0.015
+# define ROTA_SIZE			2.5
+# define M_ROTA_SIZE		0.75
+# define FOV				50			//field of view
 
 //angle in degrees
-# define V_EAST			0
-# define V_NORTH		90
-# define V_WEST			180
-# define V_SOUTH		270
+# define V_EAST				0
+# define V_NORTH			90
+# define V_WEST				180
+# define V_SOUTH			270
 
 //usefull to convert degrees <=> radians
-# define TO_DEG			180.0 / M_PI
-# define TO_RAD			M_PI / 180.0
+# define TO_DEG				180.0 / M_PI
+# define TO_RAD				M_PI / 180.0
 
 //usefull for t_info structure, allow to move in the tab of 3 ints
 //and selects the parameter expected
-# define BITS_PER_PIX	0
-# define SIZE_LINE		1
-# define ENDIAN			2
-# define WIDTH			3
-# define HEIGHT			4
+# define BITS_PER_PIX		0
+# define SIZE_LINE			1
+# define ENDIAN				2
+# define WIDTH				3
+# define HEIGHT				4
 
 //types of doors
-# define DOOR			2
-# define SECRETDOOR		3
-
+# define DOOR				2
+# define SECRETDOOR			3
 
 //types of sprite
-# define SP_TREE		4
-# define SP_ARMOR		5
-# define SP_HEALTH		6
-# define SP_LAMP		7
-# define SP_SPEARS		8
-# define SP_FLAG		9
-# define SP_HUD			10
-# define SP_LIFEBAR		11
-# define SP_GUNS		12
+# define SP_TREE			4
+# define SP_ARMOR			5
+# define SP_HEALTH			6
+# define SP_LAMP			7
+# define SP_SPEARS			8
+# define SP_FLAG			9
+# define SP_HUD				10
+# define SP_LIFEBAR			11
+# define SP_GUNS			12
 
 //width (in pixel) of sprites on screen for sprite collision
-# define TREE_SIZE		20
-# define ARMOR_SIZE		30
-# define HEALTH_SIZE	40
-# define LAMP_SIZE		0
-# define SPEARS_SIZE	50
-# define FLAG_SIZE		16
+# define TREE_SIZE			20
+# define ARMOR_SIZE			30
+# define HEALTH_SIZE		40
+# define LAMP_SIZE			0
+# define SPEARS_SIZE		50
+# define FLAG_SIZE			16
+
+//sprite's background color that we're not printing
+# define INV_COLOR			9961608
+
+//size of sprites in percent of screen height / screen width
+# define HUD_SIZE_H			1.0 / 6.0
+# define LIFE_SIZE_H		1.0 / 20.0
+# define LIFE_SIZE_W		1.0 / 6.0
+
+//sprite's first pixel position in images (L = line, R = row)
+# define LIFE_RED_IMG_L		0
+# define LIFE_RED_IMG_R		37
+# define LIFE_EMPTY_IMG_L	24
+# define LIFE_EMPTY_IMG_R	37
+
+
+//sprite's position on screen
+# define LIFE_SCREEN_L		89.0 / 100.0
+# define LIFE_SCREEN_R		1.0 / 8.0
+
+# define LIFE_PIX_H			21
+# define LIFE_PIX_W			332
+
+//player's informations
+# define FULL_LOADED		9
+# define FULL_LIFE			100
+
+//interactions with player
+# define GAIN_HEALTH		20
 
 //contains all the information from the config file
 typedef struct		s_pars
@@ -191,6 +219,8 @@ typedef struct		s_rcast
 typedef struct		s_event
 {
 	int				print_texture;		//boolean to print or not floor and sky textures
+	int				ammo;				//number of ammo
+	int				life;				//life (from 0 to 100)
 }					t_event;
 
 //t_* == textures || s_* == sprites
@@ -211,6 +241,7 @@ typedef struct		s_img
 	void			*s_8;
 	void			*s_9;
 	void			*hud;
+	void			*life;
 }					t_img;
 
 typedef struct		s_addr
@@ -230,6 +261,7 @@ typedef struct		s_addr
 	int				*s_8;
 	int				*s_9;
 	int				*hud;
+	int				*life;
 }					t_addr;
 
 typedef struct		s_info
@@ -249,7 +281,14 @@ typedef struct		s_info
 	int				s_8[5];
 	int				s_9[5];
 	int				hud[5];
+	int				life[5];
 }					t_info;
+
+typedef struct		s_player
+{
+	int				ammo;
+	int				life;
+}					t_player;
 
 typedef struct		s_mlx
 {
@@ -257,12 +296,12 @@ typedef struct		s_mlx
 	void			*win;
 	struct timeval	start_move;			//for actualizing player's movements and rotation according to time
 	struct timeval	start_rota;			//and avoid framerate drops
-	t_img			*img;				//allow to carry only t_mlx struct
-	t_addr			*addr;//implmentation endian ?
-	t_info			*info;
+	t_img			img;				//allow to carry only t_mlx struct
+	t_addr			addr;//implmentation endian ?
+	t_info			info;
 	t_pars			*par;
 	t_rcast			*cam;
-	t_event			*eve;
+	t_event			eve;
 	t_texture		*textu;
 	t_sprites		**spri;
 }					t_mlx;
@@ -339,11 +378,11 @@ int			draw_skybox(t_mlx *mlx, double height, double rcast_angle);
 //init_mlx_struct.c
 void		destroy_all_images(t_mlx *mlx, t_img *img);
 void		error_msg_destroy_img(const char *str, t_mlx *mlx);
-void		struct_init_mlx(t_mlx *mlx, t_img *img, t_addr *addr, t_info *info);
+void		struct_init_mlx(t_mlx *mlx);//, t_img *img, t_addr *addr, t_info *info);
 
 //init_sprite_struct.c
 void		free_sprite_struct(t_sprites **spri);
-void	add_sprite_info(t_mlx *mlx, t_rcast *cam, int line, int row);
+void		add_sprite_info(t_mlx *mlx, t_rcast *cam, int line, int row);
 
 //init_cam__struct.c
 void		struct_init_camera(t_mlx *mlx, t_rcast *cam, t_pars *par);
@@ -363,8 +402,8 @@ int			no_event(t_mlx *mlx);
 void		open_door(t_mlx *mlx);
 
 //draw_sprites.c
+void		sort_sprites_tab(t_sprites **spri);
 void		draw_sprites(t_mlx *mlx, t_sprites **spri, int screen_row);
-
 
 //sprite_collision.c
 int			sprite_collision(t_mlx *mlx, t_rcast *cam, double xd, double yd);

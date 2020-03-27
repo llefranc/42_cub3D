@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/04 17:44:38 by llefranc          #+#    #+#             */
-/*   Updated: 2020/03/25 16:50:07 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/03/26 10:46:46 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ int		key_press(int keycode, t_mlx *mlx)
 	else if (keycode == M_KEY) 	//activating or desactivating the rotation with the mouse
 		mlx->cam->mouse_bool = (mlx->cam->mouse_bool == 0) ? 1 : 0;
 	else if (keycode == T_KEY)	//activating or desactivating texture printing for sky and floor
-		mlx->eve->print_texture = (mlx->eve->print_texture == 0) ? 1 : 0;
+		mlx->eve.print_texture = (mlx->eve.print_texture == 0) ? 1 : 0;
 	else if (keycode == E_KEY) //open a door if close to one
 		open_door(mlx);
 	else if (keycode == ESC_KEY)	//free and exit
@@ -100,7 +100,7 @@ int		destroy_notify(t_mlx *mlx)
 {
 	struct_free(mlx->par);
 	free_sprite_struct(mlx->spri);
-	destroy_all_images(mlx, mlx->img);
+	destroy_all_images(mlx, &mlx->img);
 	exit(EXIT_SUCCESS);
 }
 
@@ -126,8 +126,8 @@ int		no_event(t_mlx *mlx)
 	mlx->cam->rm_left ? mlx->cam->angle = positive_angle(mlx->cam->angle + mlx->cam->rm_left) : 0;
 	mlx->cam->rm_right ? mlx->cam->angle = positive_angle(mlx->cam->angle - mlx->cam->rm_right) : 0;
 	raycasting(mlx);
-	draw_hud_anims(mlx, mlx->par, mlx->info);
-	mlx_put_image_to_window(mlx->ptr, mlx->win, mlx->img->screen, 0, 0);
+	draw_hud_anims(mlx, mlx->par, &mlx->info);
+	mlx_put_image_to_window(mlx->ptr, mlx->win, mlx->img.screen, 0, 0);
 	mlx->cam->rm_left = 0.0;
 	mlx->cam->rm_right = 0.0;
 	return (1);

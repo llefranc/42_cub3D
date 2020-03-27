@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/25 11:07:23 by llefranc          #+#    #+#             */
-/*   Updated: 2020/03/25 17:23:06 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/03/27 13:01:33 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,8 @@
 
 //EN PLUS
 //rajouter plusieurs sprites
-//rajouter meesage souris active/desactive, choix texture
 //regarder pourquoi les sprites disparaissent quand on est tres pres
+//regler mauvaise face qui apparait sur le mur pour la premiere rangee de pixel on dirait (ouest et est)
 
 /*
 BONUS PART : 
@@ -33,10 +33,10 @@ GOOD : An HUD.
 • Ability to look up and down.
 • Jump or crouch.
 • A distance related shadow effect.
-->• Life bar.
+GOOD : Life bar.
 GOOD : More items in the maze.
 GOOD : Object collisions.
-->• Earning points and/or losing life by picking up objects/traps.
+GOOD : Earning points and/or losing life by picking up objects/traps.
 GOOD : Doors which can open and close.
 GOOD : Secret doors.
 ->• Animations of a gun shot or animated sprite.
@@ -53,13 +53,13 @@ GOOD : Floor and/or ceiling texture.
 
 PLUSIEURS SPRITES :
 GOOD : Doors which can open and close. (2)
-->• Earning points and/or losing life by picking up objects/traps.
+GOOD : Earning points and/or losing life by picking up objects/traps.
 GOOD : More items in the maze.
 GOOD : Secret doors. (3)
 
 HUD / ANIMATIONS AVEC TIMER :
 ->• Animations of a gun shot or animated sprite.
-->• Life bar.
+GOOD : Life bar.
 GOOD : An HUD.
 
 AUTRES :
@@ -84,22 +84,22 @@ int		draw_texture(t_mlx *mlx, t_texture *textu, int x)
 	int		color;
 
 	x = (int)((double)x * textu->freq_pixel);
-	x >= mlx->info->t_no[WIDTH] ? x = mlx->info->t_no[WIDTH] - 1 : 0; //for avoiding segfault when round error with double
+	x >= mlx->info.t_no[WIDTH] ? x = mlx->info.t_no[WIDTH] - 1 : 0; //for avoiding segfault when round error with double
 	if (textu->side_wall == NORTH)
-		color = mlx->addr->t_no[textu->row_img + textu->start_line_img * mlx->info->t_no[SIZE_LINE]
-					+ x * mlx->info->t_no[SIZE_LINE]];
+		color = mlx->addr.t_no[textu->row_img + textu->start_line_img * mlx->info.t_no[SIZE_LINE]
+					+ x * mlx->info.t_no[SIZE_LINE]];
 	if (textu->side_wall == SOUTH)
-		color = mlx->addr->t_so[textu->row_img + textu->start_line_img * mlx->info->t_so[SIZE_LINE]
-					+ x * mlx->info->t_so[SIZE_LINE]];
+		color = mlx->addr.t_so[textu->row_img + textu->start_line_img * mlx->info.t_so[SIZE_LINE]
+					+ x * mlx->info.t_so[SIZE_LINE]];
 	if (textu->side_wall == EAST)
-		color = mlx->addr->t_ea[textu->row_img + textu->start_line_img * mlx->info->t_ea[SIZE_LINE]
-					+ x * mlx->info->t_ea[SIZE_LINE]];
+		color = mlx->addr.t_ea[textu->row_img + textu->start_line_img * mlx->info.t_ea[SIZE_LINE]
+					+ x * mlx->info.t_ea[SIZE_LINE]];
 	if (textu->side_wall == WEST)
-		color = mlx->addr->t_we[textu->row_img + textu->start_line_img * mlx->info->t_we[SIZE_LINE]
-					+ x * mlx->info->t_we[SIZE_LINE]];
+		color = mlx->addr.t_we[textu->row_img + textu->start_line_img * mlx->info.t_we[SIZE_LINE]
+					+ x * mlx->info.t_we[SIZE_LINE]];
 	if (textu->side_wall == DOOR)
-		color = mlx->addr->t_do[textu->row_img + textu->start_line_img * mlx->info->t_do[SIZE_LINE]
-					+ x * mlx->info->t_do[SIZE_LINE]];
+		color = mlx->addr.t_do[textu->row_img + textu->start_line_img * mlx->info.t_do[SIZE_LINE]
+					+ x * mlx->info.t_do[SIZE_LINE]];
 	return (color);
 }
 
@@ -143,27 +143,27 @@ void	drawing_sky_wall_floor(t_mlx *mlx, t_texture *textu, int i, unsigned int pi
 	pix_wall += pix_sky_floor;
 	while (x < pix_sky_floor)				//filling the sky
 	{
-		if (mlx->eve->print_texture)					//printing either textures or RGB color
-			mlx->addr->screen[i + x * mlx->info->screen[SIZE_LINE]] = 
+		if (mlx->eve.print_texture)					//printing either textures or RGB color
+			mlx->addr.screen[i + x * mlx->info.screen[SIZE_LINE]] = 
 				draw_skybox(mlx, mlx->par->reso[1] - (double)x, 
 				positive_angle(mlx->cam->angle + (FOV / 2.0) - mlx->cam->freq_ray * (double)i));
 		else
-			mlx->addr->screen[i + x * mlx->info->screen[SIZE_LINE]] = mlx->par->sky_rgb;
+			mlx->addr.screen[i + x * mlx->info.screen[SIZE_LINE]] = mlx->par->sky_rgb;
 		x++;
 	}
 	while (x < pix_wall)	//filling the walls with textures
 	{
-		mlx->addr->screen[i + x * mlx->info->screen[SIZE_LINE]] = draw_texture(mlx, textu, x - pix_sky_floor);
+		mlx->addr.screen[i + x * mlx->info.screen[SIZE_LINE]] = draw_texture(mlx, textu, x - pix_sky_floor);
 		x++;
 	}
 	while (x < (unsigned int)mlx->par->reso[1])		//filling the floor
 	{
-		if (mlx->eve->print_texture)					//printing either textures or RGB color
-			mlx->addr->screen[i + x * mlx->info->screen[SIZE_LINE]] = 
+		if (mlx->eve.print_texture)					//printing either textures or RGB color
+			mlx->addr.screen[i + x * mlx->info.screen[SIZE_LINE]] = 
 				floor_raycasting(mlx, (double)x - mlx->par->reso[1] / 2.0, 
 				positive_angle(mlx->cam->angle + (FOV / 2.0) - mlx->cam->freq_ray * (double)i));
 		else
-			mlx->addr->screen[i + x * mlx->info->screen[SIZE_LINE]] = mlx->par->flo_rgb;
+			mlx->addr.screen[i + x * mlx->info.screen[SIZE_LINE]] = mlx->par->flo_rgb;
 		x++;
 	}
 }
@@ -195,17 +195,14 @@ void	raycasting(t_mlx *mlx)
 int		drawing(t_pars *par) //l'appeler drawing ? 
 {
 	t_mlx mlx;
-	t_img img;
-	t_addr addr;
-	t_info info;
 	t_rcast cam;
-	t_event eve;
 	
 	print_map(par->map);
 	mlx.par = par; //allow to carry only t_mlx struct
-	mlx.eve = &eve;
+	// mlx.eve = &eve;
 	mlx.cam = &cam; //allow to carry only t_mlx struct
-	struct_init_mlx(&mlx, &img, &addr, &info); //all *ptr == NULL, all int == -1, link img info and addr to mlx
+	
+	struct_init_mlx(&mlx); //all *ptr == NULL, all int == -1,
 	struct_init_camera(&mlx, &cam, par); //create a tab of **int for the map, from the prev map in **char. Link par to cam
 
 	// cam.x -= 0.1;
@@ -213,7 +210,7 @@ int		drawing(t_pars *par) //l'appeler drawing ?
 	/* infos sur les variables */
 	// cam.angle = 160.0;
 	printf("x = %f et y = %f, angle = %f, distscreen = %f, freq_ray = %f\n", cam.x, cam.y, cam.angle, cam.dist_screen, cam.freq_ray);
-	printf("size line = %d\n", mlx.info->screen[SIZE_LINE]);
+	printf("size line = %d\n", mlx.info.screen[SIZE_LINE]);
 	/* infos sur les variables */
 
 	/* infos sur les sprites */
@@ -233,7 +230,7 @@ int		drawing(t_pars *par) //l'appeler drawing ?
 	// printf("ray_len = %f, rowimg = %f\n", mlx.spri[0]->ray_len, mlx.spri[0]->row_percent);
 	// printf("sizeline %d, width %d, height %d\n", info.t_sk[SIZE_LINE], info.t_sk[WIDTH], info.t_sk[HEIGHT]);
 	raycasting(&mlx); //allow to print first image
-	mlx_put_image_to_window(mlx.ptr, mlx.win, mlx.img->screen, 0, 0); //ici ?
+	mlx_put_image_to_window(mlx.ptr, mlx.win, mlx.img.screen, 0, 0); //ici ?
 
 	mlx_hook(mlx.win, MOTIONNOTIFY, 0, &motion_notify, &mlx); //configure fonction pour deplacement souris
 	mlx_hook(mlx.win, KEYPRESS, 0, &key_press, &mlx); //configure fonction quand on presse une touche

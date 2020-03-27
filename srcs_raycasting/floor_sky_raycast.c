@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/19 17:54:56 by lucaslefran       #+#    #+#             */
-/*   Updated: 2020/03/24 11:22:35 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/03/26 10:45:54 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,9 +25,9 @@ int		draw_skybox(t_mlx *mlx, double height, double rcast_angle)
 
 	height = mlx->par->reso[1] - height;
 	line = (int)((height / (mlx->par->reso[1] / 2.0)) //reso / 2 because sky could be at max half of the screen
-			* (double)(mlx->info->t_sk[HEIGHT] - 1));
-	row = (int)(rcast_angle / 360.0 * (double)mlx->info->t_sk[WIDTH]);
-	color = mlx->addr->t_sk[row + line * mlx->info->t_sk[SIZE_LINE]];
+			* (double)(mlx->info.t_sk[HEIGHT] - 1));
+	row = (int)(rcast_angle / 360.0 * (double)mlx->info.t_sk[WIDTH]);
+	color = mlx->addr.t_sk[row + line * mlx->info.t_sk[SIZE_LINE]];
 	return (color);
 }
 
@@ -46,7 +46,7 @@ int		find_color_square_floor(t_mlx *mlx, t_point i)
 	i.y = fabs(i.y - ((double)(int)i.y));
 	row = (int)(i.x * (double)WALL_SIZE); //texture should be size of texture walls (64 x 64, defined)
 	line = (int)(i.y * (double)WALL_SIZE);
-	color = mlx->addr->t_fl[row + line * mlx->info->t_fl[SIZE_LINE]];
+	color = mlx->addr.t_fl[row + line * mlx->info.t_fl[SIZE_LINE]];
 	return (color);
 }
 

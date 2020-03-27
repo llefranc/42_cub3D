@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/24 10:45:30 by lucaslefran       #+#    #+#             */
-/*   Updated: 2020/03/24 13:35:12 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/03/27 12:49:38 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,33 @@ int		find_inter_rays(t_mlx *mlx, t_sprites *spri, double xc, double yc)
 }
 
 /*
+** If the player meets a health sprite, add life point to player's life and
+** remove the sprite from the map and the tab of sprite. Return 0 and no
+** collision occurs. Otherwise if it's an other type of sprite, the function
+** return 1 to indicate there is a collision.
+*/
+int			collision_or_event(t_mlx *mlx, t_sprites *square, int x, int y)
+{
+	int		i;
+
+	i = 0;
+	if (square->type == SP_HEALTH)
+	{
+		mlx->eve.life += GAIN_HEALTH;
+		mlx->eve.life > FULL_LIFE ? mlx->eve.life = FULL_LIFE : 0;
+		mlx->cam->map[y][x] = 0; //resetting the map so we're not printing health sprite anymore
+		square->ray_len = -2.0;	//all ray_len minimun values are -1.0 during init
+		sort_sprites_tab(mlx->spri); //do after sort the actual sprite will be the last
+		while (mlx->spri[i])
+			i++;
+		free(mlx->spri[i - 1]); //deleting the sprite from the tab
+		mlx->spri[i - 1] = NULL;
+		return (0); //no collision with health sprite
+	}
+	return (1); //other sprites, collision
+}
+
+/*
 ** Checking if when player movement is not encountering a sprite. If the player
 ** is passing through a sprite, return 1. Otherwise return 0.
 */
@@ -79,8 +106,8 @@ int			sprite_collision(t_mlx *mlx, t_rcast *cam, double xc, double yc)
 	else			//if the movement is to one square to another one
 		square2 = sprite_ptr(mlx, (int)xc, (int)yc);
 	if (square1 && find_inter_rays(mlx, square1, xc, yc)) //on square 1, player is passing through a sprite
-		return (1);
+		return (collision_or_event(mlx, square1, (int)cam->x, (int)cam->y)); //if collision, return 1
 	if (square2 && find_inter_rays(mlx, square2, xc, yc)) //on square 2, player is passing through a sprite
-		return (1);
+		return (collision_or_event(mlx, square2, (int)xc, (int)yc));
 	return (0);
 }

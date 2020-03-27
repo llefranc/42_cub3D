@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/24 16:40:35 by lucaslefran       #+#    #+#             */
-/*   Updated: 2020/03/25 10:58:44 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/03/26 10:46:12 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,12 +86,12 @@ int		*add_sprite_img_addr(t_mlx *mlx, int type)
 	int		*addr_sprite;
 
 	addr_sprite = NULL;
-	type == SP_TREE ? addr_sprite = mlx->addr->s_4 : 0;
-	type == SP_ARMOR ? addr_sprite = mlx->addr->s_5 : 0;
-	type == SP_HEALTH ? addr_sprite = mlx->addr->s_6 : 0;
-	type == SP_LAMP ? addr_sprite = mlx->addr->s_7 : 0;
-	type == SP_SPEARS ? addr_sprite = mlx->addr->s_8 : 0;
-	type == SP_FLAG ? addr_sprite = mlx->addr->s_9 : 0;
+	type == SP_TREE ? addr_sprite = mlx->addr.s_4 : 0;
+	type == SP_ARMOR ? addr_sprite = mlx->addr.s_5 : 0;
+	type == SP_HEALTH ? addr_sprite = mlx->addr.s_6 : 0;
+	type == SP_LAMP ? addr_sprite = mlx->addr.s_7 : 0;
+	type == SP_SPEARS ? addr_sprite = mlx->addr.s_8 : 0;
+	type == SP_FLAG ? addr_sprite = mlx->addr.s_9 : 0;
 	return (addr_sprite);
 }
 
