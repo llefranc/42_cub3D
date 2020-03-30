@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/26 14:56:38 by llefranc          #+#    #+#             */
-/*   Updated: 2020/03/25 16:12:51 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/03/29 13:29:31 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -102,7 +102,7 @@ double	x_ray_xa_value(double angle, double y1, double ya)
 */
 int		x_ray_find_wall(t_mlx *mlx, double angle, double x_len, double y_len)
 {
-	if (angle > 0.0 && angle < 180.0)
+	if ((x_len || y_len) && (angle > 0.0 && angle < 180.0)) //!x1 && !y1 when player is standing on a sprite' square
 		y_len = (double)((int)(y_len)) - 1.0; //at the intersection with y axe, checking if wall above us
 	else if (mlx->cam->y + y_len - (double)((int)(mlx->cam->y + y_len)) > 0.99)
 		y_len = (double)((int)(y_len)) + 1.0;
@@ -143,6 +143,8 @@ double	x_ray_len(t_mlx *mlx, t_rcast *cam, double angle, t_texture *textu)
 	ya = x_ray_ya_value(angle); 
 	x1 = x_ray_x1_value(angle, y1); //cam->x + x1 => border of the actual square (x axe)
 	xa = x_ray_xa_value(angle, y1, ya) - x1;
+	if (x_ray_find_wall(mlx, angle, 0, 0) == 2) //in the case player is standing on a sprite' square
+		find_sprites(mlx, sprites_ptr_x_ray(mlx, angle, 0, 0), cam->x + xa, cam->y + ya, angle);
 	while ((ret = x_ray_find_wall(mlx, angle, x1, y1)) > 0) //until we find a wall/door or exit map
 	{
 		if (ret == 2) //we're adding again xa and ya to be sure the line will be over the sprite square and cross sprite plan

@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/12 16:23:29 by lucaslefran       #+#    #+#             */
-/*   Updated: 2020/03/27 11:19:54 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/03/29 13:38:26 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,8 @@ void	destroy_all_images(t_mlx *mlx, t_img *img)
 	img->s_9 ? mlx_destroy_image(mlx->ptr, img->s_9) : 0;
 	img->hud ? mlx_destroy_image(mlx->ptr, img->hud) : 0;
 	img->life ? mlx_destroy_image(mlx->ptr, img->life) : 0;
+	img->guns ? mlx_destroy_image(mlx->ptr, img->guns) : 0;
+	img->num ? mlx_destroy_image(mlx->ptr, img->num) : 0;
 	img->screen ? mlx_destroy_image(mlx->ptr, img->screen) : 0;
 }
 
@@ -78,6 +80,8 @@ void	struct_init_addr_info(t_mlx *mlx, t_addr *addr, t_info *info)
 	init_addr_info(&(addr->s_9), mlx->img.s_9, info->s_9);
 	init_addr_info(&(addr->hud), mlx->img.hud, info->hud);
 	init_addr_info(&(addr->life), mlx->img.life, info->life);
+	init_addr_info(&(addr->guns), mlx->img.guns, info->guns);
+	init_addr_info(&(addr->num), mlx->img.num, info->num);
 }
 
 /*
@@ -89,19 +93,19 @@ void	load_sprites(t_mlx *mlx, char *path, char *name, int num_sprite)
 
 	if (!(tmp = ft_strjoin(path, name)))
 		error_msg_destroy_img("Malloc failed\n", mlx);
-	if (num_sprite == SP_TREE && !(mlx->img.s_4 = mlx_xpm_file_to_image(mlx->ptr, tmp,
+	if (num_sprite == SP_GUARD && !(mlx->img.s_4 = mlx_xpm_file_to_image(mlx->ptr, tmp,
 			&(mlx->info.s_4[WIDTH]), &(mlx->info.s_4[HEIGHT]))))
-		error_msg_destroy_img("Sprites : error loading sprite number 4\n", mlx);
-	else if (num_sprite == SP_ARMOR && !(mlx->img.s_5 = mlx_xpm_file_to_image(mlx->ptr, tmp,
+		error_msg_destroy_img("Sprites : error loading sprite number 5\n", mlx);
+	if (num_sprite == SP_TREE && !(mlx->img.s_5 = mlx_xpm_file_to_image(mlx->ptr, tmp,
 			&(mlx->info.s_5[WIDTH]), &(mlx->info.s_5[HEIGHT]))))
 		error_msg_destroy_img("Sprites : error loading sprite number 5\n", mlx);
-	else if (num_sprite == SP_HEALTH && !(mlx->img.s_6 = mlx_xpm_file_to_image(mlx->ptr, tmp,
+	else if (num_sprite == SP_ARMOR && !(mlx->img.s_6 = mlx_xpm_file_to_image(mlx->ptr, tmp,
 			&(mlx->info.s_6[WIDTH]), &(mlx->info.s_6[HEIGHT]))))
 		error_msg_destroy_img("Sprites : error loading sprite number 6\n", mlx);
-	else if (num_sprite == SP_LAMP && !(mlx->img.s_7 = mlx_xpm_file_to_image(mlx->ptr, tmp,
+	else if (num_sprite == SP_HEALTH && !(mlx->img.s_7 = mlx_xpm_file_to_image(mlx->ptr, tmp,
 			&(mlx->info.s_7[WIDTH]), &(mlx->info.s_7[HEIGHT]))))
 		error_msg_destroy_img("Sprites : error loading sprite number 7\n", mlx);
-	else if (num_sprite == SP_SPEARS && !(mlx->img.s_8 = mlx_xpm_file_to_image(mlx->ptr, tmp,
+	else if (num_sprite == SP_AMMO && !(mlx->img.s_8 = mlx_xpm_file_to_image(mlx->ptr, tmp,
 			&(mlx->info.s_8[WIDTH]), &(mlx->info.s_8[HEIGHT]))))
 		error_msg_destroy_img("Sprites : error loading sprite number 8\n", mlx);
 	else if (num_sprite == SP_FLAG && !(mlx->img.s_9 = mlx_xpm_file_to_image(mlx->ptr, tmp,
@@ -113,6 +117,12 @@ void	load_sprites(t_mlx *mlx, char *path, char *name, int num_sprite)
 	else if (num_sprite == SP_LIFEBAR && !(mlx->img.life = mlx_xpm_file_to_image(mlx->ptr, tmp,
 			&(mlx->info.life[WIDTH]), &(mlx->info.life[HEIGHT]))))
 		error_msg_destroy_img("Sprites : error loading lifebar\n", mlx);
+	else if (num_sprite == SP_GUNS && !(mlx->img.guns = mlx_xpm_file_to_image(mlx->ptr, tmp,
+			&(mlx->info.guns[WIDTH]), &(mlx->info.guns[HEIGHT]))))
+		error_msg_destroy_img("Sprites : error loading gun\n", mlx);
+	else if (num_sprite == SP_NUMBERS && !(mlx->img.num = mlx_xpm_file_to_image(mlx->ptr, tmp,
+			&(mlx->info.num[WIDTH]), &(mlx->info.num[HEIGHT]))))
+		error_msg_destroy_img("Sprites : error loading numbers\n", mlx);
 	free(tmp);
 }
 
@@ -136,14 +146,16 @@ void	struct_init_img(t_mlx *mlx, t_info *info)
 		error_msg_destroy_img("Textures : error loading sky texture\n", mlx);
 	if (!(mlx->img.t_do = mlx_xpm_file_to_image(mlx->ptr, mlx->par->path_b_do, &(info->t_do[WIDTH]), &(info->t_do[HEIGHT]))))
 		error_msg_destroy_img("Textures : error loading door texture\n", mlx);
-	load_sprites(mlx, mlx->par->path_sp, "num_4/tree.xpm", SP_TREE);
-	load_sprites(mlx, mlx->par->path_sp, "num_5/armor.xpm", SP_ARMOR);
-	load_sprites(mlx, mlx->par->path_sp, "num_6/health.xpm", SP_HEALTH);
-	load_sprites(mlx, mlx->par->path_sp, "num_7/lamp.xpm", SP_LAMP);
-	load_sprites(mlx, mlx->par->path_sp, "num_8/spears.xpm", SP_SPEARS);
+	load_sprites(mlx, mlx->par->path_sp, "num_4/guard.xpm", SP_GUARD);
+	load_sprites(mlx, mlx->par->path_sp, "num_5/tree.xpm", SP_TREE);
+	load_sprites(mlx, mlx->par->path_sp, "num_6/armor.xpm", SP_ARMOR);
+	load_sprites(mlx, mlx->par->path_sp, "num_7/health.xpm", SP_HEALTH);
+	load_sprites(mlx, mlx->par->path_sp, "num_8/spears.xpm", SP_AMMO);
 	load_sprites(mlx, mlx->par->path_sp, "num_9/flag.xpm", SP_FLAG);
 	load_sprites(mlx, mlx->par->path_sp, "hud.xpm", SP_HUD);
 	load_sprites(mlx, mlx->par->path_sp, "lifebar.xpm", SP_LIFEBAR);
+	load_sprites(mlx, mlx->par->path_sp, "guns.xpm", SP_GUNS);
+	load_sprites(mlx, mlx->par->path_sp, "numbers.xpm", SP_NUMBERS);
 }
 
 /*
@@ -179,13 +191,16 @@ void	struct_init_paths(t_mlx *mlx, t_pars *par)
 void	struct_init_events_bool(t_event *eve)
 {
 	eve->print_texture = 1;
-	eve->ammo = FULL_LOADED;
-	eve->life = 50; //remplacer ici par full life
+	eve->ammo = AMMO_START;
+	eve->gun_shot = 0;
+	eve->lifebar = FULL_LIFE / 2;
+	eve->level = 1;
+	eve->nb_life = NB_LIFE_START;
 }
 
 /*
 ** Init a mlx struct. Create a mlx->ptr with mlx_init() and a new window for
-** mlx->win, . Loads the differents images on mlx.img, and filled the addresses
+** mlx->win. Loads the differents images on mlx.img, and filled the addresses
 ** and informations of those images in respectively mlx.addr and mlx.info.
 */
 void	struct_init_mlx(t_mlx *mlx)//, t_img *img, t_addr *addr, t_info *info)

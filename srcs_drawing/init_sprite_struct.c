@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/24 16:40:35 by lucaslefran       #+#    #+#             */
-/*   Updated: 2020/03/26 10:46:12 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/03/30 10:25:28 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,12 +69,12 @@ int		sprites_background_color(int type)
 	int		inv_color;
 
 	inv_color = 0;
-	type == SP_TREE ? inv_color = 9961608 : 0;
-	type == SP_ARMOR ? inv_color = 9961608 : 0;
-	type == SP_HEALTH ? inv_color = 9961608 : 0;
-	type == SP_LAMP ? inv_color = 9961608 : 0;
-	type == SP_SPEARS ? inv_color = 9961608 : 0;
-	type == SP_FLAG ? inv_color = 9961608 : 0;
+	type == SP_GUARD ? inv_color = INV_COLOR : 0;
+	type == SP_TREE ? inv_color = INV_COLOR : 0;
+	type == SP_ARMOR ? inv_color = INV_COLOR : 0;
+	type == SP_HEALTH ? inv_color = INV_COLOR : 0;
+	type == SP_AMMO ? inv_color = INV_COLOR : 0;
+	type == SP_FLAG ? inv_color = INV_COLOR : 0;
 	return (inv_color);
 }
 
@@ -86,11 +86,11 @@ int		*add_sprite_img_addr(t_mlx *mlx, int type)
 	int		*addr_sprite;
 
 	addr_sprite = NULL;
-	type == SP_TREE ? addr_sprite = mlx->addr.s_4 : 0;
-	type == SP_ARMOR ? addr_sprite = mlx->addr.s_5 : 0;
-	type == SP_HEALTH ? addr_sprite = mlx->addr.s_6 : 0;
-	type == SP_LAMP ? addr_sprite = mlx->addr.s_7 : 0;
-	type == SP_SPEARS ? addr_sprite = mlx->addr.s_8 : 0;
+	type == SP_GUARD ? addr_sprite = mlx->addr.s_4 : 0;
+	type == SP_TREE ? addr_sprite = mlx->addr.s_5 : 0;
+	type == SP_ARMOR ? addr_sprite = mlx->addr.s_6 : 0;
+	type == SP_HEALTH ? addr_sprite = mlx->addr.s_7 : 0;
+	type == SP_AMMO ? addr_sprite = mlx->addr.s_8 : 0;
 	type == SP_FLAG ? addr_sprite = mlx->addr.s_9 : 0;
 	return (addr_sprite);
 }
@@ -105,13 +105,23 @@ int		sprite_size(int type)
 	int		size;
 
 	size = 0;
+	type == SP_GUARD ? size = GUARD_SIZE : 0;
 	type == SP_TREE ? size = TREE_SIZE : 0;
 	type == SP_ARMOR ? size = ARMOR_SIZE : 0;
 	type == SP_HEALTH ? size = HEALTH_SIZE : 0;
-	type == SP_LAMP ? size = LAMP_SIZE : 0;
-	type == SP_SPEARS ? size = SPEARS_SIZE : 0;
+	type == SP_AMMO ? size = AMMO_SIZE : 0;
 	type == SP_FLAG ? size = FLAG_SIZE : 0;
 	return (size);
+}
+
+/*
+** Initializes all informations for printing and animating guards.
+*/
+void	init_sprite_guard(t_sprites *new)
+{
+	new->guard.line_img = G_BASIC_L;
+	new->guard.row_img = G_BASIC_R;
+	new->guard.see_player = 0;
 }
 
 /*
@@ -131,8 +141,8 @@ void	add_sprite_info(t_mlx *mlx, t_rcast *cam, int line, int row)
 	new->size = sprite_size(new->type);
 	new->addr_img = add_sprite_img_addr(mlx, new->type);
 	new->inv_color = sprites_background_color(new->type);
-	new->x = row;
-	new->y = line;
+	new->x = (double)row;// + 0.5;
+	new->y = (double)line;// + 0.5;
 	new->ray_len = -1.0;
 	new->start_line_img = -1;
 	new->freq_pixel = -1.0;
@@ -142,5 +152,7 @@ void	add_sprite_info(t_mlx *mlx, t_rcast *cam, int line, int row)
 	new->a.y = -1.0;
 	new->b.x = -1.0;
 	new->b.y = -1.0;
+	if (new->type == SP_GUARD)
+		init_sprite_guard(new);
 	add_sprite_struct(mlx, new);
 }

@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/04 17:44:38 by llefranc          #+#    #+#             */
-/*   Updated: 2020/03/26 10:46:46 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/03/30 10:12:41 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,9 @@ int		key_press(int keycode, t_mlx *mlx)
 		mlx->eve.print_texture = (mlx->eve.print_texture == 0) ? 1 : 0;
 	else if (keycode == E_KEY) //open a door if close to one
 		open_door(mlx);
-	else if (keycode == ESC_KEY)	//free and exit
+	else if (keycode == SP_KEY && !mlx->eve.gun_shot && mlx->eve.ammo > 0)
+		shoot_anim(mlx); //start shooting anim if no actual shoot anim is being printed on screen
+	else if (keycode == ESC_KEY) //free and exit
 	{
 		struct_free(mlx->par);
 		exit(EXIT_SUCCESS);
@@ -125,6 +127,7 @@ int		no_event(t_mlx *mlx)
 		mlx->start_rota.tv_sec = 0.0;
 	mlx->cam->rm_left ? mlx->cam->angle = positive_angle(mlx->cam->angle + mlx->cam->rm_left) : 0;
 	mlx->cam->rm_right ? mlx->cam->angle = positive_angle(mlx->cam->angle - mlx->cam->rm_right) : 0;
+	guards_seeing_player(mlx, mlx->cam, mlx->spri);
 	raycasting(mlx);
 	draw_hud_anims(mlx, mlx->par, &mlx->info);
 	mlx_put_image_to_window(mlx->ptr, mlx->win, mlx->img.screen, 0, 0);

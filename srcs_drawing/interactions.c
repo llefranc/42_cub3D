@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/25 14:52:42 by lucaslefran       #+#    #+#             */
-/*   Updated: 2020/03/27 13:01:20 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/03/27 22:59:56 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,4 +72,14 @@ void	open_door(t_mlx *mlx)
 			return ;
 		}
 	}
+}
+
+/*
+** Starts the timer for the shooting animation.
+*/
+void	shoot_anim(t_mlx *mlx)
+{
+	mlx->eve.gun_shot = 1;
+	(mlx->eve.ammo)--;
+	gettimeofday(&mlx->eve.gun_time_start, NULL);
 }

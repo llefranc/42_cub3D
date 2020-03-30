@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/24 10:45:30 by lucaslefran       #+#    #+#             */
-/*   Updated: 2020/03/27 12:49:38 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/03/29 13:27:07 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,15 +41,15 @@ int		find_inter_rays(t_mlx *mlx, t_sprites *spri, double xc, double yc)
 	t_point vec_j;		//represent CD segment
 	double	k;			//len of AB line when it's crossing CD, should be < 1.0 if it occurs on segment AB
 	double	m;			//len of CD line when it's crossing AB, same
-	double	seg_len;	//ratio to add 0.7 len to CD vector, so player is not to close from sprite
+	double	seg_len;	//ratio to add 0.5 len to CD vector, so player can't get to close from sprite
 
 	d.x = mlx->cam->x;
 	d.y = mlx->cam->y;
 	vec_j.x = d.x - xc;	//coordinates of j vector (temporary calcul)
 	vec_j.y = d.y - yc;
 	seg_len = ray_len(d.x, d.y, xc, yc);
-	seg_len = 0.7 / seg_len;
-	d.x += vec_j.x * seg_len; //new d point coordinates, we add 0.7 len to CD segment
+	seg_len = 0.5 / seg_len;
+	d.x += vec_j.x * seg_len; //new d point coordinates, we add 0.5 len to CD segment
 	d.y += vec_j.y * seg_len; //in order to not be to close to sprites
 	vec_i.x = spri->b_sized.x - spri->a_sized.x;	//coordinates of i vector
 	vec_i.y = spri->b_sized.y - spri->a_sized.y;
@@ -65,28 +65,30 @@ int		find_inter_rays(t_mlx *mlx, t_sprites *spri, double xc, double yc)
 }
 
 /*
-** If the player meets a health sprite, add life point to player's life and
-** remove the sprite from the map and the tab of sprite. Return 0 and no
-** collision occurs. Otherwise if it's an other type of sprite, the function
-** return 1 to indicate there is a collision.
+** If the player meets a health /ammo sprite, add life point /ammo to player's
+** life / ammo and remove the sprite from the map and the tab of sprite. Return
+** 0 and no collision occurs. Otherwise if it's an other type of sprite, the
+** function return 1 to indicate there is a collision.
 */
 int			collision_or_event(t_mlx *mlx, t_sprites *square, int x, int y)
 {
 	int		i;
 
 	i = 0;
-	if (square->type == SP_HEALTH)
+	if (square->type == SP_HEALTH || square->type == SP_AMMO)
 	{
-		mlx->eve.life += GAIN_HEALTH;
-		mlx->eve.life > FULL_LIFE ? mlx->eve.life = FULL_LIFE : 0;
-		mlx->cam->map[y][x] = 0; //resetting the map so we're not printing health sprite anymore
+		square->type == SP_HEALTH ? mlx->eve.lifebar += GAIN_HEALTH : 0;
+		square->type == SP_HEALTH && mlx->eve.lifebar > FULL_LIFE ? mlx->eve.lifebar = FULL_LIFE : 0;
+		square->type == SP_AMMO ? mlx->eve.ammo += GAIN_AMMO : 0;
+		square->type == SP_AMMO && mlx->eve.ammo > FULL_AMMO ? mlx->eve.ammo = FULL_AMMO : 0;
+		mlx->cam->map[y][x] = 0; //resetting the map so we're not printing health / ammo sprite anymore
 		square->ray_len = -2.0;	//all ray_len minimun values are -1.0 during init
-		sort_sprites_tab(mlx->spri); //do after sort the actual sprite will be the last
+		sort_sprites_tab(mlx->spri); //after sort the actual sprite will be the last of the tab
 		while (mlx->spri[i])
 			i++;
 		free(mlx->spri[i - 1]); //deleting the sprite from the tab
 		mlx->spri[i - 1] = NULL;
-		return (0); //no collision with health sprite
+		return (0); //no collision with health / ammo sprite
 	}
 	return (1); //other sprites, collision
 }

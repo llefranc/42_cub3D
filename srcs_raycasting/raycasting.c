@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/21 13:40:24 by llefranc          #+#    #+#             */
-/*   Updated: 2020/03/25 16:13:04 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/03/29 12:20:14 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,7 +92,7 @@ int		nb_image_row(t_rcast *cam, t_texture *textu, double xa, double ya)
 
 	x_len = cam->x + xa - (double)((int)(cam->x + xa));
 	y_len = cam->y + ya - (double)((int)(cam->y + ya));
-	if ((x_len > y_len && x_len < 0.9999999) || y_len > 0.99) //y_len > 0.99 handle a strange case where y_len should value 0 but
+	if ((x_len > y_len && x_len < 0.9999999) || y_len > 0.999) //y_len > 0.999 handle a strange case where y_len should value 0 but
 	{													 	  //it's taking 0.9999999... value due to round errors
 		row_img = (int)(x_len * (double)WALL_SIZE);
 		if (textu->side_wall == DOOR) //if door, no need to determinates which side is touched

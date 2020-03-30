@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/12 16:17:24 by lucaslefran       #+#    #+#             */
-/*   Updated: 2020/03/27 12:43:27 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/03/30 10:15:34 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,22 +81,23 @@
 # define SECRETDOOR			3
 
 //types of sprite
-# define SP_TREE			4
-# define SP_ARMOR			5
-# define SP_HEALTH			6
-# define SP_LAMP			7
-# define SP_SPEARS			8
+# define SP_GUARD			4
+# define SP_TREE			5
+# define SP_ARMOR			6
+# define SP_HEALTH			7
+# define SP_AMMO			8
 # define SP_FLAG			9
 # define SP_HUD				10
 # define SP_LIFEBAR			11
 # define SP_GUNS			12
+# define SP_NUMBERS			13
 
 //width (in pixel) of sprites on screen for sprite collision
+# define GUARD_SIZE			24
 # define TREE_SIZE			20
 # define ARMOR_SIZE			30
 # define HEALTH_SIZE		40
-# define LAMP_SIZE			0
-# define SPEARS_SIZE		50
+# define AMMO_SIZE			50
 # define FLAG_SIZE			16
 
 //sprite's background color that we're not printing
@@ -106,27 +107,71 @@
 # define HUD_SIZE_H			1.0 / 6.0
 # define LIFE_SIZE_H		1.0 / 20.0
 # define LIFE_SIZE_W		1.0 / 6.0
+# define GUNS_SIZE_H		70.0 / 100.0
+# define GUNS_SIZE_W		50.0 / 100.0
+# define NUMBER_SIZE_H		8.0 / 100.0
+# define NUMBER_SIZE_W		3.0 / 100.0
+# define HEART_SIZE_H		5.0 / 100.0
+# define HEART_SIZE_W		2.5 / 100.0
 
 //sprite's first pixel position in images (L = line, R = row)
 # define LIFE_RED_IMG_L		0
 # define LIFE_RED_IMG_R		37
 # define LIFE_EMPTY_IMG_L	24
 # define LIFE_EMPTY_IMG_R	37
+# define GUNS_IMG_L			65
+# define GUNS_IMG_R			65
+# define NUMBER_IMG_L		41
+# define NUMBER_IMG_R		228
+# define HEART_IMG_L		10
+# define HEART_IMG_R		2
 
+//guards' sprites first pixel position in image (L = line, R = row)
+# define G_BASIC_L			0
+# define G_BASIC_R			0
+# define G_DETECT_L			390
+# define G_DETECT_R			0
+# define G_SHOOT1_L			390
+# define G_SHOOT1_R			65
+# define G_SHOOT2_L			390
+# define G_SHOOT2_R			130
 
 //sprite's position on screen
-# define LIFE_SCREEN_L		89.0 / 100.0
+# define LIFE_SCREEN_L		91.0 / 100.0
 # define LIFE_SCREEN_R		1.0 / 8.0
+# define GUNS_SCREEN_L		13.5 / 100.0
+# define GUNS_SCREEN_R		25.0 / 100.0
+# define NUMBER_SCREEN_L	89.5 / 100.0
+# define N_LEVEL_SCREEN_R	5.0 / 100.0
+# define N_LIFE1_SCREEN_R	52.0 / 100.0
+# define N_LIFE2_SCREEN_R	55.0 / 100.0
+# define N_LIFE3_SCREEN_R	58.0 / 100.0
+# define N_AMMO1_SCREEN_R	68.0 / 100.0
+# define N_AMMO2_SCREEN_R	71.0 / 100.0
+# define HEART_SCREEN_L		92.0 / 100.0
+# define HEART1_SCREEN_R	31.5 / 100.0
+# define HEART2_SCREEN_R	34.5 / 100.0
+# define HEART3_SCREEN_R	37.5 / 100.0
 
+//size of one sprite (in pixel) contained inside an image of several sprites
 # define LIFE_PIX_H			21
 # define LIFE_PIX_W			332
+# define GUNS_PIX_H			64
+# define GUNS_PIX_W			64
+# define NUMBER_PIX_H		16
+# define NUMBER_PIX_W		8
+# define HEART_PIX_H		27
+# define HEART_PIX_W		32
 
 //player's informations
-# define FULL_LOADED		9
+# define AMMO_START			10
+# define FULL_AMMO			99
 # define FULL_LIFE			100
+# define NB_LIFE_START		3
 
 //interactions with player
 # define GAIN_HEALTH		20
+# define GAIN_AMMO			5
 
 //contains all the information from the config file
 typedef struct		s_pars
@@ -146,6 +191,15 @@ typedef struct		s_pars
 	int				sky_rgb;			//sky color contained in a int
 	int				**map;
 }					t_pars;
+
+typedef struct		s_guard
+{
+	int				see_player;			//if the guard is seeing the player (0 if not, 1 if starting seeing, 2 when fighting)
+	int				row_img;
+	int				line_img;
+	struct timeval	timer_shoot;
+	struct timeval	time_detect;
+}					t_guard;
 
 //allows to print the textures for walls
 typedef struct		s_texture
@@ -178,8 +232,8 @@ typedef struct		s_sprites
 	int				size;				//width (in pixel) of sprite on screen
 	int				*addr_img;			//memory adress of the sprite image
 	int				inv_color;			//color that we're not printing for the sprite's background
-	int				x;					//sprite's coordinates
-	int				y;
+	double			x;					//sprite's coordinates (peut etre les passer en double pour les gardes ?)
+	double			y;
 	double			ray_len;			//len of the ray when it meets the sprite
 	double			nb_pix;				//number of pixels print on screen for the sprite
 	int				start_line_img;		//first line of the image that we will print (for resizing)
@@ -189,6 +243,7 @@ typedef struct		s_sprites
 	t_point			b;					//to the angle of the camere
 	t_point			a_sized;			//segment AB_sized is the same than AB, except is also including sprite' size
 	t_point			b_sized;			//when printing on screen (if tree has a width of 32 pix, AB_sized is half of AB)
+	t_guard			guard;
 }					t_sprites;
 
 //handle raycasting + player's movements events
@@ -220,7 +275,11 @@ typedef struct		s_event
 {
 	int				print_texture;		//boolean to print or not floor and sky textures
 	int				ammo;				//number of ammo
-	int				life;				//life (from 0 to 100)
+	int				gun_shot;			//boolean to start shooting anim
+	struct timeval	gun_time_start;		//time when player press key for shoot
+	int				lifebar;			//lifebar (from 0 to 100)
+	int				level;
+	int				nb_life;
 }					t_event;
 
 //t_* == textures || s_* == sprites
@@ -242,6 +301,8 @@ typedef struct		s_img
 	void			*s_9;
 	void			*hud;
 	void			*life;
+	void			*guns;
+	void			*num;
 }					t_img;
 
 typedef struct		s_addr
@@ -262,6 +323,8 @@ typedef struct		s_addr
 	int				*s_9;
 	int				*hud;
 	int				*life;
+	int				*guns;
+	int				*num;
 }					t_addr;
 
 typedef struct		s_info
@@ -282,13 +345,9 @@ typedef struct		s_info
 	int				s_9[5];
 	int				hud[5];
 	int				life[5];
+	int				guns[5];
+	int				num[5];
 }					t_info;
-
-typedef struct		s_player
-{
-	int				ammo;
-	int				life;
-}					t_player;
 
 typedef struct		s_mlx
 {
@@ -400,6 +459,7 @@ int			no_event(t_mlx *mlx);
 
 //interactions.c
 void		open_door(t_mlx *mlx);
+void		shoot_anim(t_mlx *mlx);
 
 //draw_sprites.c
 void		sort_sprites_tab(t_sprites **spri);
@@ -408,10 +468,9 @@ void		draw_sprites(t_mlx *mlx, t_sprites **spri, int screen_row);
 //sprite_collision.c
 int			sprite_collision(t_mlx *mlx, t_rcast *cam, double xd, double yd);
 
-//draw_hud_messages.c A ENLEVER ?????
-void		draw_hud_messages(t_mlx *mlx, t_pars *par);
 //draw_hud_anims.c
 void		draw_hud_anims(t_mlx *mlx, t_pars *par, t_info *info);
 
+void		guards_seeing_player(t_mlx *mlx, t_rcast *cam, t_sprites **spri);
 
 #endif

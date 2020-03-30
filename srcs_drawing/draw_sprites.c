@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/18 19:08:04 by lucaslefran       #+#    #+#             */
-/*   Updated: 2020/03/27 12:43:29 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/03/29 14:10:32 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,11 +75,11 @@ int		*sprite_addr(t_mlx *mlx, int type)
 	int		*address;
 
 	address = NULL;
-	type == SP_TREE ? address = mlx->addr.s_4 : 0;
-	type == SP_ARMOR ? address = mlx->addr.s_5 : 0;
-	type == SP_HEALTH ? address = mlx->addr.s_6 : 0;
-	type == SP_LAMP ? address = mlx->addr.s_7 : 0;
-	type == SP_SPEARS ? address = mlx->addr.s_8 : 0;
+	type == SP_GUARD ? address = mlx->addr.s_4 : 0;
+	type == SP_TREE ? address = mlx->addr.s_5 : 0;
+	type == SP_ARMOR ? address = mlx->addr.s_6 : 0;
+	type == SP_HEALTH ? address = mlx->addr.s_7 : 0;
+	type == SP_AMMO ? address = mlx->addr.s_8 : 0;
 	type == SP_FLAG ? address = mlx->addr.s_9 : 0;
 	return (address);
 }
@@ -90,11 +90,11 @@ int		*sprite_addr(t_mlx *mlx, int type)
 */
 int		*sprite_info_addr(t_mlx *mlx, int **info, int type)
 {
-	type == SP_TREE ? *info = mlx->info.s_4 : 0;
-	type == SP_ARMOR ? *info = mlx->info.s_5 : 0;
-	type == SP_HEALTH ? *info = mlx->info.s_6 : 0;
-	type == SP_LAMP ? *info = mlx->info.s_7 : 0;
-	type == SP_SPEARS ? *info = mlx->info.s_8 : 0;
+	type == SP_GUARD ? *info = mlx->info.s_4 : 0;
+	type == SP_TREE ? *info = mlx->info.s_5 : 0;
+	type == SP_ARMOR ? *info = mlx->info.s_6 : 0;
+	type == SP_HEALTH ? *info = mlx->info.s_7 : 0;
+	type == SP_AMMO ? *info = mlx->info.s_8 : 0;
 	type == SP_FLAG ? *info = mlx->info.s_9 : 0;
 	return (sprite_addr(mlx, type));
 }
@@ -116,8 +116,11 @@ int		sprite_color(t_mlx *mlx, t_sprites *spri, int x, int type)
 	addr = sprite_info_addr(mlx, &info, type); //info and addr.ptr are pointing to the correct sprite img
 	if (x >= info[WIDTH])	//for avoiding segfault when round error with double
 		x = info[WIDTH] - 1;
-	color = addr[row_img + spri->start_line_img * info[SIZE_LINE]
-			+ x * info[SIZE_LINE]];
+	if (type == SP_GUARD)
+		color = addr[row_img + spri->guard.row_img + spri->guard.line_img * info[SIZE_LINE]
+				+ spri->start_line_img * info[SIZE_LINE] + x * info[SIZE_LINE]];
+	else
+		color = addr[row_img + spri->start_line_img * info[SIZE_LINE] + x * info[SIZE_LINE]];
 	return (color);
 }
 

@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/25 11:07:23 by llefranc          #+#    #+#             */
-/*   Updated: 2020/03/27 13:01:33 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/03/29 13:55:00 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,12 @@
 //faire le save
 
 //EN PLUS
-//rajouter plusieurs sprites
-//regarder pourquoi les sprites disparaissent quand on est tres pres
-//regler mauvaise face qui apparait sur le mur pour la premiere rangee de pixel on dirait (ouest et est)
+//changer le sprite ammo
+//rajouter le changement de niveau avec le num 4
+//pour les gardes : 
+//quand ils nous voient, anim detection
+//ensuite anim ou on les tue + gestion du tir
+//anim ou ils nous tirent dessus + perte point de vie
 
 /*
 BONUS PART : 
@@ -39,7 +42,7 @@ GOOD : Object collisions.
 GOOD : Earning points and/or losing life by picking up objects/traps.
 GOOD : Doors which can open and close.
 GOOD : Secret doors.
-->• Animations of a gun shot or animated sprite.
+GOOD : Animations of a gun shot or animated sprite.
 ->• Several levels.
 ->• Sounds and music.
 GOOD : Rotate the point of view with the mouse.
@@ -58,7 +61,7 @@ GOOD : More items in the maze.
 GOOD : Secret doors. (3)
 
 HUD / ANIMATIONS AVEC TIMER :
-->• Animations of a gun shot or animated sprite.
+GOOD : Animations of a gun shot or animated sprite.
 GOOD : Life bar.
 GOOD : An HUD.
 
