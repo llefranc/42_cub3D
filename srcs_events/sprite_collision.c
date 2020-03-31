@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/24 10:45:30 by lucaslefran       #+#    #+#             */
-/*   Updated: 2020/03/29 13:27:07 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/03/30 10:40:53 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ t_sprites	*sprite_ptr(t_mlx *mlx, int x, int y)
 	int			i;
 
 	i = 0;
-	while (mlx->spri && mlx->spri[i] && (mlx->spri[i]->y != y || mlx->spri[i]->x != x))
+	while (mlx->spri && mlx->spri[i] && ((int)mlx->spri[i]->y != y || (int)mlx->spri[i]->x != x))
 		i++;
 	if (!mlx->spri)	//in case of no sprites in the map
 		return (NULL);

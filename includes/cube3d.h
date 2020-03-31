@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/12 16:17:24 by lucaslefran       #+#    #+#             */
-/*   Updated: 2020/03/30 10:15:34 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/03/31 14:49:52 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,10 +131,16 @@
 # define G_BASIC_R			0
 # define G_DETECT_L			390
 # define G_DETECT_R			0
-# define G_SHOOT1_L			390
+# define G_DEAD_L			325
+# define G_DEAD1_R			0
+# define G_DEAD2_R			65
+# define G_DEAD3_R			130
+# define G_DEAD4_R			195
+# define G_DEAD5_R			260
+# define G_SHOOT_L			390
 # define G_SHOOT1_R			65
-# define G_SHOOT2_L			390
 # define G_SHOOT2_R			130
+
 
 //sprite's position on screen
 # define LIFE_SCREEN_L		91.0 / 100.0
@@ -162,6 +168,12 @@
 # define NUMBER_PIX_W		8
 # define HEART_PIX_H		27
 # define HEART_PIX_W		32
+
+//guard parameters
+# define NOT_SEEING			0
+# define DETECTING_PLAYER	1
+# define DYING				2
+# define DEAD				3
 
 //player's informations
 # define AMMO_START			10
@@ -194,11 +206,12 @@ typedef struct		s_pars
 
 typedef struct		s_guard
 {
-	int				see_player;			//if the guard is seeing the player (0 if not, 1 if starting seeing, 2 when fighting)
+	int				status;			//if the guard is seeing the player (0 if not, 1 if starting seeing, 2 when fighting)
 	int				row_img;
 	int				line_img;
-	struct timeval	timer_shoot;
+	int				shooting;
 	struct timeval	time_detect;
+	struct timeval	time_death;
 }					t_guard;
 
 //allows to print the textures for walls
@@ -414,9 +427,19 @@ double		height_object(t_rcast *cam, double ray_len);
 double		nb_pixel_wall(t_mlx *mlx, t_rcast *cam, t_texture *textu, double angle);
 
 //x_ray.c
+double		x_ray_y1_value(t_rcast *cam, double angle);
+double		x_ray_ya_value(double angle);
+double		x_ray_x1_value(double angle, double y1);
+double		x_ray_xa_value(double angle, double y1, double ya);
+int			x_ray_find_wall(t_mlx *mlx, double angle, double x_len, double y_len);
 double		x_ray_len(t_mlx *mlx, t_rcast *cam, double angle, t_texture *textu);
 
 //y_ray.c
+double		y_ray_x1_value(t_rcast *cam, double angle);
+double		y_ray_xa_value(double angle);
+double		y_ray_y1_value(double angle, double x1);
+double		y_ray_ya_value(double angle, double x1, double xa);
+int			y_ray_find_wall(t_mlx *mlx, double angle, double x_len, double y_len);
 double		y_ray_len(t_mlx *mlx, t_rcast *cam, double angle, t_texture *textu);
 
 //sprites_raycast.c
@@ -471,6 +494,14 @@ int			sprite_collision(t_mlx *mlx, t_rcast *cam, double xd, double yd);
 //draw_hud_anims.c
 void		draw_hud_anims(t_mlx *mlx, t_pars *par, t_info *info);
 
+//ennemy.c
+int			x_ray_find_len_wall(t_mlx *mlx, double angle, double x_len, double y_len);
+int			y_ray_find_len_wall(t_mlx *mlx, double angle, double x_len, double y_len);
+double		x_ray_ennemy_seeing(t_mlx *mlx, t_rcast *cam, double angle, int detect);
+double		y_ray_ennemy_seeing(t_mlx *mlx, t_rcast *cam, double angle, int detect);
 void		guards_seeing_player(t_mlx *mlx, t_rcast *cam, t_sprites **spri);
+
+//TEST ENNEMY.C
+double		x_ray_len_wall(t_mlx *mlx, t_rcast *cam, double angle);
 
 #endif

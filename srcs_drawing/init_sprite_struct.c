@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/24 16:40:35 by lucaslefran       #+#    #+#             */
-/*   Updated: 2020/03/30 10:25:28 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/03/30 16:20:40 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,7 +121,8 @@ void	init_sprite_guard(t_sprites *new)
 {
 	new->guard.line_img = G_BASIC_L;
 	new->guard.row_img = G_BASIC_R;
-	new->guard.see_player = 0;
+	new->guard.status = 0;
+	new->guard.shooting = 0;
 }
 
 /*
@@ -141,8 +142,8 @@ void	add_sprite_info(t_mlx *mlx, t_rcast *cam, int line, int row)
 	new->size = sprite_size(new->type);
 	new->addr_img = add_sprite_img_addr(mlx, new->type);
 	new->inv_color = sprites_background_color(new->type);
-	new->x = (double)row;// + 0.5;
-	new->y = (double)line;// + 0.5;
+	new->x = (double)row + 0.5;
+	new->y = (double)line + 0.5;
 	new->ray_len = -1.0;
 	new->start_line_img = -1;
 	new->freq_pixel = -1.0;

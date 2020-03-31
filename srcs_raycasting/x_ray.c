@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/26 14:56:38 by llefranc          #+#    #+#             */
-/*   Updated: 2020/03/29 13:29:31 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/03/30 12:53:41 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,11 +111,14 @@ int		x_ray_find_wall(t_mlx *mlx, double angle, double x_len, double y_len)
 	if ((int)(mlx->cam->x + x_len) < 0 || (int)(mlx->cam->x + x_len) >= 
 			mlx->cam->nb_rows[(int)(mlx->cam->y + y_len)]) //same for rows
 		return (-1);
-	if (mlx->cam->map[(int)(mlx->cam->y + y_len)][(int)(mlx->cam->x + x_len)] > 3) //if a sprite
+	if (mlx->cam->map[(int)(mlx->cam->y + y_len)][(int)(mlx->cam->x + x_len)] > 3 &&
+			mlx->cam->map[(int)(mlx->cam->y + y_len)][(int)(mlx->cam->x + x_len)] < 10) //if a sprite
 		return (2);
-	else if (mlx->cam->map[(int)(mlx->cam->y + y_len)][(int)(mlx->cam->x + x_len)] == 0) //if empty
+	else if (mlx->cam->map[(int)(mlx->cam->y + y_len)][(int)(mlx->cam->x + x_len)] == 0 || //if empty
+			mlx->cam->map[(int)(mlx->cam->y + y_len)][(int)(mlx->cam->x + x_len)] == DOOR + 10 || //if door opened (we're not printing it)
+			mlx->cam->map[(int)(mlx->cam->y + y_len)][(int)(mlx->cam->x + x_len)] == SECRETDOOR + 10)
 		return (1);
-	if (mlx->cam->map[(int)(mlx->cam->y + y_len)][(int)(mlx->cam->x + x_len)] == 2) //if a door
+	else if (mlx->cam->map[(int)(mlx->cam->y + y_len)][(int)(mlx->cam->x + x_len)] == DOOR) //if a door
 		mlx->textu->doors_x = DOOR;
 	return (0); //only if we find a wall or doors
 }
@@ -124,8 +127,8 @@ int		x_ray_find_wall(t_mlx *mlx, double angle, double x_len, double y_len)
 ** Checking x values on 'x axe' each time the ray cross 'y axe' until it meets a
 ** a wall or exit the map. Return the len of the ray on 'x axe', depending on
 ** the angle. If angle == 0 or 180 degrees, nan will be returned (ray will 
-** never cross 'y axe'). If angle == 90 or 270 degrees, 0 will be returned (ray
-** go up or down but doesn't move on 'x axe').
+** never cross 'y axe'). Also calls find_sprites func for sprites raycasting
+** each time the ray is meeting a sprite square.
 */
 double	x_ray_len(t_mlx *mlx, t_rcast *cam, double angle, t_texture *textu)
 {

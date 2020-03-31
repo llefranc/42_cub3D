@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/11 14:10:26 by llefranc          #+#    #+#             */
-/*   Updated: 2020/03/30 10:26:18 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/03/30 18:15:09 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,38 @@
 ** Calculates the two coordinates of one point depending of an angle by using
 ** trigonometry, and by starting the calculs from the middle of the square.
 */
+// void	calc_coordinates(double angle, t_sprites *spri, char c)
+// {
+// 	double	x_len;
+// 	double	y_len;
+// 	double	ratio;		//ratio between sprite's width on screen and full width of sprite img
+// 	double	tmp_angle;
+
+// 	tmp_angle = angle_tri_rect(angle);
+// 	x_len = 0.5 * cos(tmp_angle * TO_RAD);	//we're evolving in a trigo environnement
+// 	y_len = 0.5 * sin(tmp_angle * TO_RAD);	//and we know that its ray is 0.5
+// 	ratio = (double)spri->size / (double)WALL_SIZE;
+// 	if (angle > 0.0 && angle < 180.0)
+// 		y_len *= -1.0;
+// 	if (angle > 90.0 && angle < 270.0)
+// 		x_len *= -1.0;
+// 	if (c == 'A')	//first point, filling xa and ya
+// 	{
+// 		spri->a.x = (double)spri->x + 0.5 + x_len;
+// 		spri->a.y = (double)spri->y + 0.5 + y_len;
+// 		spri->a_sized.x = (double)spri->x + 0.5 + x_len * ratio; //for sprite collision 
+// 		spri->a_sized.y = (double)spri->y + 0.5 + y_len * ratio;
+// 	}
+// 	else			//second point, filling xb and yb
+// 	{
+// 		spri->b.x = (double)spri->x + 0.5 + x_len;
+// 		spri->b.y = (double)spri->y + 0.5 + y_len;
+// 		spri->b_sized.x = (double)spri->x + 0.5 + x_len * ratio; //for sprite collision 
+// 		spri->b_sized.y = (double)spri->y + 0.5 + y_len * ratio;
+// 	}
+// }
+
+//TEST
 void	calc_coordinates(double angle, t_sprites *spri, char c)
 {
 	double	x_len;
@@ -33,17 +65,17 @@ void	calc_coordinates(double angle, t_sprites *spri, char c)
 		x_len *= -1.0;
 	if (c == 'A')	//first point, filling xa and ya
 	{
-		spri->a.x = (double)spri->x + 0.5 + x_len; //test(+ 0.5)
-		spri->a.y = (double)spri->y + 0.5 + y_len; //test(+ 0.5)
-		spri->a_sized.x = (double)spri->x + 0.5 + x_len * ratio; //for sprite collision  //test(+ 0.5)
-		spri->a_sized.y = (double)spri->y + 0.5 + y_len * ratio; //test(+ 0.5)
+		spri->a.x = (double)spri->x + x_len; //test(+ 0.5)
+		spri->a.y = (double)spri->y + y_len; //test(+ 0.5)
+		spri->a_sized.x = (double)spri->x + x_len * ratio; //for sprite collision  //test(+ 0.5)
+		spri->a_sized.y = (double)spri->y + y_len * ratio; //test(+ 0.5)
 	}
 	else			//second point, filling xb and yb
 	{
-		spri->b.x = (double)spri->x + 0.5 + x_len; //test(+ 0.5)
-		spri->b.y = (double)spri->y + 0.5 + y_len; //test(+ 0.5)
-		spri->b_sized.x = (double)spri->x + 0.5 + x_len * ratio; //for sprite collision  //test(+ 0.5)
-		spri->b_sized.y = (double)spri->y + 0.5 + y_len * ratio; //test(+ 0.5)
+		spri->b.x = (double)spri->x + x_len; //test(+ 0.5)
+		spri->b.y = (double)spri->y + y_len; //test(+ 0.5)
+		spri->b_sized.x = (double)spri->x + x_len * ratio; //for sprite collision  //test(+ 0.5)
+		spri->b_sized.y = (double)spri->y + y_len * ratio; //test(+ 0.5)
 	}
 }
 
@@ -103,9 +135,9 @@ t_sprites	*sprites_ptr_x_ray(t_mlx *mlx, double angle, double x1, double y1)
 		y1 = (double)((int)(y1)) - 1.0; //at the intersection with y axe, checking if sprite above us
 	else if (mlx->cam->y + y1 - (double)((int)(mlx->cam->y + y1)) > 0.99)
 		y1 = (double)((int)(y1)) + 1.0; //for an exception due to round error
-	x = (int)(mlx->cam->x + x1); //test (- 0.5)
-	y = (int)(mlx->cam->y + y1); //test (- 0.5)
-	while (mlx->spri && mlx->spri[i] && (mlx->spri[i]->y != y || mlx->spri[i]->x != x))
+	x = (int)(mlx->cam->x + x1);
+	y = (int)(mlx->cam->y + y1);
+	while (mlx->spri && mlx->spri[i] && ((int)mlx->spri[i]->y != y || (int)mlx->spri[i]->x != x))
 		i++;									//looking for sprite of x and y coordinates
 	if (!mlx->spri)	//in case of no sprites in the map
 		return (NULL);
@@ -131,7 +163,7 @@ t_sprites	*sprites_ptr_y_ray(t_mlx *mlx, double angle, double x1, double y1)
 		x1 = (double)((int)(x1)) + 1.0; //for an exception due to round error
 	x = (int)(mlx->cam->x + x1);
 	y = (int)(mlx->cam->y + y1);
-	while (mlx->spri && mlx->spri[i] && (mlx->spri[i]->y != y || mlx->spri[i]->x != x))
+	while (mlx->spri && mlx->spri[i] && ((int)mlx->spri[i]->y != y || (int)mlx->spri[i]->x != x))
 		i++;									//looking for sprite of x and y coordinates
 	if (!mlx->spri)	//in case of no sprites in the map
 		return (NULL);
