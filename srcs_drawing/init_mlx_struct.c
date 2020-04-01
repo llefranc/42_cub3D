@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/12 16:23:29 by lucaslefran       #+#    #+#             */
-/*   Updated: 2020/04/01 16:45:03 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/04/01 18:45:38 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ void	destroy_all_images(t_mlx *mlx, t_img *img)
 	img->life ? mlx_destroy_image(mlx->ptr, img->life) : 0;
 	img->guns ? mlx_destroy_image(mlx->ptr, img->guns) : 0;
 	img->num ? mlx_destroy_image(mlx->ptr, img->num) : 0;
+	img->font ? mlx_destroy_image(mlx->ptr, img->font) : 0;
 	img->screen ? mlx_destroy_image(mlx->ptr, img->screen) : 0;
 }
 
@@ -82,6 +83,7 @@ void	struct_init_addr_info(t_mlx *mlx, t_addr *addr, t_info *info)
 	init_addr_info(&(addr->life), mlx->img.life, info->life);
 	init_addr_info(&(addr->guns), mlx->img.guns, info->guns);
 	init_addr_info(&(addr->num), mlx->img.num, info->num);
+	init_addr_info(&(addr->font), mlx->img.font, info->font);
 }
 
 /*
@@ -123,6 +125,9 @@ void	load_sprites(t_mlx *mlx, char *path, char *name, int num_sprite)
 	else if (num_sprite == SP_NUMBERS && !(mlx->img.num = mlx_xpm_file_to_image(mlx->ptr, tmp,
 			&(mlx->info.num[WIDTH]), &(mlx->info.num[HEIGHT]))))
 		error_msg_destroy_img("Sprites : error loading numbers\n", mlx);
+	else if (num_sprite == SP_FONT && !(mlx->img.font = mlx_xpm_file_to_image(mlx->ptr, tmp,
+			&(mlx->info.font[WIDTH]), &(mlx->info.font[HEIGHT]))))
+		error_msg_destroy_img("Sprites : error loading fonts\n", mlx);
 	free(tmp);
 }
 
@@ -156,6 +161,7 @@ void	struct_init_img(t_mlx *mlx, t_info *info)
 	load_sprites(mlx, mlx->par->path_sp, "lifebar.xpm", SP_LIFEBAR);
 	load_sprites(mlx, mlx->par->path_sp, "guns.xpm", SP_GUNS);
 	load_sprites(mlx, mlx->par->path_sp, "numbers.xpm", SP_NUMBERS);
+	load_sprites(mlx, mlx->par->path_sp, "font.xpm", SP_FONT);
 }
 
 /*
@@ -194,7 +200,7 @@ void	struct_init_events_bool(t_event *eve)
 	eve->ammo = AMMO_START;
 	eve->player_is_shooting = 0;
 	eve->gun_shot = 0;
-	eve->lifebar = FULL_LIFE / 2;
+	eve->lifebar = FULL_LIFE;
 	eve->level = 1;
 	eve->nb_life = NB_LIFE_START;
 }

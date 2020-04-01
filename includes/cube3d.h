@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/12 16:17:24 by lucaslefran       #+#    #+#             */
-/*   Updated: 2020/04/01 16:41:54 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/04/01 19:31:25 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,6 +91,7 @@
 # define SP_LIFEBAR			11
 # define SP_GUNS			12
 # define SP_NUMBERS			13
+# define SP_FONT			14
 
 //width (in pixel) of sprites on screen for sprite collision
 # define GUARD_SIZE			24
@@ -113,6 +114,8 @@
 # define NUMBER_SIZE_W		3.0 / 100.0
 # define HEART_SIZE_H		5.0 / 100.0
 # define HEART_SIZE_W		2.5 / 100.0
+# define FONT_SIZE_H		10.0 / 100.0
+# define FONT_SIZE_W		6.0 / 100.0
 
 //sprite's first pixel position in images (L = line, R = row)
 # define LIFE_RED_IMG_L		0
@@ -141,7 +144,6 @@
 # define G_SHOOT1_R			65
 # define G_SHOOT2_R			130
 
-
 //sprite's position on screen
 # define LIFE_SCREEN_L		91.0 / 100.0
 # define LIFE_SCREEN_R		1.0 / 8.0
@@ -158,6 +160,8 @@
 # define HEART1_SCREEN_R	31.5 / 100.0
 # define HEART2_SCREEN_R	34.5 / 100.0
 # define HEART3_SCREEN_R	37.5 / 100.0
+# define FONT_SCREEN_L		45.0 / 100.0
+# define FONT_SCREEN_R		28.0 / 100.0
 
 //size of one sprite (in pixel) contained inside an image of several sprites
 # define LIFE_PIX_H			21
@@ -168,6 +172,8 @@
 # define NUMBER_PIX_W		8
 # define HEART_PIX_H		27
 # define HEART_PIX_W		32
+# define FONT_PIX_H			40
+# define FONT_PIX_W			24
 
 //guard parameters
 # define NOT_SEEING			0
@@ -294,6 +300,10 @@ typedef struct		s_event
 	int				lifebar;			//lifebar (from 0 to 100)
 	int				level;
 	int				nb_life;
+	double			start_pos_x;		//player's informations to restart from beginning
+	double			start_pos_y;		//position if he dies
+	double			start_angle;
+	struct timeval	time_player_death;
 }					t_event;
 
 //t_* == textures || s_* == sprites
@@ -317,6 +327,7 @@ typedef struct		s_img
 	void			*life;
 	void			*guns;
 	void			*num;
+	void			*font;
 }					t_img;
 
 typedef struct		s_addr
@@ -339,6 +350,7 @@ typedef struct		s_addr
 	int				*life;
 	int				*guns;
 	int				*num;
+	int				*font;
 }					t_addr;
 
 typedef struct		s_info
@@ -361,6 +373,7 @@ typedef struct		s_info
 	int				life[5];
 	int				guns[5];
 	int				num[5];
+	int				font[5];
 }					t_info;
 
 typedef struct		s_mlx
@@ -432,7 +445,6 @@ double		x_ray_y1_value(t_rcast *cam, double angle);
 double		x_ray_ya_value(double angle);
 double		x_ray_x1_value(double angle, double y1);
 double		x_ray_xa_value(double angle, double y1, double ya);
-int			x_ray_find_wall(t_mlx *mlx, double angle, double x_len, double y_len);
 double		x_ray_len(t_mlx *mlx, t_rcast *cam, double angle, t_texture *textu);
 
 //y_ray.c
@@ -440,7 +452,6 @@ double		y_ray_x1_value(t_rcast *cam, double angle);
 double		y_ray_xa_value(double angle);
 double		y_ray_y1_value(double angle, double x1);
 double		y_ray_ya_value(double angle, double x1, double xa);
-int			y_ray_find_wall(t_mlx *mlx, double angle, double x_len, double y_len);
 double		y_ray_len(t_mlx *mlx, t_rcast *cam, double angle, t_texture *textu);
 
 //sprites_raycast.c
@@ -470,6 +481,20 @@ void		add_sprite_info(t_mlx *mlx, t_rcast *cam, int line, int row);
 //init_cam__struct.c
 void		struct_init_camera(t_mlx *mlx, t_rcast *cam, t_pars *par);
 
+//draw_sprites.c
+void		sort_sprites_tab(t_sprites **spri);
+void		draw_sprites(t_mlx *mlx, t_sprites **spri, int screen_row);
+
+//draw_hud.c
+void		draw_hud_and_gun_anims(t_mlx *mlx, t_pars *par, t_info *info);
+
+//draw_ennemy.c
+void		guards_animation(t_mlx *mlx, t_rcast *cam, t_sprites **spri);
+
+/*
+** ----- srcs_event -----
+*/
+
 //movement.c
 void		move_accords_framerate(t_mlx *mlx, double move);
 void		rota_accords_framerate(t_mlx *mlx, double rota);
@@ -481,34 +506,22 @@ int			key_release(int keycode, t_mlx *mlx);
 int			destroy_notify(t_mlx *mlx);
 int			no_event(t_mlx *mlx);
 
-//interactions.c
+//player_interactions.c
 void		open_door(t_mlx *mlx);
 void		shoot_anim(t_mlx *mlx, t_rcast *cam);
-
-//draw_sprites.c
-void		sort_sprites_tab(t_sprites **spri);
-void		draw_sprites(t_mlx *mlx, t_sprites **spri, int screen_row);
 
 //sprite_collision.c
 int			sprite_collision(t_mlx *mlx, t_rcast *cam, double xd, double yd);
 
-//draw_hud_anims.c
-void		draw_hud_anims(t_mlx *mlx, t_pars *par, t_info *info);
-
-//ennemy.c
+//detect_ennemy.c
 int			x_ray_find_len_wall(t_mlx *mlx, double angle, double x_len, double y_len);
 int			y_ray_find_len_wall(t_mlx *mlx, double angle, double x_len, double y_len);
 double		x_ray_len_wall(t_mlx *mlx, t_rcast *cam, double angle);
 double		y_ray_len_wall(t_mlx *mlx, t_rcast *cam, double angle);
-double		x_ray_ennemy_seeing(t_mlx *mlx, t_rcast *cam, double angle, int detect);
-double		y_ray_ennemy_seeing(t_mlx *mlx, t_rcast *cam, double angle, int detect);
-void		guards_animation(t_mlx *mlx, t_rcast *cam, t_sprites **spri);
 void		check_guard_detect_player(t_mlx *mlx, t_rcast *cam, t_sprites *spri);
 
-//TEST ENNEMY.C
-double		x_ray_len_wall(t_mlx *mlx, t_rcast *cam, double angle);
-int		x_ray_shooting(t_mlx *mlx, t_rcast *cam, double angle, double ray_max_len);
-int		y_ray_shooting(t_mlx *mlx, t_rcast *cam, double angle, double ray_max_len);
-
+//GAMEOVER
+void	player_is_dead(t_mlx *mlx);
+void	draw_death_screen(t_mlx *mlx);
 
 #endif

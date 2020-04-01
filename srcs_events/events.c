@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/04 17:44:38 by llefranc          #+#    #+#             */
-/*   Updated: 2020/04/01 16:41:45 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/04/01 18:26:17 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -131,9 +131,11 @@ int		no_event(t_mlx *mlx)
 		mlx->start_rota.tv_sec = 0.0;
 	mlx->cam->rm_left ? mlx->cam->angle = positive_angle(mlx->cam->angle + mlx->cam->rm_left) : 0;
 	mlx->cam->rm_right ? mlx->cam->angle = positive_angle(mlx->cam->angle - mlx->cam->rm_right) : 0;
-	guards_animation(mlx, mlx->cam, mlx->spri);
-	raycasting(mlx);
-	draw_hud_anims(mlx, mlx->par, &mlx->info);
+	//drawing
+	mlx->eve.lifebar > 0 ? guards_animation(mlx, mlx->cam, mlx->spri) : 0;
+	mlx->eve.lifebar > 0 ? raycasting(mlx) : 0;
+	mlx->eve.lifebar > 0 ? draw_hud_and_gun_anims(mlx, mlx->par, &mlx->info) : 0;
+	mlx->eve.lifebar <= 0 ? draw_death_screen(mlx) : 0;
 	mlx_put_image_to_window(mlx->ptr, mlx->win, mlx->img.screen, 0, 0);
 	mlx->cam->rm_left = 0.0;
 	mlx->cam->rm_right = 0.0;

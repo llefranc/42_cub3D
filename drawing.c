@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/25 11:07:23 by llefranc          #+#    #+#             */
-/*   Updated: 2020/04/01 16:03:48 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/04/01 19:52:00 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,13 +21,7 @@
 
 //EN PLUS
 //changer le sprite ammo
-//rajouter le changement de niveau avec le num 4
-//pour les gardes : 
-//quand ils nous voient, anim detection
-//ensuite anim ou on les tue + gestion du tir
-//anim ou ils nous tirent dessus + perte point de vie
-
-
+//rajouter son
 
 /*
 BONUS PART : 
@@ -45,10 +39,10 @@ GOOD : Earning points and/or losing life by picking up objects/traps.
 GOOD : Doors which can open and close.
 GOOD : Secret doors.
 GOOD : Animations of a gun shot or animated sprite.
-->• Several levels.
+• Several levels.
 ->• Sounds and music.
 GOOD : Rotate the point of view with the mouse.
-• Weapons and bad guys to fight!
+GOOD : Weapons and bad guys to fight!
 
 Par theme :
 
@@ -68,9 +62,9 @@ GOOD : Life bar.
 GOOD : An HUD.
 
 AUTRES :
-->• Several levels. (on peut mettre un ptit ecran de transition, et genre on passe d'un level a un autre)
+GOOD : Weapons and bad guys to fight!
 ->• Sounds and music.
-GOOD : Object collisions. (calculer size sprite, redefinir le plan ab, faire algo si droites mvt se croisent ou rayons lances par sprite)
+GOOD : Object collisions.
 
 */
 
@@ -217,34 +211,6 @@ int		drawing(t_pars *par) //l'appeler drawing ?
 	printf("x = %f et y = %f, angle = %f, distscreen = %f, freq_ray = %f\n", cam.x, cam.y, cam.angle, cam.dist_screen, cam.freq_ray);
 	printf("size line = %d\n", mlx.info.screen[SIZE_LINE]);
 	/* infos sur les variables */
-
-	/* infos sur les sprites */
-	// int i = -1;
-	// while (mlx.spri[++i])
-	// 	printf("type = %d, x = %d, y = %d\n", mlx.spri[i]->type, mlx.spri[i]->x, mlx.spri[i]->y);
-	/* infos sur les sprites */
-
-	// calc_sprites_orientation(mlx.spri, cam.angle);
-	// printf("xa = %f, ya = %f, xb = %f, yb = %f\n", mlx.spri[0]->a.x, mlx.spri[0]->a.y, mlx.spri[0]->b.x, mlx.spri[0]->b.y);
-	// reset_ray_len_sprites(mlx.spri); //put all rays len, nb_pix and row_percent to -1.0
-	
-	// t_texture textu;
-	// x_ray_len(&mlx, &cam, cam.angle, &textu);
-	// y_ray_len(&mlx, &cam, cam.angle, &textu);
-	// draw_sprites(&mlx, mlx.spri);
-	// printf("ray_len = %f, rowimg = %f\n", mlx.spri[0]->ray_len, mlx.spri[0]->row_percent);
-	// printf("sizeline %d, width %d, height %d\n", info.t_sk[SIZE_LINE], info.t_sk[WIDTH], info.t_sk[HEIGHT]);
-	// double	angle = 0.00166666666672199426102451980113983154296875;
-	// // double	x_ray;
-	// double	y_ray;
-	// t_texture textu;
-	// y_ray = y_ray_len_wall(&mlx, &cam, angle);
-	// y_ray = y_ray_len(&mlx, &cam, angle, &textu);
-	// guards_seeing_player(&mlx, &cam, mlx.spri);
-	// x_ray_len(&mlx, &cam, cam.angle, &textu);
-	// y_ray_len(&mlx, &cam, cam.angle, &textu);
-	// x_ray_shooting_ennemy(&mlx, &cam, cam.angle);
-	// y_ray_shooting_ennemy(&mlx, &cam, cam.angle);
 	raycasting(&mlx); //allow to print first image
 	mlx_put_image_to_window(mlx.ptr, mlx.win, mlx.img.screen, 0, 0); //ici ?
 

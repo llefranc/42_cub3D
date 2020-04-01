@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/31 15:04:29 by lucaslefran       #+#    #+#             */
-/*   Updated: 2020/04/01 16:44:52 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/04/01 18:01:57 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,12 +28,13 @@ void	initialize_guard_sprite(t_sprites *spri, int line, int row)
 ** When initializing row / line to shooting animation, also removes life to
 ** the player.
 */
-void	guard_anim_alive(t_event *player, t_sprites *spri)
+void	guard_anim_alive(t_mlx *mlx, t_event *player, t_sprites *spri)
 {
 	double			time;		//in ms
 	int				time_tmp;	//using an int (ms * 100), in order to be able to use modulo
 	struct timeval	end;		//and choose more easily the timers for animations
 
+(void)mlx;
 	if (spri->guard.status >= DYING)
 		return ;
 	gettimeofday(&end, NULL);
@@ -53,7 +54,8 @@ void	guard_anim_alive(t_event *player, t_sprites *spri)
 	else											//guard shoot (anim last 0.15 sec)
 	{
 		!spri->guard.shooting ? player->lifebar -= 10 : 0;	//if first time we're entering in shooting anim
-		player->lifebar < 0 ? player->lifebar = 0 : 0;
+		player->lifebar < 0 ? player->lifebar = 0 : 0;	//to avoid segfault when printing lifebar
+		gettimeofday(&player->time_player_death, NULL);	//timer for gameover screen animation
 		spri->guard.shooting = 1;	//for removing player's life only once per shooting anim
 		initialize_guard_sprite(spri, G_SHOOT_L, G_SHOOT2_R);
 	}
@@ -107,7 +109,7 @@ void	guards_animation(t_mlx *mlx, t_rcast *cam, t_sprites **spri)
 	while (spri[++i])
 	{
 		if (spri[i]->type == SP_GUARD && spri[i]->guard.status <= DETECTING_PLAYER)
-			guard_anim_alive(&mlx->eve, spri[i]);
+			guard_anim_alive(mlx, &mlx->eve, spri[i]);
 		if (spri[i]->type == SP_GUARD && spri[i]->guard.status >= DYING)
 			guard_anim_dead(spri[i]);
 	}

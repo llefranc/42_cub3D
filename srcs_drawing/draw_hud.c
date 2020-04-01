@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/25 16:41:11 by lucaslefran       #+#    #+#             */
-/*   Updated: 2020/04/01 16:29:17 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/04/01 19:12:56 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,7 @@ void	draw_lifebar(t_mlx *mlx, t_pars *par, t_info *info)
 		{
 			if (lifebar_color(mlx, info, (int)(row / resize_w), (int)(line / resize_h)) != INV_COLOR) //if not background color
 				//printing lifebar at correct position on screen
-				mlx->addr.screen[(int)row + (int)((LIFE_SCREEN_R) * mlx->par->reso[0]) + (int)(mlx->par->reso[1]
+				mlx->addr.screen[(int)row + (int)(LIFE_SCREEN_R * mlx->par->reso[0]) + (int)(mlx->par->reso[1]
 						* LIFE_SCREEN_L) * info->screen[SIZE_LINE] + (int)line * info->screen[SIZE_LINE]]
 						= lifebar_color(mlx, info, (int)(row / resize_w), (int)(line / resize_h));
 			row += 1.0;
@@ -124,7 +124,7 @@ void	draw_gun(t_mlx *mlx, t_pars *par, t_info *info, int num_sprite)
 		{
 			if (gun_color(mlx, num_sprite, (int)(row / resize_w), (int)(line / resize_h)) != INV_COLOR) //if not background color
 			//printing gun at correct position on screen
-				mlx->addr.screen[(int)row + (int)((GUNS_SCREEN_R) * mlx->par->reso[0]) + (int)(mlx->par->reso[1]
+				mlx->addr.screen[(int)row + (int)(GUNS_SCREEN_R * mlx->par->reso[0]) + (int)(mlx->par->reso[1]
 						* GUNS_SCREEN_L) * info->screen[SIZE_LINE] + (int)line * info->screen[SIZE_LINE]]
 						= gun_color(mlx, num_sprite, (int)(row / resize_w), (int)(line / resize_h));
 			row += 1.0;
@@ -170,7 +170,7 @@ void	draw_number(t_mlx *mlx, t_info *info, int num, double row_screen)
 		{
 			if (number_color(mlx, num, (int)(row / resize_w), (int)(line / resize_h)) != INV_COLOR) //if not background color
 			//printing number at correct position on screen
-				mlx->addr.screen[(int)row + (int)((row_screen) * mlx->par->reso[0]) + (int)(mlx->par->reso[1]
+				mlx->addr.screen[(int)row + (int)(row_screen * mlx->par->reso[0]) + (int)(mlx->par->reso[1]
 						* NUMBER_SCREEN_L) * info->screen[SIZE_LINE] + (int)line * info->screen[SIZE_LINE]]
 						= number_color(mlx, num, (int)(row / resize_w), (int)(line / resize_h));
 			row += 1.0;
@@ -230,7 +230,7 @@ void	draw_one_heart(t_mlx *mlx, t_pars *par, t_info *info, double row_screen)
 		{
 			if (heart_color(mlx, (int)(row / resize_w), (int)(line / resize_h)) != INV_COLOR) //if not background color
 			//printing heart at correct position on screen
-				mlx->addr.screen[(int)row + (int)((row_screen) * mlx->par->reso[0]) + (int)(mlx->par->reso[1]
+				mlx->addr.screen[(int)row + (int)(row_screen * mlx->par->reso[0]) + (int)(mlx->par->reso[1]
 						* HEART_SCREEN_L) * info->screen[SIZE_LINE] + (int)line * info->screen[SIZE_LINE]]
 						= heart_color(mlx, (int)(row / resize_w), (int)(line / resize_h));
 			row += 1.0;
@@ -254,7 +254,7 @@ void	draw_lives(t_mlx *mlx, t_pars *par, t_info *info)
 ** in order to know which sprite of the animation should be print on screen.
 ** Refresh animation every 15 ms.
 */
-void	draw_hud_anims(t_mlx *mlx, t_pars *par, t_info *info)
+void	draw_hud_and_gun_anims(t_mlx *mlx, t_pars *par, t_info *info)
 {
 	int						num_sprite_gun;
 	double					time;

@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/25 14:34:54 by llefranc          #+#    #+#             */
-/*   Updated: 2020/03/25 11:35:17 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/04/01 17:32:47 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,4 +82,7 @@ void	struct_init_camera(t_mlx *mlx, t_rcast *cam, t_pars *par)
 	cam->dist_screen = (par->reso[0] / 2.0) / tan(((double)FOV / 2.0) * (TO_RAD)); //pythagore, 
 	cam->freq_ray = (double)FOV / par->reso[0];
 	cam->par = par;	//allow to only carry t_rcast struct
+	mlx->eve.start_angle = cam->angle;	//saving start player's information in the case
+	mlx->eve.start_pos_x = cam->x;		//he has to respawn
+	mlx->eve.start_pos_y = cam->y;
 }

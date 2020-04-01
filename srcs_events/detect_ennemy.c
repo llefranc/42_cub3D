@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/31 11:16:55 by lucaslefran       #+#    #+#             */
-/*   Updated: 2020/04/01 16:11:38 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/04/01 17:13:47 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -137,7 +137,7 @@ double	y_ray_len_wall(t_mlx *mlx, t_rcast *cam, double angle)
 	xa = y_ray_xa_value(angle);
 	y1 = y_ray_y1_value(angle, x1); //cam->y + y1 => border of the actual square (y axe)
 	ya = y_ray_ya_value(angle, x1, xa) - y1;
-	while (y_ray_find_wall(mlx, angle, x1, y1) > 0) //until we find a wall/door or exit map
+	while (y_ray_find_len_wall(mlx, angle, x1, y1) > 0) //until we find a wall/door or exit map
 	{
 		x1 += xa; //moving of (+-)1 unity on 'x axe'
 		y1 += ya; //next cross with 'x axe'
@@ -169,8 +169,8 @@ void	check_guard_detect_player(t_mlx *mlx, t_rcast *cam, t_sprites *spri)
 	y_ray = y_ray_len_wall(mlx, cam, angle);
 	//y_ray != y_ray handle the case of y_ray = NAN, can be true only if y_ray is NAN. 
 	//Compare something with NAN will always be false.
-	if ((y_ray != y_ray || x_ray <= y_ray) && ray_len(cam->x, cam->y, spri->x, spri->y) < x_ray)
-			spri->guard.status = DETECTING_PLAYER;
+	if (y_ray != y_ray || x_ray <= y_ray)
+		ray_len(cam->x, cam->y, spri->x, spri->y) < x_ray ? spri->guard.status = DETECTING_PLAYER : 0;
 	else if (ray_len(cam->x, cam->y, spri->x, spri->y) < y_ray) //if ray between player and guard < ray between player and wall
 		spri->guard.status = DETECTING_PLAYER;
 	if (!wasnt_seeing && spri->guard.status == DETECTING_PLAYER)	//if the guard has just started to detect the player
