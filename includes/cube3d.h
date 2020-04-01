@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/12 16:17:24 by lucaslefran       #+#    #+#             */
-/*   Updated: 2020/03/31 14:49:52 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/04/01 16:41:54 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -176,7 +176,7 @@
 # define DEAD				3
 
 //player's informations
-# define AMMO_START			10
+# define AMMO_START			20
 # define FULL_AMMO			99
 # define FULL_LIFE			100
 # define NB_LIFE_START		3
@@ -288,6 +288,7 @@ typedef struct		s_event
 {
 	int				print_texture;		//boolean to print or not floor and sky textures
 	int				ammo;				//number of ammo
+	int				player_is_shooting;	//boolean to indicate if shooting key is pressed or not	
 	int				gun_shot;			//boolean to start shooting anim
 	struct timeval	gun_time_start;		//time when player press key for shoot
 	int				lifebar;			//lifebar (from 0 to 100)
@@ -482,7 +483,7 @@ int			no_event(t_mlx *mlx);
 
 //interactions.c
 void		open_door(t_mlx *mlx);
-void		shoot_anim(t_mlx *mlx);
+void		shoot_anim(t_mlx *mlx, t_rcast *cam);
 
 //draw_sprites.c
 void		sort_sprites_tab(t_sprites **spri);
@@ -497,11 +498,17 @@ void		draw_hud_anims(t_mlx *mlx, t_pars *par, t_info *info);
 //ennemy.c
 int			x_ray_find_len_wall(t_mlx *mlx, double angle, double x_len, double y_len);
 int			y_ray_find_len_wall(t_mlx *mlx, double angle, double x_len, double y_len);
+double		x_ray_len_wall(t_mlx *mlx, t_rcast *cam, double angle);
+double		y_ray_len_wall(t_mlx *mlx, t_rcast *cam, double angle);
 double		x_ray_ennemy_seeing(t_mlx *mlx, t_rcast *cam, double angle, int detect);
 double		y_ray_ennemy_seeing(t_mlx *mlx, t_rcast *cam, double angle, int detect);
-void		guards_seeing_player(t_mlx *mlx, t_rcast *cam, t_sprites **spri);
+void		guards_animation(t_mlx *mlx, t_rcast *cam, t_sprites **spri);
+void		check_guard_detect_player(t_mlx *mlx, t_rcast *cam, t_sprites *spri);
 
 //TEST ENNEMY.C
 double		x_ray_len_wall(t_mlx *mlx, t_rcast *cam, double angle);
+int		x_ray_shooting(t_mlx *mlx, t_rcast *cam, double angle, double ray_max_len);
+int		y_ray_shooting(t_mlx *mlx, t_rcast *cam, double angle, double ray_max_len);
+
 
 #endif

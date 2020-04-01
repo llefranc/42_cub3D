@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/24 10:45:30 by lucaslefran       #+#    #+#             */
-/*   Updated: 2020/03/30 10:40:53 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/04/01 10:42:37 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,6 +90,8 @@ int			collision_or_event(t_mlx *mlx, t_sprites *square, int x, int y)
 		mlx->spri[i - 1] = NULL;
 		return (0); //no collision with health / ammo sprite
 	}
+	else if (square->type == SP_GUARD && square->guard.status == DEAD) //if dead guard, no collision
+		return (0);
 	return (1); //other sprites, collision
 }
 

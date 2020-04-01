@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/03/29 13:49:39 by lucaslefran       #+#    #+#             */
-/*   Updated: 2020/03/31 15:06:58 by lucaslefran      ###   ########.fr       */
+/*   Created: 2020/03/31 11:16:55 by lucaslefran       #+#    #+#             */
+/*   Updated: 2020/04/01 16:11:38 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ double	find_angle(t_rcast *cam, t_sprites *spri)
 
 /*
 ** Return 0 if it finds a wall/door for a certain position in the map.
-** Return -1 if it's out of the map. Return 2 if a sprite.
+** Return -1 if it's out of the map. Return 2 if a guard sprite.
 ** Corrects the position in the map because we're evolving in a tab[y][x]:
 ** if angle > 0 && < 180 : tab[y - 1][x] (checking if there's a wall above us)
 */
@@ -51,22 +51,22 @@ int		x_ray_find_len_wall(t_mlx *mlx, double angle, double x_len, double y_len)
 	if ((int)(mlx->cam->x + x_len) < 0 || (int)(mlx->cam->x + x_len) >= 
 			mlx->cam->nb_rows[(int)(mlx->cam->y + y_len)]) //same for rows
 		return (-1);
-	if (mlx->cam->map[(int)(mlx->cam->y + y_len)][(int)(mlx->cam->x + x_len)] > 3 &&
-			mlx->cam->map[(int)(mlx->cam->y + y_len)][(int)(mlx->cam->x + x_len)] < 10) //if a sprite
+	if (mlx->cam->map[(int)(mlx->cam->y + y_len)][(int)(mlx->cam->x + x_len)] == SP_GUARD) //if a guard
 		return (2);
-	else if (mlx->cam->map[(int)(mlx->cam->y + y_len)][(int)(mlx->cam->x + x_len)] == 0 || //if empty
-			mlx->cam->map[(int)(mlx->cam->y + y_len)][(int)(mlx->cam->x + x_len)] == DOOR + 10 || //if door opened (we're not printing it)
-			mlx->cam->map[(int)(mlx->cam->y + y_len)][(int)(mlx->cam->x + x_len)] == SECRETDOOR + 10)
-		return (1);
-	return (0);
+	if (mlx->cam->map[(int)(mlx->cam->y + y_len)][(int)(mlx->cam->x + x_len)] == 1 || //if wall
+			mlx->cam->map[(int)(mlx->cam->y + y_len)][(int)(mlx->cam->x + x_len)] == DOOR ||
+			mlx->cam->map[(int)(mlx->cam->y + y_len)][(int)(mlx->cam->x + x_len)] == SECRETDOOR)
+		return (0);
+	return (1); //if empty or opened door / secretdoor
 }
 
 /*
 ** Return 0 if it finds a wall/door for a certain position in the map.
-** Return -1 if it's out of the map. Return 2 if a sprite.
+** Return -1 if it's out of the map. Return 2 if a guard sprite.
 ** Corrects the position in the map because we're evolving in a tab[y][x]:
 ** for angle > 90 && < 270 : tab[y][x - 1] (checking if there's a wall at our left).
 */
+
 int		y_ray_find_len_wall(t_mlx *mlx, double angle, double x_len, double y_len)
 {
 	if ((x_len || y_len) && (angle > 90.0 && angle < 270.0)) //!x1 && !y1 when player is standing on a sprite' square
@@ -78,26 +78,23 @@ int		y_ray_find_len_wall(t_mlx *mlx, double angle, double x_len, double y_len)
 	if ((int)(mlx->cam->x + x_len) < 0 || (int)(mlx->cam->x + x_len) >=
 			mlx->cam->nb_rows[(int)(mlx->cam->y + y_len)]) //same for rows
 		return (-1);
-	if (mlx->cam->map[(int)(mlx->cam->y + y_len)][(int)(mlx->cam->x + x_len)] > 3 &&
-			mlx->cam->map[(int)(mlx->cam->y + y_len)][(int)(mlx->cam->x + x_len)] < 10) //if a sprite
+	if (mlx->cam->map[(int)(mlx->cam->y + y_len)][(int)(mlx->cam->x + x_len)] == SP_GUARD) //if a guard
 		return (2);
-	else if (mlx->cam->map[(int)(mlx->cam->y + y_len)][(int)(mlx->cam->x + x_len)] == 0 || //if empty
-			mlx->cam->map[(int)(mlx->cam->y + y_len)][(int)(mlx->cam->x + x_len)] == DOOR + 10 || //if door opened (we're not printing it)
-			mlx->cam->map[(int)(mlx->cam->y + y_len)][(int)(mlx->cam->x + x_len)] == SECRETDOOR + 10)
-		return (1);
-	return (0); //only if we find a wall or doors
+	if (mlx->cam->map[(int)(mlx->cam->y + y_len)][(int)(mlx->cam->x + x_len)] == 1 || //if wall
+			mlx->cam->map[(int)(mlx->cam->y + y_len)][(int)(mlx->cam->x + x_len)] == DOOR ||
+			mlx->cam->map[(int)(mlx->cam->y + y_len)][(int)(mlx->cam->x + x_len)] == SECRETDOOR)
+		return (0);
+	return (1); //if empty or opened door / secretdoor 
 }
 
 /*
-** Checking x values on 'x axe' each time the ray cross 'y axe' until it meets a
+** Checking x values on 'x axe' each time the ray cross 'y axe' until it meets
 ** a wall or exit the map. Return the len of the ray on 'x axe', depending on
-** the angle. If angle == 0 or 180 degrees, inf will be returned (ray will 
-** never cross 'y axe'). If 1 is send in detect, will also change the value of
-** status to 1 when the ray meets a guard sprite.
+** the angle. If angle == 0 or 180 degrees, nan will be returned (ray will 
+** never cross 'y axe').
 */
-double	x_ray_ennemy_seeing(t_mlx *mlx, t_rcast *cam, double angle, int detect)
+double	x_ray_len_wall(t_mlx *mlx, t_rcast *cam, double angle)
 {
-	int		ret;
 	double	y1; //distance on 'y axe' when we first cross 'x axe' with a certain angle
 	double	x1; //distance on 'x axe' when we first cross 'y axe' with a certain angle
 	double	ya; //next crosses on x = y1 + nb * ya, with ya the distance between
@@ -106,19 +103,13 @@ double	x_ray_ennemy_seeing(t_mlx *mlx, t_rcast *cam, double angle, int detect)
 				//the next cross of y axe
 	
 	if (angle <= 0.0 || angle >= 360.0 || angle == 180.0) //we will never cross 'y axe'
-		return (INFINITY);
+		return (NAN);
 	y1 = x_ray_y1_value(cam, angle); //cam->y + y1 => border of the actual square (y axe)
 	ya = x_ray_ya_value(angle); 
 	x1 = x_ray_x1_value(angle, y1); //cam->x + x1 => border of the actual square (x axe)
 	xa = x_ray_xa_value(angle, y1, ya) - x1;
-	//in the case player is standing on a sprite' square, the ray met a guard and detect == 1 to indicate
-	//we're allowed to change value of guard status parameter
-	if (x_ray_find_wall(mlx, angle, 0, 0) == 2 && detect && sprites_ptr_x_ray(mlx, angle, 0, 0)->type == SP_GUARD)
-		sprites_ptr_x_ray(mlx, angle, 0, 0)->guard.status = DETECTING_PLAYER;
-	while ((ret = x_ray_find_len_wall(mlx, angle, x1, y1)) > 0) //until we find a wall/door or exit map
+	while (x_ray_find_len_wall(mlx, angle, x1, y1) > 0) //until we find a wall/door or exit map
 	{
-		if (ret == 2 && detect && sprites_ptr_x_ray(mlx, angle, x1, y1)->type == SP_GUARD) //same than just above
-			sprites_ptr_x_ray(mlx, angle, x1, y1)->guard.status = DETECTING_PLAYER;
 		x1 += xa; //next cross with y axe 
 		y1 += ya; //moving of (+-)1 unity on 'y axe'
 	}
@@ -129,12 +120,10 @@ double	x_ray_ennemy_seeing(t_mlx *mlx, t_rcast *cam, double angle, int detect)
 ** Checking y values on 'y axe' each time the ray cross 'x axe' until it meets a
 ** a wall or exit the map. Return the len of the ray on 'y axe', depending on
 ** the angle. If angle == 90 or 270 degrees, nan will be returned (ray will 
-** never cross 'x axe'). If 1 is send in detect, will also change the value of
-** status to 1 when the ray meets a guard sprite.
+** never cross 'x axe').
 */
-double	y_ray_ennemy_seeing(t_mlx *mlx, t_rcast *cam, double angle, int detect)
+double	y_ray_len_wall(t_mlx *mlx, t_rcast *cam, double angle)
 {
-	int		ret;
 	double	x1; //distance on 'x axe' when we first cross 'y axe' with a certain angle
 	double	y1; //distance on 'y axe' when we first cross 'x axe' with a certain angle
 	double	xa; //next crosses on y = x1 + nb * xa, with xa the distance between
@@ -143,19 +132,13 @@ double	y_ray_ennemy_seeing(t_mlx *mlx, t_rcast *cam, double angle, int detect)
 				//the next cross of 'y axe'
 
 	if (angle == 90.0 || angle == 270.0) //we will never cross 'x axe'
-		return (100000.0);
+		return (NAN);
 	x1 = y_ray_x1_value(cam, angle); //cam->x + x1 => border of the actual square (x axe)
 	xa = y_ray_xa_value(angle);
 	y1 = y_ray_y1_value(angle, x1); //cam->y + y1 => border of the actual square (y axe)
 	ya = y_ray_ya_value(angle, x1, xa) - y1;
-	//in the case player is standing on a sprite' square, the ray met a guard and detect == 1 to indicate
-	//we're allowed to change value of guard status parameter
-	if (y_ray_find_wall(mlx, angle, 0, 0) == 2 && detect && sprites_ptr_y_ray(mlx, angle, 0, 0)->type == SP_GUARD)
-		sprites_ptr_y_ray(mlx, angle, 0, 0)->guard.status = DETECTING_PLAYER;
-	while ((ret = y_ray_find_len_wall(mlx, angle, x1, y1)) > 0) //until we find a wall/door or exit map
+	while (y_ray_find_wall(mlx, angle, x1, y1) > 0) //until we find a wall/door or exit map
 	{
-		if (ret == 2 && detect && sprites_ptr_y_ray(mlx, angle, x1, y1)->type == SP_GUARD) //same than just above
-			sprites_ptr_y_ray(mlx, angle, x1, y1)->guard.status = DETECTING_PLAYER;
 		x1 += xa; //moving of (+-)1 unity on 'x axe'
 		y1 += ya; //next cross with 'x axe'
 	}
@@ -163,27 +146,33 @@ double	y_ray_ennemy_seeing(t_mlx *mlx, t_rcast *cam, double angle, int detect)
 }
 
 /*
-** Calculates the angle between player and spri (== guard sprite), and lauch a
-** ray with this angle. Each time the ray will detect a guard sprite, it will
-** change the status value to 1. If the guard was previously not detecting
-** the player and just started now, it also initializes one timer to print
-** guard's animations when he's first seeing the player.
+** Find a ray between the player and the guard sprites. Compare the len of this
+** ray to the len of the ray between player and wall. If ray guard < ray wall,
+** then the wall is behind the guard and the guard can see the player, and his
+** status is set to DETECTING_PLAYER (defined), otherwise to NOT_SEEING. If
+** it's the first time the guard is detecting the player, the function starts
+** a timer for the guard detecting animation.
 */
 void	check_guard_detect_player(t_mlx *mlx, t_rcast *cam, t_sprites *spri)
 {
 	double	angle;
-	int		wasnt_seeing;
+	double	x_ray;
+	double	y_ray;
+	int		wasnt_seeing; //to save if the guard was previously detecting or not the player
 
 	if (spri->guard.status >= DYING) //if the guard is dead
 		return ;
 	wasnt_seeing = spri->guard.status; //if guard wasnt seeing the player, will value 0
 	spri->guard.status = NOT_SEEING;
-	angle = find_angle(cam, spri); //angle made by ray in trigo env with player and guard (player point of view)
-	//detecting which ray will first reach a wall (sending 0 to not change guard parameters, just focusing on ray len)
-	if (x_ray_ennemy_seeing(mlx, cam, angle, 0) <= y_ray_ennemy_seeing(mlx, cam, angle, 0))
-		x_ray_ennemy_seeing(mlx, cam, angle, 1); //sending 1 to change guard parameter (if he's seeing player or not)
-	else
-		y_ray_ennemy_seeing(mlx, cam, angle, 1);
+	angle = find_angle(cam, spri);
+	x_ray = x_ray_len_wall(mlx, cam, angle);
+	y_ray = y_ray_len_wall(mlx, cam, angle);
+	//y_ray != y_ray handle the case of y_ray = NAN, can be true only if y_ray is NAN. 
+	//Compare something with NAN will always be false.
+	if ((y_ray != y_ray || x_ray <= y_ray) && ray_len(cam->x, cam->y, spri->x, spri->y) < x_ray)
+			spri->guard.status = DETECTING_PLAYER;
+	else if (ray_len(cam->x, cam->y, spri->x, spri->y) < y_ray) //if ray between player and guard < ray between player and wall
+		spri->guard.status = DETECTING_PLAYER;
 	if (!wasnt_seeing && spri->guard.status == DETECTING_PLAYER)	//if the guard has just started to detect the player
 		gettimeofday(&spri->guard.time_detect, NULL);				//we initiate the timer
 }

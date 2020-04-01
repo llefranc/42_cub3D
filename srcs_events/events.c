@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/04 17:44:38 by llefranc          #+#    #+#             */
-/*   Updated: 2020/03/31 14:25:03 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/04/01 16:41:45 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,8 +64,8 @@ int		key_press(int keycode, t_mlx *mlx)
 		mlx->eve.print_texture = (mlx->eve.print_texture == 0) ? 1 : 0;
 	else if (keycode == E_KEY) //open a door if close to one
 		open_door(mlx);
-	else if (keycode == SP_KEY && !mlx->eve.gun_shot && mlx->eve.ammo > 0)
-		shoot_anim(mlx); //start shooting anim if no actual shoot anim is being printed on screen
+	else if (keycode == SP_KEY)
+		mlx->eve.player_is_shooting = 1;
 	else if (keycode == ESC_KEY) //free and exit
 	{
 		struct_free(mlx->par);
@@ -82,16 +82,18 @@ int		key_release(int keycode, t_mlx *mlx)
 {
 	if (keycode == W_KEY)	//movements
 		mlx->cam->m_up = 0;
-	if (keycode == S_KEY)
+	else if (keycode == S_KEY)
 		mlx->cam->m_down = 0;
-	if (keycode == A_KEY)
+	else if (keycode == A_KEY)
 		mlx->cam->m_left = 0;
-	if (keycode == D_KEY)
+	else if (keycode == D_KEY)
 		mlx->cam->m_right = 0;
-	if (keycode == LEFT_KEY)	//rotation
+	else if (keycode == LEFT_KEY)	//rotation
 		mlx->cam->r_left = 0;
-	if (keycode == RIGHT_KEY)
+	else if (keycode == RIGHT_KEY)
 		mlx->cam->r_right = 0;
+	else if (keycode == SP_KEY)
+		mlx->eve.player_is_shooting = 0;
 	return (1);
 }
 
@@ -112,6 +114,8 @@ int		destroy_notify(t_mlx *mlx)
 */
 int		no_event(t_mlx *mlx)
 {
+	if (mlx->eve.player_is_shooting && !mlx->eve.gun_shot && mlx->eve.ammo > 0)
+		shoot_anim(mlx, mlx->cam); //also determinates if the shot hit a guard or not
 	//update player position
 	if (((mlx->cam->m_up || mlx->cam->m_down) && (mlx->cam->m_left || mlx->cam->m_right))
 			&& (!(mlx->cam->m_up && mlx->cam->m_down) && !(mlx->cam->m_left && mlx->cam->m_right)))
@@ -127,7 +131,7 @@ int		no_event(t_mlx *mlx)
 		mlx->start_rota.tv_sec = 0.0;
 	mlx->cam->rm_left ? mlx->cam->angle = positive_angle(mlx->cam->angle + mlx->cam->rm_left) : 0;
 	mlx->cam->rm_right ? mlx->cam->angle = positive_angle(mlx->cam->angle - mlx->cam->rm_right) : 0;
-	guards_seeing_player(mlx, mlx->cam, mlx->spri);
+	guards_animation(mlx, mlx->cam, mlx->spri);
 	raycasting(mlx);
 	draw_hud_anims(mlx, mlx->par, &mlx->info);
 	mlx_put_image_to_window(mlx->ptr, mlx->win, mlx->img.screen, 0, 0);

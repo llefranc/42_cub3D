@@ -6,14 +6,14 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/31 15:04:29 by lucaslefran       #+#    #+#             */
-/*   Updated: 2020/03/31 15:05:17 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/04/01 16:44:52 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/cube3d.h"
 
 /*
-** Allow to print one guard sprite by indicating the position of this one in an
+** Allows to print one guard sprite by indicating the position of this one in an
 ** image containing all the guard sprites.
 */
 void	initialize_guard_sprite(t_sprites *spri, int line, int row)
@@ -23,7 +23,10 @@ void	initialize_guard_sprite(t_sprites *spri, int line, int row)
 }
 
 /*
-** 
+** Initializes row and line on an alive guard sprite inside an image containing
+** all guard sprites, depending on how long the guard is detecting the player.
+** When initializing row / line to shooting animation, also removes life to
+** the player.
 */
 void	guard_anim_alive(t_event *player, t_sprites *spri)
 {
@@ -38,7 +41,7 @@ void	guard_anim_alive(t_event *player, t_sprites *spri)
 	spri->guard.status == DETECTING_PLAYER ? time = (double)(end.tv_usec - spri->guard.time_detect.tv_usec)
 			/ 1000000.0 + (double)(end.tv_sec - spri->guard.time_detect.tv_sec) : 0;
 	time_tmp = (int)(time * 100.0);
-	if (!spri->guard.status || time_tmp < 50)	//basic guard sprite
+	if (!spri->guard.status || time_tmp < 50)		//basic guard sprite
 		initialize_guard_sprite(spri, G_BASIC_L, G_BASIC_R);
 	else if (time_tmp < 100)						//guard in alert, just detected the player
 		initialize_guard_sprite(spri, G_DETECT_L, G_DETECT_R);
@@ -56,6 +59,10 @@ void	guard_anim_alive(t_event *player, t_sprites *spri)
 	}
 }
 
+/*
+** Initializes row and line on a dead / dying guard sprite inside an image
+** containing all guard sprites, depending on how long the guard has been shot.
+*/
 void	guard_anim_dead(t_sprites *spri)
 {
 	double			time;		//in ms
@@ -71,27 +78,31 @@ void	guard_anim_dead(t_sprites *spri)
 	time = (double)(end.tv_usec - spri->guard.time_death.tv_usec)
 			/ 1000000.0 + (double)(end.tv_sec - spri->guard.time_death.tv_sec);
 	if (time < 0.1)
-		initialize_guard_sprite(spri, G_DEAD_L, G_DEAD1_R);
-	else if (time < 0.2)
+		initialize_guard_sprite(spri, G_DEAD_L, G_DEAD1_R);	//initialize for printing a different sprite
+	else if (time < 0.2)									//of a dying guard every 0.1 sec
 		initialize_guard_sprite(spri, G_DEAD_L, G_DEAD2_R);
 	else if (time < 0.3)
 		initialize_guard_sprite(spri, G_DEAD_L, G_DEAD3_R);
 	else if (time < 0.4)
 		initialize_guard_sprite(spri, G_DEAD_L, G_DEAD4_R);
 	else
-		spri->guard.status = DEAD;
+		spri->guard.status = DEAD; //after 0.4 sec, guard status is set to dead
 }
 
-void	guards_seeing_player(t_mlx *mlx, t_rcast *cam, t_sprites **spri) //rename cette fonction
+/*
+** Read the entire sprite's tab, and for each guard determinates if he's
+** detecting the player, and initializes row and line parameter to the
+** correct position inside an image containing all guard sprites. Row and line
+** will be used later during the printing sprites step.
+*/
+void	guards_animation(t_mlx *mlx, t_rcast *cam, t_sprites **spri)
 {
 	int		i;
 
 	i = -1;
 	while (spri[++i])
-	{
 		if (spri[i]->type == SP_GUARD)
 			check_guard_detect_player(mlx, cam, spri[i]);
-	}
 	i = -1;
 	while (spri[++i])
 	{

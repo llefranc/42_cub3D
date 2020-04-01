@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/12 16:23:29 by lucaslefran       #+#    #+#             */
-/*   Updated: 2020/03/29 13:38:26 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/04/01 16:45:03 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -192,6 +192,7 @@ void	struct_init_events_bool(t_event *eve)
 {
 	eve->print_texture = 1;
 	eve->ammo = AMMO_START;
+	eve->player_is_shooting = 0;
 	eve->gun_shot = 0;
 	eve->lifebar = FULL_LIFE / 2;
 	eve->level = 1;

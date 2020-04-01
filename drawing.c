@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/25 11:07:23 by llefranc          #+#    #+#             */
-/*   Updated: 2020/03/31 14:24:57 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/04/01 16:03:48 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -211,9 +211,9 @@ int		drawing(t_pars *par) //l'appeler drawing ?
 	struct_init_camera(&mlx, &cam, par); //create a tab of **int for the map, from the prev map in **char. Link par to cam
 
 	// cam.x -= 0.1;
-	cam.y = 2.69627500000000086544105215580202639102935791015625;
+	// cam.y = 2.69627500000000086544105215580202639102935791015625;
 	/* infos sur les variables */
-	// cam.angle = 160.0;
+	// sans correction : 184 / 178
 	printf("x = %f et y = %f, angle = %f, distscreen = %f, freq_ray = %f\n", cam.x, cam.y, cam.angle, cam.dist_screen, cam.freq_ray);
 	printf("size line = %d\n", mlx.info.screen[SIZE_LINE]);
 	/* infos sur les variables */
@@ -234,13 +234,17 @@ int		drawing(t_pars *par) //l'appeler drawing ?
 	// draw_sprites(&mlx, mlx.spri);
 	// printf("ray_len = %f, rowimg = %f\n", mlx.spri[0]->ray_len, mlx.spri[0]->row_percent);
 	// printf("sizeline %d, width %d, height %d\n", info.t_sk[SIZE_LINE], info.t_sk[WIDTH], info.t_sk[HEIGHT]);
-	// double	angle = 187.629590321959227594561525620520114898681640625;
-	// double	x_ray;
+	// double	angle = 0.00166666666672199426102451980113983154296875;
+	// // double	x_ray;
 	// double	y_ray;
 	// t_texture textu;
-	// x_ray = x_ray_len_wall(&mlx, &cam, angle);
+	// y_ray = y_ray_len_wall(&mlx, &cam, angle);
 	// y_ray = y_ray_len(&mlx, &cam, angle, &textu);
 	// guards_seeing_player(&mlx, &cam, mlx.spri);
+	// x_ray_len(&mlx, &cam, cam.angle, &textu);
+	// y_ray_len(&mlx, &cam, cam.angle, &textu);
+	// x_ray_shooting_ennemy(&mlx, &cam, cam.angle);
+	// y_ray_shooting_ennemy(&mlx, &cam, cam.angle);
 	raycasting(&mlx); //allow to print first image
 	mlx_put_image_to_window(mlx.ptr, mlx.win, mlx.img.screen, 0, 0); //ici ?
 

@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/25 14:52:42 by lucaslefran       #+#    #+#             */
-/*   Updated: 2020/03/31 14:47:36 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/04/01 16:29:13 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,11 @@ void	open_door(t_mlx *mlx)
 	}
 }
 
+/*
+** If the guard is already dying / dead, return 0 (he can't be shoot anymore).
+** Otherwise changes guard status to dying, starts a timer for death animation
+** and return 1.
+*/
 int		set_ennemy_to_death_value(t_sprites *spri)
 {
 	if (spri->guard.status >= DYING)
@@ -83,15 +88,15 @@ int		set_ennemy_to_death_value(t_sprites *spri)
 	return (1);
 }
 
-//A MODIFIER
 /*
-** Checking x values on 'x axe' each time the ray cross 'y axe' until it meets a
-** a wall or exit the map. Return the len of the ray on 'x axe', depending on
-** the angle. If angle == 0 or 180 degrees, inf will be returned (ray will 
-** never cross 'y axe'). If 1 is send in detect, will also change the value of
-** see_player to 1 when the ray meets a guard sprite.
+** Checking x values on 'x axe' each time the ray cross 'y axe' until it meets
+** a wall or exit the map. Return 1 if the ray hits a guard alive, 0 if it hits
+** a wall. If angle == 0 or 180 degrees, -1 will be returned (ray will never
+** cross 'y axe'). Ray_max_len is the real len between player and wall
+** calculated before, and will prevent the current ray to go to far and hit an
+** ennemy behind a wall.
 */
-int		x_ray_shooting_ennemy(t_mlx *mlx, t_rcast *cam, double angle)
+int		x_ray_shooting(t_mlx *mlx, t_rcast *cam, double angle, double ray_max_len)
 {
 	int		ret;
 	double	y1; //distance on 'y axe' when we first cross 'x axe' with a certain angle
@@ -109,29 +114,29 @@ int		x_ray_shooting_ennemy(t_mlx *mlx, t_rcast *cam, double angle)
 	xa = x_ray_xa_value(angle, y1, ya) - x1;
 	//in the case player is standing on a sprite' square, the ray met a guard and detect == 1 to indicate
 	//we're allowed to change value of guard see_player parameter
-	if (x_ray_find_len_wall(mlx, angle, 0, 0) == 2 && sprites_ptr_x_ray(mlx, angle, 0, 0)->type == SP_GUARD)
-		if (set_ennemy_to_death_value(sprites_ptr_x_ray(mlx, angle, 0, 0)))
-			return (1);
-	while ((ret = x_ray_find_len_wall(mlx, angle, x1, y1)) > 0) //until we find a wall/door or exit map
+	if (x_ray_find_len_wall(mlx, angle, 0, 0) == 2 &&			//if player hit a guard on the same square than player
+			set_ennemy_to_death_value(sprites_ptr_x_ray(mlx, angle, 0, 0)))
+		return (1);
+	while ((ret = x_ray_find_len_wall(mlx, angle, x1, y1)) > 0 &&		//until we find a wall/door or exit map
+			ray_len(cam->x, cam->y, cam->x + x1, cam->y + y1) < ray_max_len)
 	{
-		if (ret == 2 && sprites_ptr_x_ray(mlx, angle, x1, y1)->type == SP_GUARD) //same than just above
-			if (set_ennemy_to_death_value(sprites_ptr_x_ray(mlx, angle, x1, y1)))
-				return (1);
+		if (ret == 2 && set_ennemy_to_death_value(sprites_ptr_x_ray(mlx, angle, x1, y1))) //if player hit guard
+			return (1);
 		x1 += xa; //next cross with y axe 
 		y1 += ya; //moving of (+-)1 unity on 'y axe'
 	}
 	return (0);
 }
 
-//A MODIFIER
 /*
-** Checking y values on 'y axe' each time the ray cross 'x axe' until it meets a
-** a wall or exit the map. Return the len of the ray on 'y axe', depending on
-** the angle. If angle == 90 or 270 degrees, nan will be returned (ray will 
-** never cross 'x axe'). If 1 is send in detect, will also change the value of
-** see_player to 1 when the ray meets a guard sprite.
+** Checking y values on 'y axe' each time the ray cross 'x axe' until it meets
+** a wall or exit the map. Return 1 if the ray hits a guard alive, 0 if it hits
+** a wall. If angle == 90 or 270 degrees, -1 will be returned (ray will never
+** cross 'x axe'). Ray_max_len is the real len between player and wall
+** calculated before, and will prevent the current ray to go to far and hit an
+** ennemy behind a wall.
 */
-int		y_ray_shooting_ennemy(t_mlx *mlx, t_rcast *cam, double angle)
+int		y_ray_shooting(t_mlx *mlx, t_rcast *cam, double angle, double ray_max_len)
 {
 	int		ret;
 	double	x1; //distance on 'x axe' when we first cross 'y axe' with a certain angle
@@ -149,14 +154,14 @@ int		y_ray_shooting_ennemy(t_mlx *mlx, t_rcast *cam, double angle)
 	ya = y_ray_ya_value(angle, x1, xa) - y1;
 	//in the case player is standing on a sprite' square, the ray met a guard and detect == 1 to indicate
 	//we're allowed to change value of guard see_player parameter
-	if (y_ray_find_len_wall(mlx, angle, 0, 0) == 2 && sprites_ptr_y_ray(mlx, angle, 0, 0)->type == SP_GUARD)
-		if (set_ennemy_to_death_value(sprites_ptr_y_ray(mlx, angle, 0, 0)))
+	if (y_ray_find_len_wall(mlx, angle, 0, 0) == 2 &&			//if player hit a guard on the same square than player
+			set_ennemy_to_death_value(sprites_ptr_y_ray(mlx, angle, 0, 0)))
 			return (1);
-	while ((ret = y_ray_find_len_wall(mlx, angle, x1, y1)) > 0) //until we find a wall/door or exit map
+	while ((ret = y_ray_find_len_wall(mlx, angle, x1, y1)) > 0 &&		 //until we find a wall/door or exit map
+			ray_len(cam->x, cam->y, cam->x + x1, cam->y + y1) < ray_max_len)
 	{
-		if (ret == 2 && sprites_ptr_y_ray(mlx, angle, x1, y1)->type == SP_GUARD) //same than just above
-			if (set_ennemy_to_death_value(sprites_ptr_y_ray(mlx, angle, x1, y1)))
-				return (1);
+		if (ret == 2 && set_ennemy_to_death_value(sprites_ptr_y_ray(mlx, angle, x1, y1))) //if player hit guard
+			return (1);
 		x1 += xa; //moving of (+-)1 unity on 'x axe'
 		y1 += ya; //next cross with 'x axe'
 	}
@@ -164,16 +169,48 @@ int		y_ray_shooting_ennemy(t_mlx *mlx, t_rcast *cam, double angle)
 }
 
 /*
-** Starts the timer for the shooting animation.
+** Launches two rays (x_ray and y_ray) and checks if they're hitting an alive
+** guard. If it's the case, change guard' status to DYING (defined) and return
+** 1. Otherwise return 0.
 */
-void	shoot_anim(t_mlx *mlx)
+int		shoot_angle(t_mlx *mlx, t_rcast *cam, double angle_shooting)
 {
-	mlx->eve.gun_shot = 1;
+	double	x_ray;
+	double	y_ray;
+	double	max_r; //ray_len between player and wall / door
+
+	x_ray = x_ray_len_wall(mlx, cam, positive_angle(cam->angle + angle_shooting));
+	y_ray = y_ray_len_wall(mlx, cam, positive_angle(cam->angle + angle_shooting));
+	//y_ray != y_ray handle the case of y_ray = NAN, can be true only if y_ray is NAN. 
+	//Compare something with NAN will always be false.
+	max_r = (y_ray != y_ray || x_ray <= y_ray) ? x_ray : y_ray;
+	if (x_ray_shooting(mlx, cam, positive_angle(cam->angle + angle_shooting), max_r) == 1)
+		return (1);
+	if (y_ray_shooting(mlx, cam, positive_angle(cam->angle + angle_shooting), max_r) == 1)
+		return (1);
+	return (0);
+}
+
+/*
+** Launches several shooting rays between angle of view - 5 degrees / angle of
+** view + 5 degrees, so if a guard is standing inside the 10 degrees angle, he
+** will be hit (with a FOV of 50, defined). If a guard is hit, changes his
+** status to dying and stops to launch rays.
+*/
+void	shoot_anim(t_mlx *mlx, t_rcast *cam)
+{
+	double	angle_shooting;
+
+	mlx->eve.gun_shot = 1; //to start shooting animation
 	(mlx->eve.ammo)--;
-	if (x_ray_ennemy_seeing(mlx, mlx->cam, mlx->cam->angle, 0) <=
-			y_ray_ennemy_seeing(mlx, mlx->cam, mlx->cam->angle, 0))
-		x_ray_shooting_ennemy(mlx, mlx->cam, mlx->cam->angle);
-	else
-		y_ray_shooting_ennemy(mlx, mlx->cam, mlx->cam->angle);
-	gettimeofday(&mlx->eve.gun_time_start, NULL);
+	angle_shooting = 0.0;
+	while (angle_shooting < 5.0)
+	{
+		if (shoot_angle(mlx, cam, angle_shooting)) //5 degrees on the left of screen
+			break ;
+		if (shoot_angle(mlx, cam, -angle_shooting)) //5 degrees on the right
+			break ;
+		angle_shooting += 0.1;
+	}
+	gettimeofday(&mlx->eve.gun_time_start, NULL); //timer for shooting animation
 }

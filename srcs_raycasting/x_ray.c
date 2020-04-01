@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/26 14:56:38 by llefranc          #+#    #+#             */
-/*   Updated: 2020/03/30 12:53:41 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/04/01 16:11:44 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,7 +124,7 @@ int		x_ray_find_wall(t_mlx *mlx, double angle, double x_len, double y_len)
 }
 
 /*
-** Checking x values on 'x axe' each time the ray cross 'y axe' until it meets a
+** Checking x values on 'x axe' each time the ray cross 'y axe' until it meets
 ** a wall or exit the map. Return the len of the ray on 'x axe', depending on
 ** the angle. If angle == 0 or 180 degrees, nan will be returned (ray will 
 ** never cross 'y axe'). Also calls find_sprites func for sprites raycasting
