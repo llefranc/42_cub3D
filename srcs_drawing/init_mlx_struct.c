@@ -6,14 +6,14 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/12 16:23:29 by lucaslefran       #+#    #+#             */
-/*   Updated: 2020/04/01 18:45:38 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/04/06 11:22:48 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/cube3d.h"
 
 /*
-** Destroy all images previously loaded.
+** Destroy all images and windows previously loaded.
 */
 void	destroy_all_images(t_mlx *mlx, t_img *img)
 {
@@ -36,6 +36,7 @@ void	destroy_all_images(t_mlx *mlx, t_img *img)
 	img->num ? mlx_destroy_image(mlx->ptr, img->num) : 0;
 	img->font ? mlx_destroy_image(mlx->ptr, img->font) : 0;
 	img->screen ? mlx_destroy_image(mlx->ptr, img->screen) : 0;
+	mlx->win ? mlx_destroy_window(mlx->ptr, mlx->win) : 0;
 }
 
 /*
@@ -201,8 +202,8 @@ void	struct_init_events_bool(t_event *eve)
 	eve->player_is_shooting = 0;
 	eve->gun_shot = 0;
 	eve->lifebar = FULL_LIFE;
-	eve->level = 1;
-	eve->nb_life = NB_LIFE_START;
+	eve->level = 0;
+	eve->nb_life = 0; //will be initiated after player choose level, in function draw_level_menu
 }
 
 /*

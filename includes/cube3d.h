@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/12 16:17:24 by lucaslefran       #+#    #+#             */
-/*   Updated: 2020/04/01 19:31:25 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/04/06 11:16:16 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,8 +114,10 @@
 # define NUMBER_SIZE_W		3.0 / 100.0
 # define HEART_SIZE_H		5.0 / 100.0
 # define HEART_SIZE_W		2.5 / 100.0
-# define FONT_SIZE_H		10.0 / 100.0
-# define FONT_SIZE_W		6.0 / 100.0
+# define FONT1_SIZE_H		8.5 / 100.0
+# define FONT1_SIZE_W		5.0 / 100.0
+# define FONT2_SIZE_H		10.0 / 100.0 //for deaths screens
+# define FONT2_SIZE_W		6.0 / 100.0
 
 //sprite's first pixel position in images (L = line, R = row)
 # define LIFE_RED_IMG_L		0
@@ -160,8 +162,10 @@
 # define HEART1_SCREEN_R	31.5 / 100.0
 # define HEART2_SCREEN_R	34.5 / 100.0
 # define HEART3_SCREEN_R	37.5 / 100.0
-# define FONT_SCREEN_L		45.0 / 100.0
-# define FONT_SCREEN_R		28.0 / 100.0
+# define FONT1_SCREEN_L		30.0 / 100.0 //for level menu
+# define FONT1_SCREEN_R		8.0 / 100.0
+# define FONT2_SCREEN_L		45.0 / 100.0 //for deaths screens
+# define FONT2_SCREEN_R		28.0 / 100.0
 
 //size of one sprite (in pixel) contained inside an image of several sprites
 # define LIFE_PIX_H			21
@@ -520,8 +524,11 @@ double		x_ray_len_wall(t_mlx *mlx, t_rcast *cam, double angle);
 double		y_ray_len_wall(t_mlx *mlx, t_rcast *cam, double angle);
 void		check_guard_detect_player(t_mlx *mlx, t_rcast *cam, t_sprites *spri);
 
+
 //GAMEOVER
+void	draw_colored_screen(t_mlx *mlx, int nb_pixel, int color);
 void	player_is_dead(t_mlx *mlx);
 void	draw_death_screen(t_mlx *mlx);
+int		draw_level_menu(t_mlx *mlx);
 
 #endif

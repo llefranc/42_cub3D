@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/25 11:07:23 by llefranc          #+#    #+#             */
-/*   Updated: 2020/04/01 19:52:00 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/04/06 11:21:24 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,11 @@
 
 //EN PLUS
 //changer le sprite ammo
-//rajouter son
+//bien checker qu'on ferme les flux
+//changer sprite ennemi en fonciton du niveau
+//chnger texture murs en fonction du niveau
+//faire le save
+//refaire le .h, le divisier en plusiseurs .h ?
 
 /*
 BONUS PART : 
@@ -211,7 +215,8 @@ int		drawing(t_pars *par) //l'appeler drawing ?
 	printf("x = %f et y = %f, angle = %f, distscreen = %f, freq_ray = %f\n", cam.x, cam.y, cam.angle, cam.dist_screen, cam.freq_ray);
 	printf("size line = %d\n", mlx.info.screen[SIZE_LINE]);
 	/* infos sur les variables */
-	raycasting(&mlx); //allow to print first image
+	// raycasting(&mlx); //allow to print first image
+	draw_level_menu(&mlx);
 	mlx_put_image_to_window(mlx.ptr, mlx.win, mlx.img.screen, 0, 0); //ici ?
 
 	mlx_hook(mlx.win, MOTIONNOTIFY, 0, &motion_notify, &mlx); //configure fonction pour deplacement souris

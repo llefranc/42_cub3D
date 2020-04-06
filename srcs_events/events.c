@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/04 17:44:38 by llefranc          #+#    #+#             */
-/*   Updated: 2020/04/01 18:26:17 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/04/06 11:23:43 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,8 @@ int		motion_notify(int x, int y, t_mlx *mlx)
 */
 int		key_press(int keycode, t_mlx *mlx)
 {
+	if ((keycode == K1_KEY || keycode == K2_KEY || keycode == K3_KEY) && !mlx->eve.level)
+		mlx->eve.level = keycode - (K1_KEY - 1);
 	if (keycode == W_KEY) //movements
 		mlx->cam->m_up = 1;
 	else if (keycode == S_KEY)
@@ -69,6 +71,8 @@ int		key_press(int keycode, t_mlx *mlx)
 	else if (keycode == ESC_KEY) //free and exit
 	{
 		struct_free(mlx->par);
+		free_sprite_struct(mlx->spri);
+		destroy_all_images(mlx, &mlx->img);
 		exit(EXIT_SUCCESS);
 	}
 	return (1);
@@ -114,6 +118,8 @@ int		destroy_notify(t_mlx *mlx)
 */
 int		no_event(t_mlx *mlx)
 {
+	if (!mlx->eve.level)
+		return (1);
 	if (mlx->eve.player_is_shooting && !mlx->eve.gun_shot && mlx->eve.ammo > 0)
 		shoot_anim(mlx, mlx->cam); //also determinates if the shot hit a guard or not
 	//update player position

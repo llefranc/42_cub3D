@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/24 16:40:35 by lucaslefran       #+#    #+#             */
-/*   Updated: 2020/03/30 16:20:40 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/04/06 11:12:23 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void	free_sprite_struct(t_sprites **spri)
 	int		i;
 
 	i = 0;
-	while (spri[i])
+	while (spri && spri[i])
 		free(spri[i++]);
 	free(spri);
 }
