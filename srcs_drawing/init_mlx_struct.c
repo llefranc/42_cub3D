@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/12 16:23:29 by lucaslefran       #+#    #+#             */
-/*   Updated: 2020/04/06 11:22:48 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/04/06 11:48:08 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,6 +88,34 @@ void	struct_init_addr_info(t_mlx *mlx, t_addr *addr, t_info *info)
 }
 
 /*
+** Sets all img ptr to NULL to avoid error when one img failed to load and
+** trying to destroying them in destroy_all_img func (if ptr == NULL, img
+** load and no need to destroy it).
+*/
+void	struct_init_img_ptr_to_null(t_img *img)
+{
+	img->screen = NULL;
+	img->t_no = NULL;
+	img->t_so = NULL;
+	img->t_ea = NULL;
+	img->t_we = NULL;
+	img->t_fl = NULL;
+	img->t_sk = NULL;
+	img->t_do = NULL;
+	img->s_4 = NULL;
+	img->s_5 = NULL;
+	img->s_6 = NULL;
+	img->s_7 = NULL;
+	img->s_8 = NULL;
+	img->s_9 = NULL;
+	img->hud = NULL;
+	img->life = NULL;
+	img->guns = NULL;
+	img->num = NULL;
+	img->font = NULL;
+}
+
+/*
 ** Loads one specific sprite, using the path in argument.
 */
 void	load_sprites(t_mlx *mlx, char *path, char *name, int num_sprite)
@@ -137,6 +165,7 @@ void	load_sprites(t_mlx *mlx, char *path, char *name, int num_sprite)
 */
 void	struct_init_img(t_mlx *mlx, t_info *info)
 {
+	struct_init_img_ptr_to_null(&mlx->img);
 	mlx->img.screen = mlx_new_image(mlx->ptr, (int)mlx->par->reso[0], (int)mlx->par->reso[1]);
 	if (!(mlx->img.t_no = mlx_xpm_file_to_image(mlx->ptr, mlx->par->path_no, &(info->t_no[WIDTH]), &(info->t_no[HEIGHT]))))
 		error_msg_destroy_img("Textures : error loading north texture\n", mlx);
@@ -215,11 +244,11 @@ void	struct_init_mlx(t_mlx *mlx)//, t_img *img, t_addr *addr, t_info *info)
 {
 	mlx->start_move.tv_sec = 0.0; //booleans for movement and rotation
 	mlx->start_rota.tv_sec = 0.0;
+	mlx->spri = NULL;
 	mlx->ptr = mlx_init();
 	mlx->win = mlx_new_window(mlx->ptr, (int)mlx->par->reso[0], (int)mlx->par->reso[1], "cub3d");
 	struct_init_paths(mlx, mlx->par);
 	struct_init_img(mlx, &mlx->info);
 	struct_init_addr_info(mlx, &mlx->addr, &mlx->info);
 	struct_init_events_bool(&mlx->eve);
-	mlx->spri = NULL;
 }

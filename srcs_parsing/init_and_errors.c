@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/12 18:49:53 by lucaslefran       #+#    #+#             */
-/*   Updated: 2020/03/25 11:23:35 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/04/06 15:12:08 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,21 +118,27 @@ int		error_msg_map(char *str, t_pars *par, int *line)
 */
 int     check_arg(int ac, char **av)
 {
-    int i;
+    int		i;
+	int		ret;
 
     i = 0;
+	ret = 0;
     if (ac < 2)
         error_msg("Arguments : no file, enter it with the first argument\n", NULL, NULL);
-    else if (ac > 2)
-        error_msg("Arguments : too many arguments, enter only the map file\n", NULL, NULL);
-    else
-    {
-        while (av[1][i])
-            i++;
-        i -= 4;
-        if (!ft_strcmp(&av[1][i], ".cub"))
-            return (1);
-        error_msg("Arguments : file map must end by \".cub\"\n", NULL, NULL);
-    }
-    return (-1);
+    if (ac == 3)
+	{
+		if (ft_strcmp("--save", av[2]))
+			error_msg("Arguments : second argument can only be '--save' option\n", NULL, NULL);
+		ret = 1; //to indicate we will have to save the first rendered image
+	}
+	if (ac > 3)
+        error_msg("Arguments : too many arguments, enter only the map file (and save option)\n", NULL, NULL);
+	while (av[1][i])
+		i++;
+	i -= 4;
+	if (ft_strcmp(&av[1][i], ".cub"))
+		error_msg("Arguments : file map must end by \".cub\"\n", NULL, NULL);
+	if (!i)
+		error_msg("Arguments : file \".cub\" must have a name and not only be the extension\n", NULL, NULL);
+    return (ret);
 }

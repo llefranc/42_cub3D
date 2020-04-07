@@ -2,19 +2,19 @@ F 2,20,2
 
 NO ./images/textures/north/
 
-R 800 600
+R 252 231
 SO ./images/textures/south/
 WE ./images/textures/west/
 S ./images/sprites/
 
 CB ./images/textures/ceil/
 FB ./images/textures/floor/
-DB ./images/textures/doors/
+DB ./images/textures/door/
 C 220,10,23
 
 EA ./images/textures/east/
 
 111111111111111111111111111111111
-110000000000000000000000001111111
-100000000000S0000000000000000001
+110000400000000000000000001111111
+100000000000E0000000000000000001
 111111111111111111111111111111111

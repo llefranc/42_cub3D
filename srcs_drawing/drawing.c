@@ -6,73 +6,11 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/25 11:07:23 by llefranc          #+#    #+#             */
-/*   Updated: 2020/04/06 11:21:24 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/04/07 10:17:56 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-//ORDRE EXECUTION TACHES
-//on recup le parsing
-//creer une fenetre avec une image
-//faire du raycasting pour chaque colonne de pixel
-//mettre la gestion des events (deplacement dnas la map)
-//rajouter les textures
-//mettre les sprites
-//faire le save
-
-//EN PLUS
-//changer le sprite ammo
-//bien checker qu'on ferme les flux
-//changer sprite ennemi en fonciton du niveau
-//chnger texture murs en fonction du niveau
-//faire le save
-//refaire le .h, le divisier en plusiseurs .h ?
-
-/*
-BONUS PART : 
-GOOD : Wall collisions.
-GOOD : A skybox.
-GOOD : Floor and/or ceiling texture.
-GOOD : An HUD.
-• Ability to look up and down.
-• Jump or crouch.
-• A distance related shadow effect.
-GOOD : Life bar.
-GOOD : More items in the maze.
-GOOD : Object collisions.
-GOOD : Earning points and/or losing life by picking up objects/traps.
-GOOD : Doors which can open and close.
-GOOD : Secret doors.
-GOOD : Animations of a gun shot or animated sprite.
-• Several levels.
-->• Sounds and music.
-GOOD : Rotate the point of view with the mouse.
-GOOD : Weapons and bad guys to fight!
-
-Par theme :
-
-RAYCASTING :
-GOOD : A skybox.
-GOOD : Floor and/or ceiling texture.
-
-PLUSIEURS SPRITES :
-GOOD : Doors which can open and close. (2)
-GOOD : Earning points and/or losing life by picking up objects/traps.
-GOOD : More items in the maze.
-GOOD : Secret doors. (3)
-
-HUD / ANIMATIONS AVEC TIMER :
-GOOD : Animations of a gun shot or animated sprite.
-GOOD : Life bar.
-GOOD : An HUD.
-
-AUTRES :
-GOOD : Weapons and bad guys to fight!
-->• Sounds and music.
-GOOD : Object collisions.
-
-*/
-
-#include "includes/cube3d.h"
+#include "../includes/cube3d.h"
 
 /*
 ** Moving in texture's adress and returning the color of one pixel of the
@@ -89,17 +27,17 @@ int		draw_texture(t_mlx *mlx, t_texture *textu, int x)
 	x = (int)((double)x * textu->freq_pixel);
 	x >= mlx->info.t_no[WIDTH] ? x = mlx->info.t_no[WIDTH] - 1 : 0; //for avoiding segfault when round error with double
 	if (textu->side_wall == NORTH)
-		color = mlx->addr.t_no[textu->row_img + textu->start_line_img * mlx->info.t_no[SIZE_LINE]
-					+ x * mlx->info.t_no[SIZE_LINE]];
+		color = mlx->addr.t_no[textu->row_img + T_NORTH_R + textu->start_line_img * mlx->info.t_no[SIZE_LINE]
+					+ x * mlx->info.t_no[SIZE_LINE] + T_NORTH_L * mlx->info.t_no[SIZE_LINE]];
 	if (textu->side_wall == SOUTH)
-		color = mlx->addr.t_so[textu->row_img + textu->start_line_img * mlx->info.t_so[SIZE_LINE]
-					+ x * mlx->info.t_so[SIZE_LINE]];
+		color = mlx->addr.t_so[textu->row_img + T_SOUTH_R + textu->start_line_img * mlx->info.t_so[SIZE_LINE]
+					+ x * mlx->info.t_so[SIZE_LINE] + T_SOUTH_L * mlx->info.t_no[SIZE_LINE]];
 	if (textu->side_wall == EAST)
-		color = mlx->addr.t_ea[textu->row_img + textu->start_line_img * mlx->info.t_ea[SIZE_LINE]
-					+ x * mlx->info.t_ea[SIZE_LINE]];
+		color = mlx->addr.t_ea[textu->row_img + T_EAST_L + textu->start_line_img * mlx->info.t_ea[SIZE_LINE]
+					+ x * mlx->info.t_ea[SIZE_LINE] + T_EAST_L * mlx->info.t_no[SIZE_LINE]];
 	if (textu->side_wall == WEST)
-		color = mlx->addr.t_we[textu->row_img + textu->start_line_img * mlx->info.t_we[SIZE_LINE]
-					+ x * mlx->info.t_we[SIZE_LINE]];
+		color = mlx->addr.t_we[textu->row_img + T_WEST_L + textu->start_line_img * mlx->info.t_we[SIZE_LINE]
+					+ x * mlx->info.t_we[SIZE_LINE] + T_WEST_L * mlx->info.t_no[SIZE_LINE]];
 	if (textu->side_wall == DOOR)
 		color = mlx->addr.t_do[textu->row_img + textu->start_line_img * mlx->info.t_do[SIZE_LINE]
 					+ x * mlx->info.t_do[SIZE_LINE]];
@@ -195,30 +133,21 @@ void	raycasting(t_mlx *mlx)
 	}
 }
 
-int		drawing(t_pars *par) //l'appeler drawing ? 
+int		drawing(t_pars *par, int save)
 {
 	t_mlx mlx;
 	t_rcast cam;
 	
-	print_map(par->map);
 	mlx.par = par; //allow to carry only t_mlx struct
-	// mlx.eve = &eve;
 	mlx.cam = &cam; //allow to carry only t_mlx struct
-	
 	struct_init_mlx(&mlx); //all *ptr == NULL, all int == -1,
-	struct_init_camera(&mlx, &cam, par); //create a tab of **int for the map, from the prev map in **char. Link par to cam
-
-	// cam.x -= 0.1;
-	// cam.y = 2.69627500000000086544105215580202639102935791015625;
-	/* infos sur les variables */
-	// sans correction : 184 / 178
-	printf("x = %f et y = %f, angle = %f, distscreen = %f, freq_ray = %f\n", cam.x, cam.y, cam.angle, cam.dist_screen, cam.freq_ray);
-	printf("size line = %d\n", mlx.info.screen[SIZE_LINE]);
-	/* infos sur les variables */
-	// raycasting(&mlx); //allow to print first image
-	draw_level_menu(&mlx);
-	mlx_put_image_to_window(mlx.ptr, mlx.win, mlx.img.screen, 0, 0); //ici ?
-
+	struct_init_camera(&mlx, &cam, par); //Link par to cam and initiates player position
+	raycasting(&mlx); //first image for save
+	mlx_put_image_to_window(mlx.ptr, mlx.win, mlx.img.screen, 0, 0);
+	if (save)
+		save_image_as_bmp(&mlx); //will save first image as bmp and then exit properly the programm
+	draw_level_menu(&mlx); //then we draw the level menu
+	mlx_put_image_to_window(mlx.ptr, mlx.win, mlx.img.screen, 0, 0);
 	mlx_hook(mlx.win, MOTIONNOTIFY, 0, &motion_notify, &mlx); //configure fonction pour deplacement souris
 	mlx_hook(mlx.win, KEYPRESS, 0, &key_press, &mlx); //configure fonction quand on presse une touche
 	mlx_hook(mlx.win, KEYRELEASE, 0, &key_release, &mlx); //configure fonction quand on relache une touche

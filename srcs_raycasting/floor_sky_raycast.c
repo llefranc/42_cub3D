@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/19 17:54:56 by lucaslefran       #+#    #+#             */
-/*   Updated: 2020/03/26 10:45:54 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/04/06 14:46:00 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,8 @@ int		find_color_square_floor(t_mlx *mlx, t_point i)
 	i.y = fabs(i.y - ((double)(int)i.y));
 	row = (int)(i.x * (double)WALL_SIZE); //texture should be size of texture walls (64 x 64, defined)
 	line = (int)(i.y * (double)WALL_SIZE);
-	color = mlx->addr.t_fl[row + line * mlx->info.t_fl[SIZE_LINE]];
+	color = mlx->addr.t_fl[row + T_FLOOR_R + line * mlx->info.t_fl[SIZE_LINE]
+			+ T_FLOOR_L * mlx->info.t_fl[SIZE_LINE]];
 	return (color);
 }
 

@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/12 16:16:20 by lucaslefran       #+#    #+#             */
-/*   Updated: 2020/03/23 11:49:42 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/04/06 23:18:33 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,19 +62,24 @@ void	print_struct(t_pars *par)
 		print_map(par->map);
 }
 
+//mettre au propre le save
+//changer sprite ammo
+//faire plusieurs points h
+//revoir les descriptions des fonctions si a leur bonne place
+//normer
+//description de drawing
+//choisir des meilleures textures
+
 int main(int ac, char **av)
 {
-	char *line;
-	t_pars par;
-	line = NULL;
+	t_pars	par;
+	int		save;
 	
-    check_arg(ac, av);
+    save = check_arg(ac, av); //if save option check arg will return 1
 	struct_init_par(&par);
 	if ((par.fd = open(av[1], O_RDONLY)) == -1)
-		error_msg("Error\nArguments : incorrect file\n", &par, NULL);
+		error_msg("Arguments : incorrect file, failed to open it\n", &par, NULL);
 	parsing(&par);
-	// print_struct(&par);
-	drawing(&par);
-	struct_free(&par);
+	drawing(&par, save);
     return (0);
 }

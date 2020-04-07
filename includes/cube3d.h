@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/12 16:17:24 by lucaslefran       #+#    #+#             */
-/*   Updated: 2020/04/06 11:16:16 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/04/06 15:17:58 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,20 +104,17 @@
 //sprite's background color that we're not printing
 # define INV_COLOR			9961608
 
-//size of sprites in percent of screen height / screen width
-# define HUD_SIZE_H			1.0 / 6.0
-# define LIFE_SIZE_H		1.0 / 20.0
-# define LIFE_SIZE_W		1.0 / 6.0
-# define GUNS_SIZE_H		70.0 / 100.0
-# define GUNS_SIZE_W		50.0 / 100.0
-# define NUMBER_SIZE_H		8.0 / 100.0
-# define NUMBER_SIZE_W		3.0 / 100.0
-# define HEART_SIZE_H		5.0 / 100.0
-# define HEART_SIZE_W		2.5 / 100.0
-# define FONT1_SIZE_H		8.5 / 100.0
-# define FONT1_SIZE_W		5.0 / 100.0
-# define FONT2_SIZE_H		10.0 / 100.0 //for deaths screens
-# define FONT2_SIZE_W		6.0 / 100.0
+//texture's first pixel position in images (L = line, R = row)
+# define T_NORTH_L			64
+# define T_NORTH_R			128
+# define T_SOUTH_L			128
+# define T_SOUTH_R			128
+# define T_EAST_L			192
+# define T_EAST_R			128
+# define T_WEST_L			256
+# define T_WEST_R			128
+# define T_FLOOR_L			0
+# define T_FLOOR_R			0
 
 //sprite's first pixel position in images (L = line, R = row)
 # define LIFE_RED_IMG_L		0
@@ -145,6 +142,21 @@
 # define G_SHOOT_L			390
 # define G_SHOOT1_R			65
 # define G_SHOOT2_R			130
+
+//size of sprites in percent of screen height / screen width
+# define HUD_SIZE_H			1.0 / 6.0
+# define LIFE_SIZE_H		1.0 / 20.0
+# define LIFE_SIZE_W		1.0 / 6.0
+# define GUNS_SIZE_H		70.0 / 100.0
+# define GUNS_SIZE_W		50.0 / 100.0
+# define NUMBER_SIZE_H		8.0 / 100.0
+# define NUMBER_SIZE_W		3.0 / 100.0
+# define HEART_SIZE_H		5.0 / 100.0
+# define HEART_SIZE_W		2.5 / 100.0
+# define FONT1_SIZE_H		8.5 / 100.0
+# define FONT1_SIZE_W		5.0 / 100.0
+# define FONT2_SIZE_H		10.0 / 100.0 //for deaths screens
+# define FONT2_SIZE_W		6.0 / 100.0
 
 //sprite's position on screen
 # define LIFE_SCREEN_L		91.0 / 100.0
@@ -399,7 +411,7 @@ typedef struct		s_mlx
 
 void	 	print_struct(t_pars *par); //a supprimer
 void		print_map(int **map); //a enlever
-int			drawing(t_pars *par); //a modifier
+int			drawing(t_pars *par, int save); //a modifier
 void		raycasting(t_mlx *mlx);
 
 /*
@@ -530,5 +542,8 @@ void	draw_colored_screen(t_mlx *mlx, int nb_pixel, int color);
 void	player_is_dead(t_mlx *mlx);
 void	draw_death_screen(t_mlx *mlx);
 int		draw_level_menu(t_mlx *mlx);
+
+//save.c
+void	save_image_as_bmp(t_mlx *mlx);
 
 #endif
