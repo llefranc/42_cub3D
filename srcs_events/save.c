@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/04/06 14:53:51 by lucaslefran       #+#    #+#             */
-/*   Updated: 2020/04/07 10:47:23 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/04/07 10:57:33 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,6 +141,6 @@ void	save_image_as_bmp(t_mlx *mlx)
 	i = fill_bmp_header_info(mlx, img_str, i, size_str_img); //fills 54 first bytes (header with info)
 	fill_bmp_with_data_img(mlx, img_str, i, padding_byte); //copies the pixels colors from screen image
 	write(fd, img_str, size_str_img); //write all the *char into the file (header + data)
-	free(size_str_img);
+	free(img_str);
 	exit_with_sucess(mlx, "First image saved as BMP with sucess\n");
 }

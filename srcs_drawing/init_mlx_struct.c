@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/12 16:23:29 by lucaslefran       #+#    #+#             */
-/*   Updated: 2020/04/06 11:48:08 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/04/07 10:54:31 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -185,7 +185,7 @@ void	struct_init_img(t_mlx *mlx, t_info *info)
 	load_sprites(mlx, mlx->par->path_sp, "num_5/tree.xpm", SP_TREE);
 	load_sprites(mlx, mlx->par->path_sp, "num_6/armor.xpm", SP_ARMOR);
 	load_sprites(mlx, mlx->par->path_sp, "num_7/health.xpm", SP_HEALTH);
-	load_sprites(mlx, mlx->par->path_sp, "num_8/spears.xpm", SP_AMMO);
+	load_sprites(mlx, mlx->par->path_sp, "num_8/ammo.xpm", SP_AMMO);
 	load_sprites(mlx, mlx->par->path_sp, "num_9/flag.xpm", SP_FLAG);
 	load_sprites(mlx, mlx->par->path_sp, "hud.xpm", SP_HUD);
 	load_sprites(mlx, mlx->par->path_sp, "lifebar.xpm", SP_LIFEBAR);

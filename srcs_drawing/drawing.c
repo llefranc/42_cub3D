@@ -6,39 +6,65 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/25 11:07:23 by llefranc          #+#    #+#             */
-/*   Updated: 2020/04/07 10:17:56 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/04/07 14:15:01 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/cube3d.h"
 
 /*
+** Moving in texture's adress and returning the color of one pixel. We start
+** from a certain row (depending where the ray touched the wall, if the
+** ray touched at 33% of the wall we will start at row WALL_SIZE / 3), then we
+** choose the line with start_line + freq_pixel.
+*/
+int		tex_color(t_mlx *mlx, int x, int pix_row, int pix_line)
+{
+	int		color;
+
+	if (mlx->textu->side_wall == NORTH)
+		color = mlx->addr.t_no[mlx->textu->row_img + pix_row + mlx->textu->start_line_img * mlx->info.t_no[SIZE_LINE]
+				+ x * mlx->info.t_no[SIZE_LINE] + pix_line * mlx->info.t_no[SIZE_LINE]];
+	if (mlx->textu->side_wall == SOUTH)
+		color = mlx->addr.t_so[mlx->textu->row_img + pix_row + mlx->textu->start_line_img * mlx->info.t_so[SIZE_LINE]
+				+ x * mlx->info.t_so[SIZE_LINE] + pix_line * mlx->info.t_no[SIZE_LINE]];
+	if (mlx->textu->side_wall == EAST)
+		color = mlx->addr.t_ea[mlx->textu->row_img + pix_row + mlx->textu->start_line_img * mlx->info.t_ea[SIZE_LINE]
+				+ x * mlx->info.t_ea[SIZE_LINE] + pix_line * mlx->info.t_no[SIZE_LINE]];
+	if (mlx->textu->side_wall == WEST)
+		color = mlx->addr.t_we[mlx->textu->row_img + pix_row + mlx->textu->start_line_img * mlx->info.t_we[SIZE_LINE]
+				+ x * mlx->info.t_we[SIZE_LINE] + pix_line * mlx->info.t_no[SIZE_LINE]];
+	return (color);
+}
+
+/*
 ** Moving in texture's adress and returning the color of one pixel of the
-** texture, depending of which side of the wall is touched by the ray.
-** If it's a door the side doesn't matter. We start from a certain row
-** (depending where the ray touch the wall, if the ray touch at 33% of the wall
-** we will start at row WALL_SIZE / 3), then we choose the line with start_line
-** + freq_pixel.
+** texture, depending of which side of the wall is touched by the ray / and the
+** level choose. If it's a door side / level doesn't matter.
 */
 int		draw_texture(t_mlx *mlx, t_texture *textu, int x)
 {
 	int		color;
+	int		side;
+	int		lev;
 
-	x = (int)((double)x * textu->freq_pixel);
+	side = textu->side_wall;
+	lev = mlx->eve.level;
+	x = (int)((double)x * mlx->textu->freq_pixel);
 	x >= mlx->info.t_no[WIDTH] ? x = mlx->info.t_no[WIDTH] - 1 : 0; //for avoiding segfault when round error with double
-	if (textu->side_wall == NORTH)
-		color = mlx->addr.t_no[textu->row_img + T_NORTH_R + textu->start_line_img * mlx->info.t_no[SIZE_LINE]
-					+ x * mlx->info.t_no[SIZE_LINE] + T_NORTH_L * mlx->info.t_no[SIZE_LINE]];
-	if (textu->side_wall == SOUTH)
-		color = mlx->addr.t_so[textu->row_img + T_SOUTH_R + textu->start_line_img * mlx->info.t_so[SIZE_LINE]
-					+ x * mlx->info.t_so[SIZE_LINE] + T_SOUTH_L * mlx->info.t_no[SIZE_LINE]];
-	if (textu->side_wall == EAST)
-		color = mlx->addr.t_ea[textu->row_img + T_EAST_L + textu->start_line_img * mlx->info.t_ea[SIZE_LINE]
-					+ x * mlx->info.t_ea[SIZE_LINE] + T_EAST_L * mlx->info.t_no[SIZE_LINE]];
-	if (textu->side_wall == WEST)
-		color = mlx->addr.t_we[textu->row_img + T_WEST_L + textu->start_line_img * mlx->info.t_we[SIZE_LINE]
-					+ x * mlx->info.t_we[SIZE_LINE] + T_WEST_L * mlx->info.t_no[SIZE_LINE]];
-	if (textu->side_wall == DOOR)
+	side == NORTH && lev == 1 ? color = tex_color(mlx, x, T1_NORTH_R, T1_NORTH_L) : 0;
+	side == NORTH && lev == 2 ? color = tex_color(mlx, x, T2_NORTH_R, T2_NORTH_L) : 0;
+	side == NORTH && lev == 3 ? color = tex_color(mlx, x, T3_NORTH_R, T3_NORTH_L) : 0;
+	side == SOUTH && lev == 1 ? color = tex_color(mlx, x, T1_SOUTH_R, T1_SOUTH_L) : 0;
+	side == SOUTH && lev == 2 ? color = tex_color(mlx, x, T2_SOUTH_R, T2_SOUTH_L) : 0;
+	side == SOUTH && lev == 3 ? color = tex_color(mlx, x, T3_SOUTH_R, T3_SOUTH_L) : 0;
+	side == EAST && lev == 1 ? color = tex_color(mlx, x, T1_EAST_R, T1_EAST_L) : 0;
+	side == EAST && lev == 2 ? color = tex_color(mlx, x, T2_EAST_R, T2_EAST_L) : 0;
+	side == EAST && lev == 3 ? color = tex_color(mlx, x, T3_EAST_R, T3_EAST_L) : 0;
+	side == WEST && lev == 1 ? color = tex_color(mlx, x, T1_WEST_R, T1_WEST_L) : 0;
+	side == WEST && lev == 2 ? color = tex_color(mlx, x, T2_WEST_R, T2_WEST_L) : 0;
+	side == WEST && lev == 3 ? color = tex_color(mlx, x, T3_WEST_R, T3_WEST_L) : 0;
+	if (side == DOOR)
 		color = mlx->addr.t_do[textu->row_img + textu->start_line_img * mlx->info.t_do[SIZE_LINE]
 					+ x * mlx->info.t_do[SIZE_LINE]];
 	return (color);
@@ -115,9 +141,9 @@ void	drawing_sky_wall_floor(t_mlx *mlx, t_texture *textu, int i, unsigned int pi
 */
 void	raycasting(t_mlx *mlx)
 {
-	int				i;
-	double			pix_wall;		//number of pixels colored for wall
-	t_texture		textu;
+	int			i;
+	double		pix_wall;		//number of pixels colored for wall
+	t_texture	textu;
 
 	i = -1;
 	mlx->textu = &textu;
@@ -133,10 +159,16 @@ void	raycasting(t_mlx *mlx)
 	}
 }
 
+/*
+** Initiates all the structures, the player's informations, loads the textures
+** and sprites. Save if asked the first image rendered and exit ; otherwise 
+** attributes one fucntion for each event, and creates a loop with mlx_loop
+** on those 5 functions.
+*/
 int		drawing(t_pars *par, int save)
 {
-	t_mlx mlx;
-	t_rcast cam;
+	t_mlx	mlx;
+	t_rcast	cam;
 	
 	mlx.par = par; //allow to carry only t_mlx struct
 	mlx.cam = &cam; //allow to carry only t_mlx struct
@@ -145,14 +177,14 @@ int		drawing(t_pars *par, int save)
 	raycasting(&mlx); //first image for save
 	mlx_put_image_to_window(mlx.ptr, mlx.win, mlx.img.screen, 0, 0);
 	if (save)
-		save_image_as_bmp(&mlx); //will save first image as bmp and then exit properly the programm
+		save_image_as_bmp(&mlx); //will save first image as bmp and then exit the programm
 	draw_level_menu(&mlx); //then we draw the level menu
 	mlx_put_image_to_window(mlx.ptr, mlx.win, mlx.img.screen, 0, 0);
-	mlx_hook(mlx.win, MOTIONNOTIFY, 0, &motion_notify, &mlx); //configure fonction pour deplacement souris
-	mlx_hook(mlx.win, KEYPRESS, 0, &key_press, &mlx); //configure fonction quand on presse une touche
-	mlx_hook(mlx.win, KEYRELEASE, 0, &key_release, &mlx); //configure fonction quand on relache une touche
-	mlx_hook(mlx.win, DESTROYNOTIFY, 0, &destroy_notify, &mlx); //configure fonction quand on ferme une fenetre
-	mlx_loop_hook(mlx.ptr, &no_event, &mlx); //configure fonction quand pas d'evenements. Permet de print
-	mlx_loop(mlx.ptr);
+	mlx_hook(mlx.win, MOTIONNOTIFY, 0, &motion_notify, &mlx); //rotate camera with mouse
+	mlx_hook(mlx.win, KEYPRESS, 0, &key_press, &mlx); //player's movements + rotation, shooting, interacting..
+	mlx_hook(mlx.win, KEYRELEASE, 0, &key_release, &mlx); //same than keypress
+	mlx_hook(mlx.win, DESTROYNOTIFY, 0, &destroy_notify, &mlx); //exit properly the program when closing window
+	mlx_loop_hook(mlx.ptr, &no_event, &mlx); //actualize player's position, raycasting + drawing
+	mlx_loop(mlx.ptr); //loop on the 5 previous mlx_hook events
 	return (1);
 }

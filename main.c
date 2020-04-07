@@ -6,80 +6,55 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/12 16:16:20 by lucaslefran       #+#    #+#             */
-/*   Updated: 2020/04/06 23:18:33 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/04/07 14:59:49 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "includes/cube3d.h"
 
-void	print_map(int **map)
-{
-	int i = 0;
-	int j;
+/*
+** Cub3d game (based on Wolfenstein 3D game).
+** Made by Lucas Lefrancq.
+**
+**
+** This game is using raycasting render to create a 3D illusion.
+** It will first check the arguments (only one / or two are allowed :
+** - The first one is the map file with all the config informations (mandatory)
+** - The second one is '--save' if you want to save as a BMP file the first
+**   rendered image with raycasting.
+**
+** The program will then parses the config file, initiates several structures with
+** player's informations and loads textures / sprites. Then it will refresh continually
+** the screen thanks to a raycasting algorithm, creating a different image each time
+** the player is moving / rotating / shooting...
+**
+** The game handles the following events :
+** - Level choiche (1/2/3 keys, not numeric touchpad)
+** - Player movements (with WASD keys)
+** - Player rotation (with arrow keys OR mouse if M key is pressed)
+** - Shooting (spacebar key)
+** - Doors interaction (when E key is pressed near a door / secret door)
+** - Textures rendering or not (when T key is pressed)
+** - Exit (when ESC key is pressed)
+**
+** Player can gains life with health items, loses life when ennemy shoots at him.
+** The differents difficulty levels will change ennemy damages. If the player lost
+** his 3 lifes, gameover will occur and he will need to quit the game with ESC key.
+*/
 
-	while (map[i])
-	{
-		j = -1;
-		printf("|");
-		while (map[i][++j] != -2)
-		{
-			if (map[i][j] == -1)
-				printf(" ");
-			else if (map[i][j] == NORTH)
-				printf("N");
-			else if (map[i][j] == SOUTH)
-				printf("S");
-			else if (map[i][j] == EAST)
-				printf("E");
-			else if (map[i][j] == WEST)
-				printf("W");
-			else
-				printf("%d", map[i][j]);
-		}
-		printf("|\n");
-		i++;
-	}
-}
-
-void	print_struct(t_pars *par)
-{
-	int i;
-
-	i = 0;
-	printf("reso = [%f][%f]\n", par->reso[0], par->reso[1]);
-	printf("path no = |%s|\n", par->path_no);
-	printf("path so = |%s|\n", par->path_so);
-	printf("path we = |%s|\n", par->path_we);
-	printf("path ea = |%s|\n", par->path_ea);
-	printf("path sp = |%s|\n", par->path_sp);
-	printf("sky_rgb = color = [%d] RGB[%d][%d][%d]\n", par->sky_rgb,*(unsigned char *)(&par->sky_rgb), 
-			*((unsigned char *)(&par->sky_rgb) + 1), *((unsigned char *)(&par->sky_rgb) + 2));
-	printf("flor_rgb = color = [%d] RGB[%d][%d][%d]\n", par->flo_rgb,*(unsigned char *)(&par->flo_rgb),
-			*((unsigned char *)(&par->flo_rgb) + 1), *((unsigned char *)(&par->flo_rgb) + 2));
-	if (!par->map)
-		printf("map inexistante\n");
-	else
-		print_map(par->map);
-}
-
-//mettre au propre le save
-//changer sprite ammo
-//faire plusieurs points h
-//revoir les descriptions des fonctions si a leur bonne place
+//faire le makefile
 //normer
-//description de drawing
-//choisir des meilleures textures
 
 int main(int ac, char **av)
 {
 	t_pars	par;
 	int		save;
 	
-    save = check_arg(ac, av); //if save option check arg will return 1
+    save = check_arg(ac, av); //if save option, check arg will return 1
 	struct_init_par(&par);
 	if ((par.fd = open(av[1], O_RDONLY)) == -1)
 		error_msg("Arguments : incorrect file, failed to open it\n", &par, NULL);
-	parsing(&par);
-	drawing(&par, save);
+	parsing(&par); //parses .cub file and fills par structure with all the informations
+	drawing(&par, save); //raycasting + drawing + handling events
     return (0);
 }
