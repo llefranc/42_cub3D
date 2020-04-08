@@ -6,11 +6,11 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/12 16:16:20 by lucaslefran       #+#    #+#             */
-/*   Updated: 2020/04/07 14:59:49 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/04/08 10:11:17 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "includes/cube3d.h"
+#include "../includes/cube3d.h"
 
 /*
 ** Cub3d game (based on Wolfenstein 3D game).
@@ -41,9 +41,6 @@
 ** The differents difficulty levels will change ennemy damages. If the player lost
 ** his 3 lifes, gameover will occur and he will need to quit the game with ESC key.
 */
-
-//faire le makefile
-//normer
 
 int main(int ac, char **av)
 {

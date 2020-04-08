@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/12 16:23:29 by lucaslefran       #+#    #+#             */
-/*   Updated: 2020/04/07 10:54:31 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/04/08 10:09:16 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -226,12 +226,12 @@ void	struct_init_paths(t_mlx *mlx, t_pars *par)
 */
 void	struct_init_events_bool(t_event *eve)
 {
-	eve->print_texture = 1;
+	eve->print_texture = 1; //1 = printing, 0 = not printing (T KEY)
 	eve->ammo = AMMO_START;
 	eve->player_is_shooting = 0;
 	eve->gun_shot = 0;
 	eve->lifebar = FULL_LIFE;
-	eve->level = 0;
+	eve->level = 1;
 	eve->nb_life = 0; //will be initiated after player choose level, in function draw_level_menu
 }
 

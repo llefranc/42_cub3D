@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/25 11:07:23 by llefranc          #+#    #+#             */
-/*   Updated: 2020/04/07 14:15:01 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/04/08 10:08:12 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -178,6 +178,7 @@ int		drawing(t_pars *par, int save)
 	mlx_put_image_to_window(mlx.ptr, mlx.win, mlx.img.screen, 0, 0);
 	if (save)
 		save_image_as_bmp(&mlx); //will save first image as bmp and then exit the programm
+	mlx.eve.level = 0; //to print and stay in level menu until player choose a level
 	draw_level_menu(&mlx); //then we draw the level menu
 	mlx_put_image_to_window(mlx.ptr, mlx.win, mlx.img.screen, 0, 0);
 	mlx_hook(mlx.win, MOTIONNOTIFY, 0, &motion_notify, &mlx); //rotate camera with mouse
