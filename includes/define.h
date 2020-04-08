@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/04/07 12:29:52 by lucaslefran       #+#    #+#             */
-/*   Updated: 2020/04/07 14:52:20 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/04/08 11:00:14 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -150,39 +150,39 @@
 
 //size of sprites in percent of screen height / screen width
 # define	HUD_SIZE_H			1.0 / 6.0
-# define	LIFE_SIZE_H			1.0 / 20.0
+# define	LIFE_SIZE_H			0.05
 # define	LIFE_SIZE_W			1.0 / 6.0
-# define	GUNS_SIZE_H			70.0 / 100.0
-# define	GUNS_SIZE_W			50.0 / 100.0
-# define	NUMBER_SIZE_H		8.0 / 100.0
-# define	NUMBER_SIZE_W		3.0 / 100.0
-# define	HEART_SIZE_H		5.0 / 100.0
-# define	HEART_SIZE_W		2.5 / 100.0
-# define	FONT1_SIZE_H		8.5 / 100.0
-# define	FONT1_SIZE_W		5.0 / 100.0
-# define	FONT2_SIZE_H		10.0 / 100.0 //for deaths screens
-# define	FONT2_SIZE_W		6.0 / 100.0
+# define	GUNS_SIZE_H			0.7
+# define	GUNS_SIZE_W			0.5
+# define	NUMBER_SIZE_H		0.08
+# define	NUMBER_SIZE_W		0.03
+# define	HEART_SIZE_H		0.05
+# define	HEART_SIZE_W		0.025
+# define	FONT1_SIZE_H		0.085
+# define	FONT1_SIZE_W		0.05
+# define	FONT2_SIZE_H		0.1			//for deaths screens
+# define	FONT2_SIZE_W		0.06
 
 //sprite's position on screen
-# define	LIFE_SCREEN_L		91.0 / 100.0
-# define	LIFE_SCREEN_R		1.0 / 8.0
-# define	GUNS_SCREEN_L		13.5 / 100.0
-# define	GUNS_SCREEN_R		25.0 / 100.0
-# define	NUMBER_SCREEN_L		89.5 / 100.0
-# define	N_LEVEL_SCREEN_R	5.0 / 100.0
-# define	N_LIFE1_SCREEN_R	52.0 / 100.0
-# define	N_LIFE2_SCREEN_R	55.0 / 100.0
-# define	N_LIFE3_SCREEN_R	58.0 / 100.0
-# define	N_AMMO1_SCREEN_R	68.0 / 100.0
-# define	N_AMMO2_SCREEN_R	71.0 / 100.0
-# define	HEART_SCREEN_L		92.0 / 100.0
-# define	HEART1_SCREEN_R		31.5 / 100.0
-# define	HEART2_SCREEN_R		34.5 / 100.0
-# define	HEART3_SCREEN_R		37.5 / 100.0
-# define	FONT1_SCREEN_L		30.0 / 100.0 //for level menu
-# define	FONT1_SCREEN_R		8.0 / 100.0
-# define	FONT2_SCREEN_L		45.0 / 100.0 //for deaths screens
-# define	FONT2_SCREEN_R		28.0 / 100.0
+# define	LIFE_SCREEN_L		0.91
+# define	LIFE_SCREEN_R		0.125
+# define	GUNS_SCREEN_L		0.135
+# define	GUNS_SCREEN_R		0.25
+# define	NUMBER_SCREEN_L		0.895
+# define	N_LEVEL_SCREEN_R	0.05
+# define	N_LIFE1_SCREEN_R	0.52
+# define	N_LIFE2_SCREEN_R	0.55
+# define	N_LIFE3_SCREEN_R	0.58
+# define	N_AMMO1_SCREEN_R	0.68
+# define	N_AMMO2_SCREEN_R	0.71
+# define	HEART_SCREEN_L		0.92
+# define	HEART1_SCREEN_R		0.315
+# define	HEART2_SCREEN_R		0.345
+# define	HEART3_SCREEN_R		0.375
+# define	FONT1_SCREEN_L		0.3			//for level menu
+# define	FONT1_SCREEN_R		0.08
+# define	FONT2_SCREEN_L		0.45		//for deaths screens
+# define	FONT2_SCREEN_R		0.28
 
 //size of one sprite (in pixel) contained inside an image of several sprites
 # define	LIFE_PIX_H			21
