@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/04/02 13:44:18 by lucaslefran       #+#    #+#             */
-/*   Updated: 2020/04/06 11:16:05 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/04/08 14:45:50 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,6 +128,10 @@ void	draw_easy_medium_hard_message(t_mlx *mlx)
 	draw_letter_font1(mlx, FONT1_SCREEN_L + FONT1_SIZE_H * 5.0, FONT1_SCREEN_R + FONT1_SIZE_W * i++, 'D');
 }
 
+/*
+** Draws the level menu at the beginning of the game, and inializes level
+** difficulty after player choose it.
+*/
 int		draw_level_menu(t_mlx *mlx)
 {
 	draw_colored_screen(mlx, 1, 0x0); //draw a black screen

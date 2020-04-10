@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/12 16:23:29 by lucaslefran       #+#    #+#             */
-/*   Updated: 2020/04/08 10:09:16 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/04/08 15:14:16 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -240,7 +240,7 @@ void	struct_init_events_bool(t_event *eve)
 ** mlx->win. Loads the differents images on mlx.img, and filled the addresses
 ** and informations of those images in respectively mlx.addr and mlx.info.
 */
-void	struct_init_mlx(t_mlx *mlx)//, t_img *img, t_addr *addr, t_info *info)
+void	struct_init_mlx(t_mlx *mlx)
 {
 	mlx->start_move.tv_sec = 0.0; //booleans for movement and rotation
 	mlx->start_rota.tv_sec = 0.0;

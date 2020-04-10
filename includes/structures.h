@@ -6,14 +6,14 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/04/07 12:37:29 by lucaslefran       #+#    #+#             */
-/*   Updated: 2020/04/07 12:39:10 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/04/08 12:33:59 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef		STRUCTURE_H
-# define	STRUCTURE_H
+#ifndef		STRUCTURES_H
+# define	STRUCTURES_H
 
-# include "cube3d.h"
+# include	"cube3d.h"
 
 //contains all the information from the config file
 typedef struct		s_pars

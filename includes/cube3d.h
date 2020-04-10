@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/12 16:17:24 by lucaslefran       #+#    #+#             */
-/*   Updated: 2020/04/07 14:52:03 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/04/08 11:04:59 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,7 +101,7 @@ int			draw_skybox(t_mlx *mlx, double height, double rcast_angle);
 
 void		destroy_all_images(t_mlx *mlx, t_img *img);
 void		error_msg_destroy_img(const char *str, t_mlx *mlx);
-void		struct_init_mlx(t_mlx *mlx);//, t_img *img, t_addr *addr, t_info *info);
+void		struct_init_mlx(t_mlx *mlx);
 //init_mlx_struct.c
 
 void		free_sprite_struct(t_sprites **spri);
@@ -160,7 +160,7 @@ double		y_ray_len_wall(t_mlx *mlx, t_rcast *cam, double angle);
 void		check_guard_detect_player(t_mlx *mlx, t_rcast *cam, t_sprites *spri);
 //detect_ennemy.c
 
-void	save_image_as_bmp(t_mlx *mlx);
+void		save_image_as_bmp(t_mlx *mlx);
 //save.c
 
 #endif

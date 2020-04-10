@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/05 14:08:50 by llefranc          #+#    #+#             */
-/*   Updated: 2020/03/25 15:18:21 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/04/09 10:15:37 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,7 @@ void	walls_check_previous(t_pars *par, int i, int *previous)
 	long	j;
 
 	j = len_line_map(previous) - 1; //we start at the end of previous
-		i--;
+	i--;
 	while (++i <= 0)
 		if (previous[j + i] != 1 && previous[j + i] != -1)	//and compare until we reach
 			error_msg_map("File .cub, map : must only be"	//the size of actual

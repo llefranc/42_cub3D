@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/12 18:49:53 by lucaslefran       #+#    #+#             */
-/*   Updated: 2020/04/06 15:12:08 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/04/09 10:17:32 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,7 +110,6 @@ int		error_msg_map(char *str, t_pars *par, int *line)
 		struct_free(par); //also close file descriptor
 	exit(EXIT_FAILURE);
 }
-
 
 /*
 ** Check if there is only one argument (the map) and if the extension of the

@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/04/01 17:26:29 by lucaslefran       #+#    #+#             */
-/*   Updated: 2020/04/06 11:11:23 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/04/08 12:41:21 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ int		font2_color(t_mlx *mlx, int row, int line, int c)
 }
 
 /*
-** Resizes and draws a letter (font 2) at a certain position indiacted by row_screen.
+** Resizes and draws a letter (font 2) at a certain position indicated by row_screen.
 */
 void	draw_letter_font2(t_mlx *mlx, double line_screen, double row_screen, char c)
 {
@@ -42,7 +42,6 @@ void	draw_letter_font2(t_mlx *mlx, double line_screen, double row_screen, char c
 	resize_h = (mlx->par->reso[1] / (double)FONT_PIX_H) * (FONT2_SIZE_H); //resizing letter
 	resize_w = (mlx->par->reso[0] / (double)FONT_PIX_W) * (FONT2_SIZE_W);
 	line = 0.0;
-	row = 0.0;
 	while ((int)(line / resize_h) < FONT_PIX_H)
 	{
 		row = 0.0;
@@ -62,7 +61,7 @@ void	draw_letter_font2(t_mlx *mlx, double line_screen, double row_screen, char c
 }
 
 /*
-** Draws on sreen "gameover" (font 2).
+** Draws on screen "gameover" (font 2).
 */
 void	draw_gameover_message(t_mlx *mlx)
 {
@@ -80,7 +79,7 @@ void	draw_gameover_message(t_mlx *mlx)
 }
 
 /*
-** Draws on sreen "you are dead" (font 2).
+** Draws on screen "you are dead" (font 2).
 */
 void	draw_you_are_dead_message(t_mlx *mlx)
 {

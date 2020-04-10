@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/02/13 18:04:46 by lucaslefran       #+#    #+#             */
-/*   Updated: 2020/03/25 11:20:41 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/04/09 10:34:42 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,8 +73,8 @@ int		check_format_rgb(char *line)
 */
 int		parse_flo_rgb(t_pars *par, char *line)
 {
-	int i;
-	char **tmp;
+	int		i;
+	char	**tmp;
 
 	i = 0;
 	if (par->flo_rgb != -1) //if already something in the tab

@@ -6,14 +6,14 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/04/07 12:29:52 by lucaslefran       #+#    #+#             */
-/*   Updated: 2020/04/08 11:00:14 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/04/08 11:08:45 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef		DEFINE_H
 # define	DEFINE_H
 
-# include "cube3d.h"
+# include	"cube3d.h"
 
 //resolution values
 # define	RESO_MAX_X			2560

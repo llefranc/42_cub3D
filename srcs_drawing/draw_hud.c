@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/25 16:41:11 by lucaslefran       #+#    #+#             */
-/*   Updated: 2020/04/01 19:12:56 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/04/08 14:30:33 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -190,7 +190,7 @@ void	draw_all_hud_numbers(t_mlx *mlx, t_info *info)
 		draw_number(mlx, info, 0, N_LIFE2_SCREEN_R);
 	}
 	else
-		mlx->eve.lifebar / 10 > 0  ? draw_number(mlx, info, mlx->eve.lifebar / 10, N_LIFE2_SCREEN_R) : 0;
+		mlx->eve.lifebar / 10 > 0 ? draw_number(mlx, info, mlx->eve.lifebar / 10, N_LIFE2_SCREEN_R) : 0;
 	draw_number(mlx, info, mlx->eve.lifebar % 10, N_LIFE3_SCREEN_R); //last number of lifebar will be always draw
 	mlx->eve.ammo >= 10 ? draw_number(mlx, info, mlx->eve.ammo / 10, N_AMMO1_SCREEN_R) : 0;
 	draw_number(mlx, info, mlx->eve.ammo % 10, N_AMMO2_SCREEN_R); //last number of ammo will be always draw
