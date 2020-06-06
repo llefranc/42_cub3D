@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/24 10:45:30 by lucaslefran       #+#    #+#             */
-/*   Updated: 2020/04/01 10:42:37 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/06/06 11:59:28 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ t_sprites	*sprite_ptr(t_mlx *mlx, int x, int y)
 
 /*
 ** Determinate if player movement (j vector) is not crossing sprite's plan
-** (i vector). Add 0.7 to the len of j vector so the player can't get to close
+** (i vector). Add 0.5 to the len of j vector so the player can't get to close
 ** to the sprites. If the player is passing through sprite's plan, the function
 ** return 1. Otherwise return 0.
 */
