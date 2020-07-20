@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/03/12 16:23:29 by lucaslefran       #+#    #+#             */
-/*   Updated: 2020/04/08 15:14:16 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/07/20 10:36:09 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -195,33 +195,6 @@ void	struct_init_img(t_mlx *mlx, t_info *info)
 }
 
 /*
-** Join the path of one file and his filename, and then free the path.
-*/
-void	join_path_filename(t_mlx *mlx, char **path, char *name)
-{
-	char	*tmp;
-
-	tmp = *path;
-	if (!(*path = ft_strjoin(*path, name)))
-		error_msg_destroy_img("Malloc failed\n", mlx);
-	free(tmp);
-}
-
-/*
-** Add the filename to the path for each textures / sprites.
-*/
-void	struct_init_paths(t_mlx *mlx, t_pars *par)
-{
-	join_path_filename(mlx, &(par->path_no), "north.xpm");
-	join_path_filename(mlx, &(par->path_so), "south.xpm");
-	join_path_filename(mlx, &(par->path_ea), "east.xpm");
-	join_path_filename(mlx, &(par->path_we), "west.xpm");
-	join_path_filename(mlx, &(par->path_b_fl), "floor.xpm");
-	join_path_filename(mlx, &(par->path_b_sk), "skybox.xpm");
-	join_path_filename(mlx, &(par->path_b_do), "door.xpm");
-}
-
-/*
 ** initiates all booleans values.
 */
 void	struct_init_events_bool(t_event *eve)
@@ -247,7 +220,6 @@ void	struct_init_mlx(t_mlx *mlx)
 	mlx->spri = NULL;
 	mlx->ptr = mlx_init();
 	mlx->win = mlx_new_window(mlx->ptr, (int)mlx->par->reso[0], (int)mlx->par->reso[1], "cub3d");
-	struct_init_paths(mlx, mlx->par);
 	struct_init_img(mlx, &mlx->info);
 	struct_init_addr_info(mlx, &mlx->addr, &mlx->info);
 	struct_init_events_bool(&mlx->eve);

@@ -6,7 +6,7 @@
 /*   By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/04/06 14:53:51 by lucaslefran       #+#    #+#             */
-/*   Updated: 2020/04/07 10:57:33 by lucaslefran      ###   ########.fr       */
+/*   Updated: 2020/07/20 10:38:29 by lucaslefran      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -126,7 +126,7 @@ void	save_image_as_bmp(t_mlx *mlx)
 	int		size_str_img;
 
 	i = 0;
-	padding_byte = 4 - (int)mlx->par->reso[0] % 4;	//if one line of img is 5 pixels, will be 15 bytes
+	padding_byte = 4 - (int)mlx->par->reso[0] * 3 % 4;	//if one line of img is 5 pixels, will be 15 bytes
 	padding_byte == 4 ? padding_byte = 0 : 0;		//(5 x 3 for RGB couple) so need 1 padding byte
 	//size of file, 54 is the header size. Reso x3 because 3 values per pixel for 
 	//RGB couple + rows of padding bytes if necesseraly

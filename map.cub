@@ -1,18 +1,18 @@
 F 2,20,2
 
-NO ./images/textures/north/
+NO ./images/textures/north/north.xpm
 
-R 800 600
-SO ./images/textures/south/
-WE ./images/textures/west/
+R 801 601
+SO ./images/textures/south/south.xpm
+WE ./images/textures/west/west.xpm
 S ./images/sprites/
 
-CB ./images/textures/ceil/
-FB ./images/textures/floor/
-DB ./images/textures/door/
+CB ./images/textures/ceil/skybox.xpm
+FB ./images/textures/floor/floor.xpm
+DB ./images/textures/door/door.xpm
 C 220,10,23
 
-EA ./images/textures/east/
+EA ./images/textures/east/east.xpm
 
         1111111111111111111111111
         1600900070110009009409091
