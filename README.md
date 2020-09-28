@@ -1,7 +1,6 @@
 # cub3d
 
-## Cub3d game (based on Wolfenstein 3D game).
-## Made by Lucas Lefrancq.
+Cub3d game (based on Wolfenstein 3D game). Made by Lucas Lefrancq.
 
 
 This game is using raycasting render to create a 3D illusion.
