@@ -1,4 +1,4 @@
-cub3d
+#cub3d
 
 Cub3d game (based on Wolfenstein 3D game).
 Made by Lucas Lefrancq.
