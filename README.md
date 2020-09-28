@@ -9,8 +9,8 @@ It will first check the arguments (only one / or two are allowed :
 - The second one is '--save' if you want to save as a BMP file the first
   rendered image with raycasting.
 
-The program will then parses the config file, initiates several structures with
-player's informations and loads textures / sprites. Then it will refresh continually
+The program will then parse the config file, initiate several structures with
+player's informations and load textures / sprites. Then it will refresh continually
 the screen thanks to a raycasting algorithm, creating a different image each time
 the player is moving / rotating / shooting...
 
