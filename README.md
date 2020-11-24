@@ -37,7 +37,7 @@ his 3 lifes, gameover will occur and he will need to quit the game with ESC key.
 
 `This project was code for MACOS`
 
-### Building and running the program
+### Building and running the project
 
 1. Download/Clone this repo
 
