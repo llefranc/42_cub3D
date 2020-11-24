@@ -45,7 +45,7 @@ his 3 lifes, gameover will occur and he will need to quit the game with ESC key.
 
 2. `cd` into the root directory, and run `make`
 
-        cd 42-06_minishell
+        cd 42-02_cub3d
         make
 
 3.  Run `./cub3d map.cub` to launch the game.
