@@ -6,7 +6,7 @@
 #    By: lucaslefrancq <lucaslefrancq@student.42    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/02/05 18:41:15 by llefranc          #+#    #+#              #
-#    Updated: 2020/04/08 10:01:55 by lucaslefran      ###   ########.fr        #
+#    Updated: 2020/11/24 17:29:36 by lucaslefran      ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -57,3 +57,16 @@ fclean	:	clean
 re		:	fclean all
 
 .PHONY	:	all clean fclean re
+
+#compiling .o with flags
+$(PATH_DR)%.o		:	$(PATH_DR)%.c
+			$(CC) $(FLAGS) -o $@ -c $<
+
+$(PATH_EV)%.o		:	$(PATH_EV)%.c
+			$(CC) $(FLAGS) -o $@ -c $<
+
+$(PATH_PA)%.o		:	$(PATH_PA)%.c
+			$(CC) $(FLAGS) -o $@ -c $<
+
+$(PATH_RA)%.o		:	$(PATH_RA)%.c
+			$(CC) $(FLAGS) -o $@ -c $<
