@@ -55,4 +55,6 @@ his 3 lifes, gameover will occur and he will need to quit the game with ESC key.
 
 - [Understanding how a raycasting algorithm works][3]
 
+[1]: https://www.youtube.com/watch?v=7P_dic-pSKo&ab_channel=3DRealms
+[2]: https://github.com/lucaslefrancq/42-02_cub3d/blob/master/cub3D.en.subject.pdf
 [3]: https://permadi.com/1996/05/ray-casting-tutorial-table-of-contents/
