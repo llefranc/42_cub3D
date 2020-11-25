@@ -6,7 +6,7 @@
 
 ## About
 
-Cub3D is the 4th project of the mandatory part of the cursus.
+Cub3D is a project of the mandatory part of the cursus.
 It's only made in C and the main goal was to recreate the first FPS, [Wolfenstein 3D][1].
 This game is using raycasting render to create a 3D illusion.
 
