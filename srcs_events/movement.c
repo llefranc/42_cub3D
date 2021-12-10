@@ -20,10 +20,8 @@
 void	move(t_rcast *cam, double len, char coordinate)
 {
 	double	tmp_len;
-	double	tmp_sprite_len;
 
 	tmp_len = (len > 0.0) ? len + 0.1 : len - 0.1; //to prevent player to be to close to walls
-	tmp_sprite_len = (len > 0.0) ? len + 0.5 : len - 0.5; //to prevent player to be to close to sprites
 	if (coordinate == 'x') //allow to use this fucntion for 'x' or 'y'
 	{
 		if ((int)(cam->x + tmp_len) < 0 || (int)(cam->x + tmp_len) >= cam->nb_rows[(int)cam->y]) //if we're out of the map 

@@ -126,11 +126,9 @@ void	draw_colored_screen(t_mlx *mlx, int nb_pixel, int color)
 */
 void	draw_death_screen(t_mlx *mlx)
 {
-	int				i;
 	struct timeval	end;
 	double			time; //in ms
 
-	i = 0;
 	gettimeofday(&end, NULL);
 	time = (double)(end.tv_usec - mlx->eve.time_player_death.tv_usec)
 			/ 1000000.0 + (double)(end.tv_sec - mlx->eve.time_player_death.tv_sec);

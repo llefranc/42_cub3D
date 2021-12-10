@@ -81,10 +81,8 @@ int		*convert_int_line(char *line)
 */
 int		parse_map(t_pars *par, char *line)
 {
-	int i;
 	int *int_line;
 
-	i = 0;
 	if (!(int_line = convert_int_line(line))) //create a new *int_line with all the values converted
 		error_msg("Malloc failed\n", par, line);
 	if (!(par->map = add_map_line(par, int_line))) //realloc par-map with size + 1 and add int_line at the end
